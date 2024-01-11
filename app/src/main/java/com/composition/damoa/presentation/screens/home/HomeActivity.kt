@@ -31,7 +31,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
-import com.composition.damoa.presentation.ui.theme.Purple40
+import com.composition.damoa.presentation.ui.theme.Purple60
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -97,7 +97,7 @@ private fun HomeBottomNavigationBar(navController: NavController = rememberNavCo
                     Icon(
                         painter = painterResource(id = item.iconRes),
                         contentDescription = stringResource(id = item.labelRes),
-                        tint = if (isSelected) Purple40 else Color.Black,
+                        tint = if (isSelected) Purple60 else Color.Black,
                         modifier = Modifier.size(25.dp).padding(bottom = 4.dp),
                     )
                 },
@@ -106,7 +106,7 @@ private fun HomeBottomNavigationBar(navController: NavController = rememberNavCo
                         text = stringResource(id = item.labelRes),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        color = if (isSelected) Purple40 else Color.Black,
+                        color = if (isSelected) Purple60 else Color.Black,
                         modifier = Modifier.padding(top = 20.dp),
                     )
                 },
