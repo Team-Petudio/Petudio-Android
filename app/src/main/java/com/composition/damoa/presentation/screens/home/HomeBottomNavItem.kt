@@ -1,13 +1,15 @@
 package com.composition.damoa.presentation.screens.home
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import com.composition.damoa.R
 
-enum class HomeBottomNavItem(val route: String, val icon: ImageVector, val label: String) {
-    AiProfile("aiProfile", Icons.Default.Home, "AI 프로필"),
-    Gallery("gallery", Icons.Default.Search, "갤러리"),
-    Setting("setting", Icons.Default.Person, "내 정보"),
+enum class HomeBottomNavItem(
+    val route: String,
+    @DrawableRes val iconRes: Int,
+    @StringRes val labelRes: Int,
+) {
+    AiProfile("aiProfile", R.drawable.ic_footprint, R.string.home_bottom_nav_item_ai_profile),
+    Gallery("gallery", R.drawable.ic_gallery, R.string.home_bottom_nav_item_gallery),
+    Profile("profile", R.drawable.ic_profile, R.string.home_bottom_nav_item_profile),
 }
