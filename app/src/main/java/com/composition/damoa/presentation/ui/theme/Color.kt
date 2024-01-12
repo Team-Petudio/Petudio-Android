@@ -6,5 +6,8 @@ val Purple60 = Color(0xFFAE9BF2)
 val Pink80 = Color(0xFFF1AEF2)
 val Pink40 = Color(0xFFF2A7CA)
 val Pink20 = Color(0xFFF2B6C6)
-
 val PrimaryColors = listOf(Purple60, Pink80, Pink40, Pink20)
+
+val Gray60 = Color(0xFF8A8A8A)
+
+val AlertIconColor = Color(0xFFAF0000)

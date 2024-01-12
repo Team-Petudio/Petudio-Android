@@ -6,4 +6,11 @@
     <string name="ai_profile_creation">AI 프로필 생성하기</string>
     <string name="ai_profile_dog_only">반려견 전용</string>
     <string name="ai_profile_cat_only">반려묘 전용</string>
+    <string name="navigate_back">뒤로가기</string>
+    <string name="keep_going">계속하기</string>
+    <string name="profile_create_introduce_title">시작하기 전</string>
+    <string name="profile_create_good_example_intro_title">무한한 강아지 프로필을 만나보세요.</string>
+    <string name="profile_create_good_example_intro_desc">예전에 찍어 놓았던 몇 장의 사진으로, 간단하게 반려견의 프로필 사진을 만들어 보세요</string>
+    <string name="profile_create_bad_example_intro_title">아래와 같은 결과물이 일부 생성될 수 있어요.</string>
+    <string name="profile_create_bad_example_intro_desc">Petudio에서 제공하는 AI는 계속해서 학습을 진행 중인 단계로, AI가 제공하는 일부 결과물이 만족스럽지 못할 수 있습니다. 발생할 수 있는 결함에 대한 너른 양해를 부탁드리며 계속하실 경우 결과물에 대해 동의하는 것으로 간주됩니다.</string>
 </resources>

@@ -57,7 +57,6 @@ private fun AiConcepts(
 }
 
 @Composable
-@OptIn(ExperimentalGlideComposeApi::class)
 private fun AiConceptItem(
     aiConcept: AiConcept,
     modifier: Modifier = Modifier,
