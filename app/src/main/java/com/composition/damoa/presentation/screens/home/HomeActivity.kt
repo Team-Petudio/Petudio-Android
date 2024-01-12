@@ -35,9 +35,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
-import com.composition.damoa.presentation.ui.theme.Pink20
-import com.composition.damoa.presentation.ui.theme.Pink40
-import com.composition.damoa.presentation.ui.theme.Pink80
+import com.composition.damoa.presentation.ui.theme.PrimaryColors
 import com.composition.damoa.presentation.ui.theme.Purple60
 
 class MainActivity : ComponentActivity() {
@@ -109,15 +107,7 @@ fun HomeAppBarTitle(modifier: Modifier = Modifier) {
             TextStyle(
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Black,
-                brush =
-                    Brush.horizontalGradient(
-                        listOf(
-                            Purple60,
-                            Pink80,
-                            Pink40,
-                            Pink20,
-                        ),
-                    ),
+                brush = Brush.horizontalGradient(PrimaryColors),
             ),
     )
 }
