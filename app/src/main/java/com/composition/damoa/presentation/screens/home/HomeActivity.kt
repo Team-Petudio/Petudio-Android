@@ -3,6 +3,7 @@ package com.composition.damoa.presentation.screens.home
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -58,12 +59,13 @@ private fun HomeScreen() {
             bottomBar = { HomeBottomNavigationBar(navController = homeNavController) },
         ) { padding ->
             HomeNavHost(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        top = padding.calculateTopPadding(),
-                        bottom = padding.calculateBottomPadding(),
-                    ),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(
+                            top = padding.calculateTopPadding(),
+                            bottom = padding.calculateBottomPadding(),
+                        ),
                 navController = homeNavController,
             )
         }
@@ -81,7 +83,7 @@ private fun HomeNavHost(
         navController = navController,
         startDestination = startDestination,
     ) {
-        composable(HomeBottomNavItem.AiProfile.route) { /* Home Screen UI */ }
+        composable(HomeBottomNavItem.AiProfile.route) { AiProfileScreen() }
         composable(HomeBottomNavItem.Gallery.route) { /* Search Screen UI */ }
         composable(HomeBottomNavItem.Profile.route) { /* Profile Screen UI */ }
     }
@@ -94,6 +96,7 @@ private fun HomeTopAppBar() {
         navigationIcon = { HomeAppBarIcon() },
         backgroundColor = Color.Transparent,
         elevation = 0.dp,
+        modifier = Modifier.background(Color.White),
     )
 }
 
@@ -102,11 +105,12 @@ fun HomeAppBarTitle(modifier: Modifier = Modifier) {
     Text(
         modifier = modifier.offset(x = (-12).dp),
         text = stringResource(id = R.string.en_app_name),
-        style = TextStyle(
-            fontSize = 36.sp,
-            fontWeight = FontWeight.Black,
-            brush = Brush.horizontalGradient(PrimaryColors),
-        ),
+        style =
+            TextStyle(
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Black,
+                brush = Brush.horizontalGradient(PrimaryColors),
+            ),
     )
 }
 
@@ -143,9 +147,10 @@ private fun HomeBottomNavigationBar(navController: NavController = rememberNavCo
                         painter = painterResource(id = item.iconRes),
                         contentDescription = stringResource(id = item.labelRes),
                         tint = if (isSelected) Purple60 else Color.Black,
-                        modifier = Modifier
-                            .size(25.dp)
-                            .padding(bottom = 4.dp),
+                        modifier =
+                            Modifier
+                                .size(25.dp)
+                                .padding(bottom = 4.dp),
                     )
                 },
                 label = {
@@ -164,13 +169,13 @@ private fun HomeBottomNavigationBar(navController: NavController = rememberNavCo
 
 @Preview(showBackground = true)
 @Composable
-fun HomePreview() {
+private fun HomePreview() {
     HomeScreen()
 }
 
 @Preview(showBackground = true)
 @Composable
-fun HomeBottomNavigationBarPreview() {
+private fun HomeBottomNavigationBarPreview() {
     PetudioTheme {
         HomeBottomNavigationBar()
     }
