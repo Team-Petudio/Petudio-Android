@@ -58,13 +58,12 @@ private fun HomeScreen() {
             bottomBar = { HomeBottomNavigationBar(navController = homeNavController) },
         ) { padding ->
             HomeNavHost(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(
-                            top = padding.calculateTopPadding(),
-                            bottom = padding.calculateBottomPadding(),
-                        ),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        top = padding.calculateTopPadding(),
+                        bottom = padding.calculateBottomPadding(),
+                    ),
                 navController = homeNavController,
             )
         }
@@ -103,12 +102,11 @@ fun HomeAppBarTitle(modifier: Modifier = Modifier) {
     Text(
         modifier = modifier.offset(x = (-12).dp),
         text = stringResource(id = R.string.en_app_name),
-        style =
-            TextStyle(
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Black,
-                brush = Brush.horizontalGradient(PrimaryColors),
-            ),
+        style = TextStyle(
+            fontSize = 36.sp,
+            fontWeight = FontWeight.Black,
+            brush = Brush.horizontalGradient(PrimaryColors),
+        ),
     )
 }
 
@@ -145,10 +143,9 @@ private fun HomeBottomNavigationBar(navController: NavController = rememberNavCo
                         painter = painterResource(id = item.iconRes),
                         contentDescription = stringResource(id = item.labelRes),
                         tint = if (isSelected) Purple60 else Color.Black,
-                        modifier =
-                            Modifier
-                                .size(25.dp)
-                                .padding(bottom = 4.dp),
+                        modifier = Modifier
+                            .size(25.dp)
+                            .padding(bottom = 4.dp),
                     )
                 },
                 label = {
