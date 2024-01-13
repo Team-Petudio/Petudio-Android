@@ -59,7 +59,7 @@ fun ProfileCreationIntroduceScreen(
                 .padding(bottom = 100.dp),
         )
         KeepGoingButton(onClick = {
-            navController.navigate(ProfileCreationScreen.PET_PHOTO_GROUPS.route)
+            navController.navigate(ProfileCreationScreen.PET_PHOTO_SELECT.route)
         })
     }
 }

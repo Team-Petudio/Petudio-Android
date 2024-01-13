@@ -103,7 +103,7 @@ private fun ProfileCreationNavHost(
         composable(ProfileCreationScreen.PROFILE_CREATION_INTRODUCE.route) {
             ProfileCreationIntroduceScreen(navController = navController)
         }
-        composable(ProfileCreationScreen.PET_PHOTO_GROUPS.route) {
+        composable(ProfileCreationScreen.PET_PHOTO_SELECT.route) {
             ProfileCreationIntroduceScreen(navController = navController)
         }
     }
@@ -112,8 +112,8 @@ private fun ProfileCreationNavHost(
 enum class ProfileCreationScreen(
     val route: String,
 ) {
-    PROFILE_CREATION_INTRODUCE("photoCreationIntroduce"),
-    PET_PHOTO_GROUPS("petPhotoGroups"),
+    PROFILE_CREATION_INTRODUCE("profileCreationIntroduce"),
+    PET_PHOTO_SELECT("petPhotoSelect"),
     PET_NAME("petName"),
     PET_COLOR("petColor"),
     PHOTO_UPLOAD_INTRODUCE("photoUploadIntroduce"),
