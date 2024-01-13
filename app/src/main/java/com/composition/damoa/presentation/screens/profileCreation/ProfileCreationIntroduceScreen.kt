@@ -24,11 +24,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -219,13 +217,5 @@ private fun KeepGoingButton(
         fontWeight = FontWeight.Bold,
         gradient = Brush.horizontalGradient(PrimaryColors),
         onClick = onClick,
-    )
-}
-
-@Preview
-@Composable
-private fun ProfileCreationIntroduceScreenPreview() {
-    ProfileCreationIntroduceScreen(
-        navController = rememberNavController(),
     )
 }
