@@ -1,6 +1,6 @@
 package com.composition.damoa.presentation.screens.profileCreation
 
-import androidx.compose.foundation.Image
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,28 +13,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.composition.damoa.R
+import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.KeepGoingButton
+import com.composition.damoa.presentation.common.components.MediumDescription
+import com.composition.damoa.presentation.common.components.SmallTitle
 import com.composition.damoa.presentation.common.utils.profileExamplePhotoUrls
-import com.composition.damoa.presentation.ui.theme.AlertIconColor
-import com.composition.damoa.presentation.ui.theme.Gray60
 
 @Composable
 fun ProfileCreationIntroduceScreen(
@@ -71,11 +66,8 @@ private fun ProfileCreationIntroduceContent(modifier: Modifier = Modifier) {
 
 @Composable
 private fun ProfileCreationIntroduceTitle() {
-    Text(
-        text = stringResource(id = R.string.profile_create_introduce_title),
-        fontSize = 26.sp,
-        fontWeight = FontWeight.Black,
-        color = Color.Black,
+    BigTitle(
+        titleRes = R.string.profile_create_introduce_title,
         modifier = Modifier.padding(top = 12.dp, bottom = 32.dp),
     )
 }
@@ -84,8 +76,8 @@ private fun ProfileCreationIntroduceTitle() {
 private fun ProfileCreationGoodExample(modifier: Modifier = Modifier) {
     ProfileCreationIntroduce(
         modifier = modifier,
-        title = stringResource(id = R.string.profile_create_good_example_intro_title),
-        description = stringResource(id = R.string.profile_create_good_example_intro_desc),
+        titleRes = R.string.profile_create_good_example_intro_title,
+        descriptionRes = R.string.profile_create_good_example_intro_desc,
         profileExamplePhotoUrls = profileExamplePhotoUrls(),
     )
 }
@@ -94,9 +86,9 @@ private fun ProfileCreationGoodExample(modifier: Modifier = Modifier) {
 private fun ProfileCreationBadExample(modifier: Modifier = Modifier) {
     ProfileCreationIntroduce(
         modifier = modifier,
-        title = stringResource(id = R.string.profile_create_bad_example_intro_title),
         isShowAlertIcon = true,
-        description = stringResource(id = R.string.profile_create_bad_example_intro_desc),
+        titleRes = R.string.profile_create_bad_example_intro_title,
+        descriptionRes = R.string.profile_create_bad_example_intro_desc,
         profileExamplePhotoUrls = profileExamplePhotoUrls(),
     )
 }
@@ -104,14 +96,14 @@ private fun ProfileCreationBadExample(modifier: Modifier = Modifier) {
 @Composable
 private fun ProfileCreationIntroduce(
     modifier: Modifier = Modifier,
-    title: String,
     isShowAlertIcon: Boolean = false,
-    description: String,
+    @StringRes titleRes: Int,
+    @StringRes descriptionRes: Int,
     profileExamplePhotoUrls: List<String>,
 ) {
     Column(modifier) {
-        ProfileCreationIntroduceTitle(title = title, isShowAlertIcon = isShowAlertIcon)
-        ProfileCreationDescription(description)
+        ProfileCreationIntroduceTitle(titleRes = titleRes, isShowAlertIcon = isShowAlertIcon)
+        ProfileCreationDescription(descriptionRes = descriptionRes)
         ProfileExamplePhotos(profileExamplePhotoUrls)
     }
 }
@@ -119,26 +111,25 @@ private fun ProfileCreationIntroduce(
 @Composable
 private fun ProfileCreationIntroduceTitle(
     modifier: Modifier = Modifier,
-    title: String,
+    @StringRes titleRes: Int,
     isShowAlertIcon: Boolean = false,
 ) {
-    Row(modifier) {
-        if (isShowAlertIcon) {
-            Image(
-                painter = painterResource(id = R.drawable.alert),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(AlertIconColor),
-                modifier = Modifier.padding(end = 8.dp),
-            )
-        }
-        Text(
-            text = title,
-            fontSize = 17.sp,
-            fontWeight = FontWeight.Black,
-            color = Color.Black,
-            modifier = modifier.padding(bottom = 12.dp),
-        )
-    }
+    SmallTitle(
+        modifier = modifier.padding(bottom = 12.dp),
+        titleRes = titleRes,
+        isShowAlertIcon = isShowAlertIcon,
+    )
+}
+
+@Composable
+private fun ProfileCreationDescription(
+    @StringRes descriptionRes: Int,
+    modifier: Modifier = Modifier,
+) {
+    MediumDescription(
+        modifier = modifier.padding(bottom = 16.dp),
+        descriptionRes = descriptionRes,
+    )
 }
 
 @Composable
@@ -153,20 +144,6 @@ private fun ProfileExamplePhotos(photoUrls: List<String>) {
             ProfileExamplePhoto(photoUrls[3], modifier = Modifier.weight(1F))
         }
     }
-}
-
-@Composable
-private fun ProfileCreationDescription(
-    description: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = description,
-        fontSize = 15.sp,
-        fontWeight = FontWeight.Normal,
-        color = Gray60,
-        modifier = modifier.padding(bottom = 16.dp),
-    )
 }
 
 @Composable
