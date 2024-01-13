@@ -1,6 +1,7 @@
 package com.composition.damoa.presentation.screens.profileCreation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,9 +25,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -46,6 +49,7 @@ fun ProfileCreationIntroduceScreen(
         color = Color.White,
         modifier =
             modifier
+                .background(Color.White)
                 .fillMaxSize()
                 .padding(horizontal = 20.dp),
     ) {
@@ -217,5 +221,13 @@ private fun KeepGoingButton(
         fontWeight = FontWeight.Bold,
         gradient = Brush.horizontalGradient(PrimaryColors),
         onClick = onClick,
+    )
+}
+
+@Preview
+@Composable
+private fun ProfileCreationPreview() {
+    ProfileCreationIntroduceScreen(
+        navController = rememberNavController(),
     )
 }
