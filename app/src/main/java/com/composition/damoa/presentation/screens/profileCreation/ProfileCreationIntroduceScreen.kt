@@ -25,9 +25,9 @@ import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.composition.damoa.R
-import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
+import com.composition.damoa.presentation.common.components.MediumTitle
 import com.composition.damoa.presentation.common.components.SmallTitle
 import com.composition.damoa.presentation.common.utils.profileExamplePhotoUrls
 
@@ -66,7 +66,7 @@ private fun ProfileCreationIntroduceContent(modifier: Modifier = Modifier) {
 
 @Composable
 private fun ProfileCreationIntroduceTitle() {
-    BigTitle(
+    MediumTitle(
         titleRes = R.string.profile_create_introduce_title,
         modifier = Modifier.padding(top = 12.dp, bottom = 32.dp),
     )

@@ -18,10 +18,6 @@
         tools:targetApi="31">
         <activity
             android:name=".presentation.screens.profileCreation.ProfileCreationActivity"
-            android:exported="false"
-            android:theme="@style/Theme.MyApplication" />
-        <activity
-            android:name=".presentation.screens.home.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
@@ -29,6 +25,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".presentation.screens.home.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.MyApplication">
+
         </activity>
     </application>
 

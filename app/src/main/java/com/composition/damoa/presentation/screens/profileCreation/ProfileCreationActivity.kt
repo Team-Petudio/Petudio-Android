@@ -14,9 +14,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -44,14 +41,13 @@ private fun ProfileCreation() {
     PetudioTheme {
         val activity = LocalContext.current as? Activity
         val navController = rememberNavController()
-        val isFirstScreen by remember {
-            derivedStateOf {
-                navController.previousBackStackEntry == null
-            }
-        }
 
         Scaffold(
-            topBar = { ProfileCreationTopAppBar(isFirstScreen, activity, navController) },
+            topBar = {
+                ProfileCreationTopAppBar(
+                    onNavigationClick = { if (!navController.popBackStack()) activity?.finish() },
+                )
+            },
         ) { padding ->
             ProfileCreationNavHost(
                 modifier = Modifier.padding(top = padding.calculateTopPadding()),
@@ -63,21 +59,11 @@ private fun ProfileCreation() {
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun ProfileCreationTopAppBar(
-    isFirstScreen: Boolean,
-    activity: Activity?,
-    navController: NavHostController,
-) {
+private fun ProfileCreationTopAppBar(onNavigationClick: () -> Unit = {}) {
     TopAppBar(
         title = { },
         navigationIcon = {
-            IconButton(onClick = {
-                if (isFirstScreen) {
-                    activity?.finish()
-                } else {
-                    navController.navigateUp()
-                }
-            }) {
+            IconButton(onClick = onNavigationClick) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = stringResource(id = R.string.navigate_back),
@@ -104,7 +90,7 @@ private fun ProfileCreationNavHost(
             ProfileCreationIntroduceScreen(navController = navController)
         }
         composable(ProfileCreationScreen.PET_PHOTO_SELECT.route) {
-            ProfileCreationIntroduceScreen(navController = navController)
+            PetPhotoSelectScreen(navController = navController)
         }
     }
 }

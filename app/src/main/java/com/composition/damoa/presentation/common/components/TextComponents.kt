@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
@@ -43,6 +44,36 @@ fun BigTitle(
         fontWeight = FontWeight.Black,
         color = fontColor,
         modifier = modifier,
+        overflow = TextOverflow.Ellipsis,
+    )
+}
+
+@Composable
+fun MediumTitle(
+    modifier: Modifier = Modifier,
+    @StringRes titleRes: Int,
+    fontColor: Color = Color.Black,
+) {
+    BigTitle(
+        modifier = modifier,
+        title = stringResource(id = titleRes),
+        fontColor = fontColor,
+    )
+}
+
+@Composable
+fun MediumTitle(
+    modifier: Modifier = Modifier,
+    title: String,
+    fontColor: Color = Color.Black,
+) {
+    Text(
+        text = title,
+        fontSize = 22.sp,
+        fontWeight = FontWeight.Black,
+        color = fontColor,
+        modifier = modifier,
+        overflow = TextOverflow.Ellipsis,
     )
 }
 
@@ -79,9 +110,10 @@ fun SmallTitle(
         }
         Text(
             text = title,
-            fontSize = 17.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Black,
             color = fontColor,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
@@ -107,6 +139,7 @@ fun MediumDescription(
         fontSize = 15.sp,
         fontWeight = FontWeight.Normal,
         color = Gray60,
-        modifier = modifier.padding(bottom = 16.dp),
+        modifier = modifier,
+        overflow = TextOverflow.Ellipsis,
     )
 }
