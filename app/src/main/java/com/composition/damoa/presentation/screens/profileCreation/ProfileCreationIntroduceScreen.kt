@@ -5,10 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,7 +16,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -34,11 +31,10 @@ import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.composition.damoa.R
-import com.composition.damoa.presentation.common.components.GradientButton
+import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.utils.profileExamplePhotoUrls
 import com.composition.damoa.presentation.ui.theme.AlertIconColor
 import com.composition.damoa.presentation.ui.theme.Gray60
-import com.composition.damoa.presentation.ui.theme.PrimaryColors
 
 @Composable
 fun ProfileCreationIntroduceScreen(
@@ -191,37 +187,6 @@ private fun ProfileExamplePhoto(
             contentScale = ContentScale.Crop,
         )
     }
-}
-
-@Composable
-private fun KeepGoingButton(onClick: () -> Unit) {
-    Column {
-        Spacer(modifier = Modifier.weight(1F))
-        KeepGoingButton(
-            modifier = Modifier.padding(bottom = 20.dp),
-            onClick = onClick,
-        )
-    }
-}
-
-@Composable
-private fun KeepGoingButton(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    GradientButton(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .aspectRatio(6 / 1F),
-        shape = RoundedCornerShape(12.dp),
-        text = stringResource(id = R.string.keep_going),
-        fontColor = Color.White,
-        fontSize = 16.sp,
-        fontWeight = FontWeight.Bold,
-        gradient = Brush.horizontalGradient(PrimaryColors),
-        onClick = onClick,
-    )
 }
 
 @Preview
