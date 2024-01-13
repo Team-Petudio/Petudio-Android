@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
-import com.composition.damoa.presentation.ui.theme.Gray60
+import com.composition.damoa.presentation.ui.theme.Gray30
 import com.composition.damoa.presentation.ui.theme.PrimaryColors
 
 @Composable
@@ -53,7 +53,7 @@ fun GradientButton(
             if (enabled) {
                 Modifier.background(gradient)
             } else {
-                Modifier.background(Gray60)
+                Modifier.background(Gray30)
             }
         Box(
             modifier = boxModifier.fillMaxSize(),

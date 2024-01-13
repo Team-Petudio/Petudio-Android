@@ -92,6 +92,9 @@ private fun ProfileCreationNavHost(
         composable(ProfileCreationScreen.PET_PHOTO_SELECT.route) {
             PetPhotoSelectScreen(navController = navController)
         }
+        composable(ProfileCreationScreen.PET_NAME.route) {
+            PetNameScreen(navController = navController)
+        }
     }
 }
 
