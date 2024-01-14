@@ -119,6 +119,47 @@ fun SmallTitle(
 }
 
 @Composable
+fun TinyTitle(
+    modifier: Modifier = Modifier,
+    @StringRes titleRes: Int,
+    fontColor: Color = Color.Black,
+    isShowAlertIcon: Boolean = false,
+) {
+    TinyTitle(
+        modifier = modifier,
+        title = stringResource(id = titleRes),
+        fontColor = fontColor,
+        isShowAlertIcon = isShowAlertIcon,
+    )
+}
+
+@Composable
+fun TinyTitle(
+    modifier: Modifier = Modifier,
+    title: String,
+    fontColor: Color = Color.Black,
+    isShowAlertIcon: Boolean = false,
+) {
+    Row(modifier) {
+        if (isShowAlertIcon) {
+            Image(
+                painter = painterResource(id = R.drawable.alert),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(AlertIconColor),
+                modifier = Modifier.padding(end = 8.dp),
+            )
+        }
+        Text(
+            text = title,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Black,
+            color = fontColor,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+@Composable
 fun MediumDescription(
     modifier: Modifier = Modifier,
     @StringRes descriptionRes: Int,
@@ -137,6 +178,32 @@ fun MediumDescription(
     Text(
         text = description,
         fontSize = 15.sp,
+        fontWeight = FontWeight.Normal,
+        color = Gray60,
+        modifier = modifier,
+        overflow = TextOverflow.Ellipsis,
+    )
+}
+
+@Composable
+fun SmallDescription(
+    modifier: Modifier = Modifier,
+    @StringRes descriptionRes: Int,
+) {
+    MediumDescription(
+        modifier = modifier,
+        description = stringResource(id = descriptionRes),
+    )
+}
+
+@Composable
+fun SmallDescription(
+    modifier: Modifier = Modifier,
+    description: String,
+) {
+    Text(
+        text = description,
+        fontSize = 12.sp,
         fontWeight = FontWeight.Normal,
         color = Gray60,
         modifier = modifier,

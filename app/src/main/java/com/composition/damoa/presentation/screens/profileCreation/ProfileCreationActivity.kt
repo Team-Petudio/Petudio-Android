@@ -20,10 +20,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.composition.damoa.R
+import com.composition.damoa.presentation.common.extensions.getParcelableCompat
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 
 class ProfileCreationActivity : ComponentActivity() {
@@ -95,6 +98,9 @@ private fun ProfileCreationNavHost(
         composable(ProfileCreationScreen.PET_NAME.route) {
             PetNameScreen(navController = navController)
         }
+        composable(ProfileCreationScreen.PET_COLOR.route) {
+            PetColorScreen(navController = navController)
+        }
     }
 }
 
@@ -104,7 +110,7 @@ enum class ProfileCreationScreen(
     PROFILE_CREATION_INTRODUCE("profileCreationIntroduce"),
     PET_PHOTO_SELECT("petPhotoSelect"),
     PET_NAME("petName"),
-    PET_COLOR("petColor"),
+    PET_COLOR("petColor/{petType}"),
     PHOTO_UPLOAD_INTRODUCE("photoUploadIntroduce"),
     PHOTO_UPLOAD_RESULT("photoUploadResult"),
     PAYMENT("payment"),

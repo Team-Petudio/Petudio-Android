@@ -53,12 +53,6 @@ import com.composition.damoa.presentation.ui.theme.Purple60
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-data class UploadedPetPhoto(
-    val thumbnailUrl: String,
-    val petName: String,
-    val uploadedDate: LocalDateTime,
-)
-
 @Composable
 fun PetPhotoSelectScreen(
     modifier: Modifier = Modifier,

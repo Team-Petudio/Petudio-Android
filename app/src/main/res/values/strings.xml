@@ -23,4 +23,11 @@
     <string name="pet_name_desc">반려견의 프로필을 입력해 주세요.</string>
     <string name="pet_name">이름</string>
     <string name="pet_name_input_hint">이름을 입력해 주세요</string>
+
+    <string name="pet_color_title">색상 선택</string>
+    <string name="pet_color_desc">강아지의 색을 미리 알려주시면 AI가 더 빠르게 학습할 수 있어요!</string>
+    <string name="pet_color_white">빈틈없는 화이트</string>
+    <string name="pet_color_black">빈틈없는 블랙</string>
+    <string name="pet_color_dynamic">그 외 다양한 색상과 무늬</string>
+    <string name="pet_color_dynamic_extra_desc">(검정, 흰색 무늬 포함)</string>
 </resources>
