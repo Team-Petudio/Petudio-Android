@@ -54,7 +54,7 @@ fun MediumTitle(
     @StringRes titleRes: Int,
     fontColor: Color = Color.Black,
 ) {
-    BigTitle(
+    MediumTitle(
         modifier = modifier,
         title = stringResource(id = titleRes),
         fontColor = fontColor,
@@ -190,7 +190,7 @@ fun SmallDescription(
     modifier: Modifier = Modifier,
     @StringRes descriptionRes: Int,
 ) {
-    MediumDescription(
+    SmallDescription(
         modifier = modifier,
         description = stringResource(id = descriptionRes),
     )

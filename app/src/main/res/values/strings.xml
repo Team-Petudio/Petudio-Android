@@ -30,4 +30,19 @@
     <string name="pet_color_black">빈틈없는 블랙</string>
     <string name="pet_color_dynamic">그 외 다양한 색상과 무늬</string>
     <string name="pet_color_dynamic_extra_desc">(검정, 흰색 무늬 포함)</string>
+
+    <string name="pet_photo_upload_introduce_title">사진 업로드</string>
+    <string name="dog_photo_upload_introduce_desc">우리 강아지와 꼭 닮은 프로필을 만들수 있도록, 가이드를 꼭 확인해 주세요.</string>
+    <string name="cat_photo_upload_introduce_desc">우리 고양이와 꼭 닮은 프로필을 만들수 있도록, 가이드를 꼭 확인해 주세요.</string>
+    <string name="pet_photo_upload_bad_example_title">이런 사진은 별로에요</string>
+    <string name="dog_photo_upload_bad_example_desc1">사람과 함께 찍은 사진</string>
+    <string name="dog_photo_upload_bad_example_desc2">얼굴 또는 몸을 가린 사진</string>
+    <string name="dog_photo_upload_bad_example_desc3">다른 강아지와 함께 찍은 사진</string>
+    <string name="dog_photo_upload_bad_example_desc4">너무 멀리서 찍은 사진</string>
+    <string name="pet_photo_upload_good_example_title">이런 사진은 너무 좋아요</string>
+    <string name="dog_photo_upload_good_example_desc1">정면이 잘 나온 사진</string>
+    <string name="dog_photo_upload_good_example_desc2">전신이 잘 나온 사진</string>
+    <string name="dog_photo_upload_good_example_desc3">동일한 강아지 사진 (한 마리)</string>
+    <string name="dog_photo_upload_good_example_desc4">다양한 자세와 각도의 사진</string>
+    <string name="pet_photo_add">사진 추가</string>
 </resources>
