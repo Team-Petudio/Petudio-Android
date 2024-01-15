@@ -101,6 +101,9 @@ private fun ProfileCreationNavHost(
         composable(ProfileCreationScreen.PHOTO_UPLOAD_INTRODUCE.route) {
             PhotoUploadIntroduceScreen(navController = navController)
         }
+        composable(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route) {
+            PhotoUploadResultScreen(navController = navController)
+        }
     }
 }
 

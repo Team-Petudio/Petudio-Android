@@ -45,4 +45,8 @@
     <string name="dog_photo_upload_good_example_desc3">동일한 강아지 사진 (한 마리)</string>
     <string name="dog_photo_upload_good_example_desc4">다양한 자세와 각도의 사진</string>
     <string name="pet_photo_add">사진 추가</string>
+
+    <string name="pet_photo_upload_result_desc">10 ~ 12장의 사진을 선택해주세요.</string>
+    <string name="pet_photo_upload_bad_result_title">사용이 불가능한 사진입니다. 다른 사진으로 선택해 주세요.</string>
+    <string name="pet_photo_upload_good_result_title">사용이 가능한 사진입니다.</string>
 </resources>
