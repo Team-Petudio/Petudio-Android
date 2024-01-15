@@ -104,6 +104,9 @@ private fun ProfileCreationNavHost(
         composable(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route) {
             PhotoUploadResultScreen(navController = navController)
         }
+        composable(ProfileCreationScreen.PAYMENT.route) {
+            PaymentScreen(navController = navController)
+        }
     }
 }
 

@@ -49,4 +49,18 @@
     <string name="pet_photo_upload_result_desc">10 ~ 12장의 사진을 선택해주세요.</string>
     <string name="pet_photo_upload_bad_result_title">사용이 불가능한 사진입니다. 다른 사진으로 선택해 주세요.</string>
     <string name="pet_photo_upload_good_result_title">사용이 가능한 사진입니다.</string>
+
+    <string name="payment">결제하기</string>
+    <string name="payment_standard_title">스탠다드</string>
+    <string name="payment_standard_desc">48시간 이내 AI 프로필 제작</string>
+    <string name="payment_donation_desc">\"결제하신 금액의 일부는 유기견 입양지원에 사용됩니다.\"</string>
+    <string name="goods_information_title">상품 안내</string>
+    <string name="goods_information_desc1">• 구매 결제 완료 후 즉시 AI 결과물(Al 아바타 등을 의미하며, 구체적인 결과물은 개별 Petudio 서비스별로 다름) 생성이 시작되고, 생성된 AI 결과물은 Petudio 모바일 앱에서 확인 및 이용할 수 있습니다.</string>
+    <string name="goods_information_desc2">• 생성된 결과물은 6개월 간 다운로드 가능합니다.</string>
+    <string name="refund_information_title">환불 안내</string>
+    <string name="refund_information_desc1">• 본 상품은 회원의 구매 결제 완료 후 즉시 변환이 이루어지는 상품으로, 구매 결제가 완료되면, 전자상거래법 시행령 제21조(\＇소비자의 주문에 따라 개별적으로 생산되는 재화\＇)에 따라 청약 철회 및 해제(\＇청약철회 등\＇)가 불가합니다.</string>
+    <string name="refund_information_desc2">• 결과물은 AI에 의하여 임의로 생성되므로 회사는 결과물의 품질에 보증할 수 없으며, 이를 이유로 한 환급도 불가합니다.</string>
+    <string name="refund_information_desc3">• 단, 구매한 상품이 회사가 표시, 광고한 내용과 다르거나 계약 내용과 다르게 이행된 경우에는 구매한 날로부터 3개월 이내, 그 사실을 안 날 또는 알 수 있었던 날로부터 30일 이내에 청약철회 등을 할 수 있습니다.</string>
+    <string name="terms_of_use">이용약관</string>
+    <string name="privacy_policy">개인정보 처리방침</string>
 </resources>
