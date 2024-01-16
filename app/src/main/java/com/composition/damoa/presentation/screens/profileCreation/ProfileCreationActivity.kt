@@ -107,6 +107,9 @@ private fun ProfileCreationNavHost(
         composable(ProfileCreationScreen.PAYMENT.route) {
             PaymentScreen(navController = navController)
         }
+        composable(ProfileCreationScreen.PAYMENT_RESULT.route) {
+            PaymentResultScreen(navController = navController)
+        }
     }
 }
 
