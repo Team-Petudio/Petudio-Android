@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -258,7 +259,7 @@ private fun PetFeedItem(
 ) {
     Column(modifier) {
         PetThumbnailImage(thumbnailUrl = petFeed.thumbnailUrl)
-        FeedBody(petFeed)
+        FeedBody(petFeed = petFeed)
         ConceptButton(modifier = Modifier.padding(top = 20.dp), onClick = onClick)
     }
 }
@@ -284,22 +285,26 @@ private fun PetThumbnailImage(
 }
 
 @Composable
-private fun FeedBody(petFeed: PetFeed) {
+private fun FeedBody(
+    modifier: Modifier = Modifier,
+    petFeed: PetFeed,
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
         modifier =
-            Modifier
+            modifier
                 .padding(top = 16.dp)
                 .fillMaxWidth(),
     ) {
         FeedTitle(petFeed)
-        LikeButton(modifier = Modifier, petFeed = petFeed)
+        LikeButton(petFeed = petFeed)
     }
 }
 
 @Composable
 private fun FeedTitle(petFeed: PetFeed) {
-    Column {
+    Column(modifier = Modifier.fillMaxWidth(0.8F)) {
         MediumTitle(title = petFeed.title)
         MediumDescription(
             modifier = Modifier.padding(top = 4.dp),
@@ -310,12 +315,10 @@ private fun FeedTitle(petFeed: PetFeed) {
 
 @Composable
 private fun LikeButton(
-    modifier: Modifier = Modifier,
     petFeed: PetFeed,
     onLikeChanged: (Boolean) -> Unit = {},
 ) {
     IconToggleButton(
-        modifier = modifier,
         checked = petFeed.isLike,
         onCheckedChange = onLikeChanged,
     ) {
