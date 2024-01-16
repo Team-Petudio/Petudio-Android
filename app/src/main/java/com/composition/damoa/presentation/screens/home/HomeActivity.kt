@@ -3,6 +3,7 @@ package com.composition.damoa.presentation.screens.home
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -64,6 +65,7 @@ private fun HomeScreen() {
 }
 
 @Composable
+@OptIn(ExperimentalFoundationApi::class)
 private fun HomeNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
@@ -75,7 +77,38 @@ private fun HomeNavHost(
         startDestination = startDestination,
     ) {
         composable(HomeBottomNavItem.AiProfile.route) { AiProfileScreen() }
-        composable(HomeBottomNavItem.Gallery.route) { GalleryScreen(navController = navController) }
+        composable(HomeBottomNavItem.Gallery.route) {
+            GalleryScreen(
+                navController = navController,
+                petFeeds =
+                    listOf(
+                        PetFeed(
+                            id = 0,
+                            title = "코코",
+                            concept = "트렌디 룩북 컨셉",
+                            isLike = true,
+                            thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                            likeCount = 12300,
+                        ),
+                        PetFeed(
+                            id = 0,
+                            title = "코코",
+                            concept = "트렌디 룩북 컨셉",
+                            isLike = false,
+                            thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                            likeCount = 2122,
+                        ),
+                        PetFeed(
+                            id = 0,
+                            title = "코코",
+                            concept = "트렌디 룩북 컨셉",
+                            isLike = false,
+                            thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                            likeCount = 0,
+                        ),
+                    ),
+            )
+        }
         composable(HomeBottomNavItem.Profile.route) { /* Profile Screen UI */ }
     }
 }

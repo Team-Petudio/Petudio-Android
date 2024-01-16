@@ -68,7 +68,8 @@
     <string name="payment_complete_desc">펫튜디오가 사진을 만들기 시작했어요! 사진이 완성되면 푸시 알림으로 알려드릴게요.</string>
 
     <string name="album">앨범</string>
-    <string name="feed">피드</string>
+    <string name="pet_feed">펫 피드</string>
     <string name="empty_album_content">AI 프로필을\n만들어 보시겠어요?</string>
     <string name="create_ai_profile_button_content">AI 프로필 제작하기</string>
+    <string name="create_profile_as_concept">이 컨셉으로 AI 프로필 생성하기</string>
 </resources>

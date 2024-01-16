@@ -168,10 +168,12 @@ fun TinyTitle(
 fun MediumDescription(
     modifier: Modifier = Modifier,
     @StringRes descriptionRes: Int,
+    fontColor: Color = Gray60,
 ) {
     MediumDescription(
         modifier = modifier,
         description = stringResource(id = descriptionRes),
+        fontColor = fontColor,
     )
 }
 
@@ -179,12 +181,13 @@ fun MediumDescription(
 fun MediumDescription(
     modifier: Modifier = Modifier,
     description: String,
+    fontColor: Color = Gray60,
 ) {
     Text(
         text = description,
         fontSize = 15.sp,
         fontWeight = FontWeight.Normal,
-        color = Gray60,
+        color = fontColor,
         modifier = modifier,
         overflow = TextOverflow.Ellipsis,
     )
