@@ -9,7 +9,7 @@ enum class HomeBottomNavItem(
     @DrawableRes val iconRes: Int,
     @StringRes val labelRes: Int,
 ) {
-    AiProfile("aiProfile", R.drawable.ic_footprint, R.string.home_bottom_nav_item_ai_profile),
+    ProfileConcept("aiProfile", R.drawable.ic_footprint, R.string.home_bottom_nav_item_ai_profile),
     Gallery("gallery", R.drawable.ic_gallery, R.string.home_bottom_nav_item_gallery),
     Profile("profile", R.drawable.ic_profile, R.string.home_bottom_nav_item_profile),
 }

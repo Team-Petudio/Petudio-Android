@@ -69,14 +69,14 @@ private fun HomeScreen() {
 private fun HomeNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = HomeBottomNavItem.AiProfile.route,
+    startDestination: String = HomeBottomNavItem.ProfileConcept.route,
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = startDestination,
     ) {
-        composable(HomeBottomNavItem.AiProfile.route) { AiProfileScreen() }
+        composable(HomeBottomNavItem.ProfileConcept.route) { ProfileConceptScreen() }
         composable(HomeBottomNavItem.Gallery.route) {
             GalleryScreen(
                 navController = navController,

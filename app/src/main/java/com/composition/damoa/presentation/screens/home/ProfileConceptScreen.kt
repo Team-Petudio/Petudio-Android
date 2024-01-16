@@ -42,18 +42,18 @@ import com.composition.damoa.presentation.ui.theme.PrimaryColors
 import com.composition.damoa.presentation.ui.theme.Purple60
 
 @Composable
-fun AiProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileConceptScreen(modifier: Modifier = Modifier) {
     Column {
-        AiProfileTopAppBar()
-        AiConcepts(aiConcepts = AiConcept.dummy(), modifier = modifier.fillMaxSize())
+        ProfileConceptTopAppBar()
+        ProfileConceptList(profileConcepts = ProfileConcept.dummy(), modifier = modifier.fillMaxSize())
     }
 }
 
 @Composable
-private fun AiProfileTopAppBar() {
+private fun ProfileConceptTopAppBar() {
     TopAppBar(
-        title = { AiProfileAppBarTitle() },
-        navigationIcon = { AiProfileAppBarIcon() },
+        title = { ProfileConceptAppBarTitle() },
+        navigationIcon = { ProfileConceptAppBarIcon() },
         backgroundColor = Color.Transparent,
         elevation = 0.dp,
         modifier = Modifier.background(Color.White),
@@ -61,7 +61,7 @@ private fun AiProfileTopAppBar() {
 }
 
 @Composable
-fun AiProfileAppBarTitle(modifier: Modifier = Modifier) {
+fun ProfileConceptAppBarTitle(modifier: Modifier = Modifier) {
     androidx.compose.material3.Text(
         modifier = modifier.offset(x = (-12).dp),
         text = stringResource(id = R.string.en_app_name),
@@ -75,7 +75,7 @@ fun AiProfileAppBarTitle(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AiProfileAppBarIcon() {
+fun ProfileConceptAppBarIcon() {
     Icon(
         painter = painterResource(id = R.drawable.ic_launcher_foreground),
         contentDescription = null,
@@ -84,8 +84,8 @@ fun AiProfileAppBarIcon() {
 }
 
 @Composable
-private fun AiConcepts(
-    aiConcepts: List<AiConcept>,
+private fun ProfileConceptList(
+    profileConcepts: List<ProfileConcept>,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -94,15 +94,15 @@ private fun AiConcepts(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         items(
-            items = aiConcepts,
+            items = profileConcepts,
             key = { aiConcept -> aiConcept.conceptName },
-        ) { aiConcept -> AiConceptItem(aiConcept) }
+        ) { aiConcept -> ProfileConceptItem(aiConcept) }
     }
 }
 
 @Composable
-private fun AiConceptItem(
-    aiConcept: AiConcept,
+private fun ProfileConceptItem(
+    profileConcept: ProfileConcept,
     modifier: Modifier = Modifier,
     onCreationButtonClick: () -> Unit = {},
 ) {
@@ -111,16 +111,16 @@ private fun AiConceptItem(
         elevation = 0.dp,
         modifier = modifier.aspectRatio(5 / 4F),
     ) {
-        AiConceptBackgroundImage(aiConcept)
-        AiConceptContent(aiConcept, onCreationButtonClick)
+        ProfileConceptImage(profileConcept)
+        ProfileContent(profileConcept, onCreationButtonClick)
     }
 }
 
 @Composable
 @OptIn(ExperimentalGlideComposeApi::class)
-private fun AiConceptBackgroundImage(aiConcept: AiConcept) {
+private fun ProfileConceptImage(profileConcept: ProfileConcept) {
     GlideImage(
-        model = aiConcept.conceptImageUrl,
+        model = profileConcept.conceptImageUrl,
         contentDescription = null,
         modifier = Modifier.fillMaxSize(),
         transition = CrossFade,
@@ -129,29 +129,29 @@ private fun AiConceptBackgroundImage(aiConcept: AiConcept) {
 }
 
 @Composable
-private fun AiConceptContent(
-    aiConcept: AiConcept,
+private fun ProfileContent(
+    profileConcept: ProfileConcept,
     onCreationButtonClick: () -> Unit,
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         val animalType =
-            when (aiConcept.animalType) {
+            when (profileConcept.animalType) {
                 AiConceptAnimal.DOG -> stringResource(id = R.string.ai_profile_dog_only)
                 AiConceptAnimal.CAT -> stringResource(id = R.string.ai_profile_cat_only)
             }
 
-        if (aiConcept.isNewConcept) NewConceptBadge(modifier = Modifier.weight(1F))
+        if (profileConcept.isNewConcept) NewConceptBadge(modifier = Modifier.weight(1F))
 
-        ConceptName(aiConcept)
-        ConceptDescription(aiConcept, animalType)
-        AiProfileCreationButton(onCreationButtonClick)
+        ConceptName(profileConcept)
+        ConceptDescription(profileConcept, animalType)
+        ProfileCreationButton(onCreationButtonClick)
     }
 }
 
 @Composable
-private fun ConceptName(aiConcept: AiConcept) {
+private fun ConceptName(profileConcept: ProfileConcept) {
     Text(
-        text = aiConcept.conceptName,
+        text = profileConcept.conceptName,
         color = Color.White,
         fontSize = 24.sp,
         fontWeight = FontWeight.ExtraBold,
@@ -160,11 +160,11 @@ private fun ConceptName(aiConcept: AiConcept) {
 
 @Composable
 private fun ConceptDescription(
-    aiConcept: AiConcept,
+    profileConcept: ProfileConcept,
     animalType: String,
 ) {
     Text(
-        text = "${aiConcept.conceptDescription} | $animalType",
+        text = "${profileConcept.conceptDescription} | $animalType",
         color = Color.White,
         fontSize = 15.sp,
         fontWeight = FontWeight.Normal,
@@ -173,7 +173,7 @@ private fun ConceptDescription(
 }
 
 @Composable
-private fun AiProfileCreationButton(onCreationButtonClick: () -> Unit) {
+private fun ProfileCreationButton(onCreationButtonClick: () -> Unit) {
     Button(
         onClick = onCreationButtonClick,
         modifier =
@@ -216,6 +216,6 @@ private fun NewConceptBadge(modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-private fun AiProfileScreenPreview() {
-    AiProfileScreen()
+private fun ProfileConceptScreenPreview() {
+    ProfileConceptScreen()
 }

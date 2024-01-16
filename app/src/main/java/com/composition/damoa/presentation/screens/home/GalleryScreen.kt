@@ -162,7 +162,7 @@ private fun ContentScreen(
                 AlbumScreen(
                     albums = albums,
                     onAiProfileClick = {
-                        navigateToAiProfileScreen(navController = navController)
+                        navigateToProfileConceptScreen(navController = navController)
                     },
                 )
 
@@ -243,7 +243,7 @@ private fun PetFeedScreen(
                 navigateToProfileCreation(context)
                 scope.launch {
                     delay(500L)
-                    navigateToAiProfileScreen(navController)
+                    navigateToProfileConceptScreen(navController)
                 }
             }
         }
@@ -363,8 +363,8 @@ private fun ConceptButton(
     }
 }
 
-private fun navigateToAiProfileScreen(navController: NavController) {
-    navController.navigate(HomeBottomNavItem.AiProfile.route) {
+private fun navigateToProfileConceptScreen(navController: NavController) {
+    navController.navigate(HomeBottomNavItem.ProfileConcept.route) {
         popUpTo(navController.graph.startDestinationId)
         launchSingleTop = true
     }
