@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,12 +19,17 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,11 +38,49 @@ import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.composition.damoa.R
+import com.composition.damoa.presentation.ui.theme.PrimaryColors
 import com.composition.damoa.presentation.ui.theme.Purple60
 
 @Composable
 fun AiProfileScreen(modifier: Modifier = Modifier) {
-    AiConcepts(aiConcepts = AiConcept.dummy(), modifier = modifier.fillMaxSize())
+    Column {
+        AiProfileTopAppBar()
+        AiConcepts(aiConcepts = AiConcept.dummy(), modifier = modifier.fillMaxSize())
+    }
+}
+
+@Composable
+private fun AiProfileTopAppBar() {
+    TopAppBar(
+        title = { AiProfileAppBarTitle() },
+        navigationIcon = { AiProfileAppBarIcon() },
+        backgroundColor = Color.Transparent,
+        elevation = 0.dp,
+        modifier = Modifier.background(Color.White),
+    )
+}
+
+@Composable
+fun AiProfileAppBarTitle(modifier: Modifier = Modifier) {
+    androidx.compose.material3.Text(
+        modifier = modifier.offset(x = (-12).dp),
+        text = stringResource(id = R.string.en_app_name),
+        style =
+            TextStyle(
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Black,
+                brush = Brush.horizontalGradient(PrimaryColors),
+            ),
+    )
+}
+
+@Composable
+fun AiProfileAppBarIcon() {
+    Icon(
+        painter = painterResource(id = R.drawable.ic_launcher_foreground),
+        contentDescription = null,
+        tint = Color.Unspecified,
+    )
 }
 
 @Composable

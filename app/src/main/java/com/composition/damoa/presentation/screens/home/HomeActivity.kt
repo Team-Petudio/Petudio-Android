@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.TopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -49,13 +48,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun HomeScreen() {
     PetudioTheme {
         val homeNavController = rememberNavController()
 
         Scaffold(
-            topBar = { HomeTopAppBar() },
             bottomBar = { HomeBottomNavigationBar(navController = homeNavController) },
         ) { padding ->
             HomeNavHost(
@@ -84,43 +81,9 @@ private fun HomeNavHost(
         startDestination = startDestination,
     ) {
         composable(HomeBottomNavItem.AiProfile.route) { AiProfileScreen() }
-        composable(HomeBottomNavItem.Gallery.route) { /* Search Screen UI */ }
+        composable(HomeBottomNavItem.Gallery.route) { GalleryScreen() }
         composable(HomeBottomNavItem.Profile.route) { /* Profile Screen UI */ }
     }
-}
-
-@Composable
-private fun HomeTopAppBar() {
-    TopAppBar(
-        title = { HomeAppBarTitle() },
-        navigationIcon = { HomeAppBarIcon() },
-        backgroundColor = Color.Transparent,
-        elevation = 0.dp,
-        modifier = Modifier.background(Color.White),
-    )
-}
-
-@Composable
-fun HomeAppBarTitle(modifier: Modifier = Modifier) {
-    Text(
-        modifier = modifier.offset(x = (-12).dp),
-        text = stringResource(id = R.string.en_app_name),
-        style =
-            TextStyle(
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Black,
-                brush = Brush.horizontalGradient(PrimaryColors),
-            ),
-    )
-}
-
-@Composable
-fun HomeAppBarIcon() {
-    Icon(
-        painter = painterResource(id = R.drawable.ic_launcher_foreground),
-        contentDescription = null,
-        tint = Color.Unspecified,
-    )
 }
 
 @Composable
