@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,11 +54,13 @@ fun MediumTitle(
     modifier: Modifier = Modifier,
     @StringRes titleRes: Int,
     fontColor: Color = Color.Black,
+    textAlign: TextAlign? = null,
 ) {
     MediumTitle(
         modifier = modifier,
         title = stringResource(id = titleRes),
         fontColor = fontColor,
+        textAlign = textAlign,
     )
 }
 
@@ -66,6 +69,7 @@ fun MediumTitle(
     modifier: Modifier = Modifier,
     title: String,
     fontColor: Color = Color.Black,
+    textAlign: TextAlign? = null,
 ) {
     Text(
         text = title,
@@ -74,6 +78,7 @@ fun MediumTitle(
         color = fontColor,
         modifier = modifier,
         overflow = TextOverflow.Ellipsis,
+        textAlign = textAlign,
     )
 }
 

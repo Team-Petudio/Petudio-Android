@@ -20,18 +20,15 @@
             android:name=".presentation.screens.profileCreation.ProfileCreationActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication"
-            android:windowSoftInputMode="adjustResize|stateAlwaysVisible">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
             android:name=".presentation.screens.home.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

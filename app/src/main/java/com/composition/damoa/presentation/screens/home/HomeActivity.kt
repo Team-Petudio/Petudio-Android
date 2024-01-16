@@ -3,26 +3,21 @@ package com.composition.damoa.presentation.screens.home
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.TopAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,7 +30,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
-import com.composition.damoa.presentation.ui.theme.PrimaryColors
 import com.composition.damoa.presentation.ui.theme.Purple60
 
 class MainActivity : ComponentActivity() {
@@ -81,7 +75,7 @@ private fun HomeNavHost(
         startDestination = startDestination,
     ) {
         composable(HomeBottomNavItem.AiProfile.route) { AiProfileScreen() }
-        composable(HomeBottomNavItem.Gallery.route) { GalleryScreen() }
+        composable(HomeBottomNavItem.Gallery.route) { GalleryScreen(navController = navController) }
         composable(HomeBottomNavItem.Profile.route) { /* Profile Screen UI */ }
     }
 }
