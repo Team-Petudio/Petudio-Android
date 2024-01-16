@@ -237,7 +237,7 @@ private fun PetFeedScreen(
     LazyColumn(
         modifier = modifier.padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(28.dp),
-        contentPadding = PaddingValues(bottom = 20.dp),
+        contentPadding = PaddingValues(vertical = 20.dp),
     ) {
         items(petFeeds) { petFeed ->
             PetFeedItem(petFeed = petFeed) {
