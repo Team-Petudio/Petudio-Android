@@ -36,7 +36,6 @@ class ProfileCreationActivity : ComponentActivity() {
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun ProfileCreation() {
     PetudioTheme {
         val activity = LocalContext.current as? Activity
@@ -71,7 +70,7 @@ private fun ProfileCreationTopAppBar(onNavigationClick: () -> Unit = {}) {
                 )
             }
         },
-        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.White),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
     )
 }
 
