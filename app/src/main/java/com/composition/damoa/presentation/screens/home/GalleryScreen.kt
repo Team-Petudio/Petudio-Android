@@ -6,12 +6,13 @@ import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -57,6 +59,7 @@ import com.composition.damoa.R
 import com.composition.damoa.presentation.common.components.GradientButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
+import com.composition.damoa.presentation.common.components.SmallDescription
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationActivity
 import com.composition.damoa.presentation.ui.theme.Gray20
 import com.composition.damoa.presentation.ui.theme.Gray30
@@ -66,12 +69,16 @@ import com.composition.damoa.presentation.ui.theme.Purple60
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 data class Album(
     val id: Int,
     val title: String,
+    val concept: String,
     val thumbnailUrl: String,
     val photoUrls: List<String>,
+    val date: LocalDateTime,
 )
 
 data class PetFeed(
@@ -224,6 +231,101 @@ private fun AlbumListScreen(
     modifier: Modifier = Modifier,
     albums: List<Album>,
 ) {
+    val context = LocalContext.current
+
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(28.dp),
+        contentPadding = PaddingValues(vertical = 20.dp),
+    ) {
+        items(albums) { album ->
+            AlbumItem(album = album) {
+                // TODO("앨범 상세 화면으로 이동")
+            }
+        }
+    }
+}
+
+@Composable
+private fun AlbumItem(
+    modifier: Modifier = Modifier,
+    album: Album,
+    onClick: () -> Unit = {},
+) {
+    Column(
+        modifier =
+            modifier
+                .border(BorderStroke(2.dp, Gray20), RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(12.dp))
+                .clickable { onClick() },
+    ) {
+        AlbumThumbnailImage(thumbnailUrl = album.thumbnailUrl)
+        AlbumBody(modifier = Modifier.padding(bottom = 12.dp), album = album)
+    }
+}
+
+@Composable
+@OptIn(ExperimentalGlideComposeApi::class)
+private fun AlbumThumbnailImage(
+    modifier: Modifier = Modifier,
+    thumbnailUrl: String,
+) {
+    Card(
+        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+        elevation = 0.dp,
+        modifier = modifier.aspectRatio(1F),
+    ) {
+        GlideImage(
+            model = thumbnailUrl,
+            contentDescription = null,
+            transition = CrossFade,
+            contentScale = ContentScale.Crop,
+        )
+    }
+}
+
+@Composable
+private fun AlbumBody(
+    modifier: Modifier = Modifier,
+    album: Album,
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Bottom,
+        modifier =
+            modifier
+                .padding(top = 16.dp, start = 12.dp, end = 12.dp)
+                .fillMaxWidth(),
+    ) {
+        AlbumTitle(album = album)
+        AlbumDate(date = album.date)
+    }
+}
+
+@Composable
+private fun AlbumTitle(
+    modifier: Modifier = Modifier,
+    album: Album,
+) {
+    Column(modifier = modifier.fillMaxWidth(0.7F)) {
+        MediumTitle(title = album.title)
+        MediumDescription(
+            modifier = Modifier.padding(top = 4.dp),
+            description = album.concept,
+        )
+    }
+}
+
+@Composable
+private fun AlbumDate(
+    modifier: Modifier = Modifier,
+    date: LocalDateTime,
+) {
+    val albumDate = date.format(DateTimeFormatter.ofPattern("yyyy. MM. dd"))
+    SmallDescription(
+        modifier = modifier,
+        description = albumDate,
+    )
 }
 
 @Composable
@@ -376,6 +478,27 @@ private fun navigateToProfileConceptScreen(navController: NavController) {
 private fun navigateToProfileCreation(context: Context) {
     (context as Activity).startActivity(
         Intent(context, ProfileCreationActivity::class.java),
+    )
+}
+
+@Preview
+@Composable
+private fun AlbumItemPreview() {
+    AlbumItem(
+        album =
+            Album(
+                id = 0,
+                title = "코코",
+                concept = "트렌디 룩북 컨셉",
+                thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                photoUrls =
+                    listOf(
+                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                    ),
+                date = LocalDateTime.now(),
+            ),
     )
 }
 

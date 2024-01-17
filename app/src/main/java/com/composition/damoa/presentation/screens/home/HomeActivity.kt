@@ -32,6 +32,7 @@ import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.composition.damoa.presentation.ui.theme.Purple60
+import java.time.LocalDateTime
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,6 +106,35 @@ private fun HomeNavHost(
                             isLike = false,
                             thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
                             likeCount = 0,
+                        ),
+                    ),
+                albums =
+                    listOf(
+                        Album(
+                            id = 0,
+                            title = "코코",
+                            concept = "트렌디 룩북 컨셉",
+                            thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                            photoUrls =
+                                listOf(
+                                    "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                                    "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                                    "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                                ),
+                            date = LocalDateTime.now(),
+                        ),
+                        Album(
+                            id = 0,
+                            title = "코코",
+                            concept = "트렌디 룩북 컨셉",
+                            thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                            photoUrls =
+                                listOf(
+                                    "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                                    "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                                    "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                                ),
+                            date = LocalDateTime.now(),
                         ),
                     ),
             )
