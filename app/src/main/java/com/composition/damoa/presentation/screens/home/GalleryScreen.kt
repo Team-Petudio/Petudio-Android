@@ -60,6 +60,7 @@ import com.composition.damoa.presentation.common.components.GradientButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
 import com.composition.damoa.presentation.common.components.SmallDescription
+import com.composition.damoa.presentation.screens.album.AlbumActivity
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationActivity
 import com.composition.damoa.presentation.ui.theme.Gray20
 import com.composition.damoa.presentation.ui.theme.Gray30
@@ -240,7 +241,7 @@ private fun AlbumListScreen(
     ) {
         items(albums) { album ->
             AlbumItem(album = album) {
-                // TODO("앨범 상세 화면으로 이동")
+                context.startActivity(Intent(context, AlbumActivity::class.java))
             }
         }
     }
@@ -476,9 +477,7 @@ private fun navigateToProfileConceptScreen(navController: NavController) {
 }
 
 private fun navigateToProfileCreation(context: Context) {
-    (context as Activity).startActivity(
-        Intent(context, ProfileCreationActivity::class.java),
-    )
+    context.startActivity(Intent(context, ProfileCreationActivity::class.java))
 }
 
 @Preview
