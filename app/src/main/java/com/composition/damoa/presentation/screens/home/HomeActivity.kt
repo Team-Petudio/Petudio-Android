@@ -124,15 +124,15 @@ private fun HomeNavHost(
                             date = LocalDateTime.now(),
                         ),
                         Album(
-                            id = 0,
-                            title = "코코",
+                            id = 1,
+                            title = "루다",
                             concept = "트렌디 룩북 컨셉",
-                            thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                            thumbnailUrl = "https://mblogthumb-phinf.pstatic.net/MjAxODA3MTBfMTY4/MDAxNTMxMjAyODE5MDc2.kVMC7FdEN76iOiSRi672EUoT9bDm6WJnHn0YFIaglo8g.uAQXzhnbWUkd30hXVCQdGhga_J3hJgXdshwo4dM-Awog.JPEG.pp0_0/IMG_0475.jpg?type=w800",
                             photoUrls =
                                 listOf(
-                                    "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                                    "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                                    "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                                    "https://mblogthumb-phinf.pstatic.net/MjAxODA3MTBfMTY4/MDAxNTMxMjAyODE5MDc2.kVMC7FdEN76iOiSRi672EUoT9bDm6WJnHn0YFIaglo8g.uAQXzhnbWUkd30hXVCQdGhga_J3hJgXdshwo4dM-Awog.JPEG.pp0_0/IMG_0475.jpg?type=w800",
+                                    "https://mblogthumb-phinf.pstatic.net/MjAxODA3MTBfMTY4/MDAxNTMxMjAyODE5MDc2.kVMC7FdEN76iOiSRi672EUoT9bDm6WJnHn0YFIaglo8g.uAQXzhnbWUkd30hXVCQdGhga_J3hJgXdshwo4dM-Awog.JPEG.pp0_0/IMG_0475.jpg?type=w800",
+                                    "https://mblogthumb-phinf.pstatic.net/MjAxODA3MTBfMTY4/MDAxNTMxMjAyODE5MDc2.kVMC7FdEN76iOiSRi672EUoT9bDm6WJnHn0YFIaglo8g.uAQXzhnbWUkd30hXVCQdGhga_J3hJgXdshwo4dM-Awog.JPEG.pp0_0/IMG_0475.jpg?type=w800",
                                 ),
                             date = LocalDateTime.now(),
                         ),
