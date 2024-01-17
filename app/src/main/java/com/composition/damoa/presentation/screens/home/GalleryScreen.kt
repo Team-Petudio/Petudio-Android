@@ -1,6 +1,5 @@
 package com.composition.damoa.presentation.screens.home
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.BorderStroke
@@ -59,11 +58,11 @@ import com.composition.damoa.R
 import com.composition.damoa.presentation.common.components.GradientButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
-import com.composition.damoa.presentation.common.components.SmallDescription
 import com.composition.damoa.presentation.screens.album.AlbumActivity
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationActivity
 import com.composition.damoa.presentation.ui.theme.Gray20
 import com.composition.damoa.presentation.ui.theme.Gray30
+import com.composition.damoa.presentation.ui.theme.Gray40
 import com.composition.damoa.presentation.ui.theme.Gray60
 import com.composition.damoa.presentation.ui.theme.PrimaryColors
 import com.composition.damoa.presentation.ui.theme.Purple60
@@ -256,7 +255,7 @@ private fun AlbumItem(
     Column(
         modifier =
             modifier
-                .border(BorderStroke(2.dp, Gray20), RoundedCornerShape(12.dp))
+                .border(BorderStroke(3.dp, Brush.verticalGradient(PrimaryColors)), RoundedCornerShape(12.dp))
                 .clip(RoundedCornerShape(12.dp))
                 .clickable { onClick() },
     ) {
@@ -323,9 +322,10 @@ private fun AlbumDate(
     date: LocalDateTime,
 ) {
     val albumDate = date.format(DateTimeFormatter.ofPattern("yyyy. MM. dd"))
-    SmallDescription(
-        modifier = modifier,
+    MediumDescription(
+        modifier = modifier.padding(top = 4.dp),
         description = albumDate,
+        fontColor = Gray40,
     )
 }
 
