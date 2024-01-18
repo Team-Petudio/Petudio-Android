@@ -46,10 +46,14 @@ import com.composition.damoa.presentation.ui.theme.Gray10
 import com.composition.damoa.presentation.ui.theme.Gray30
 import com.composition.damoa.presentation.ui.theme.Gray40
 
-sealed class Account(val email: String) {
-    class Google(email: String) : Account(email)
-
-    class Apple(email: String) : Account(email)
+data class Account(
+    val email: String,
+    val accountType: AccountType,
+) {
+    enum class AccountType {
+        GOOGLE,
+        APPLE,
+    }
 }
 
 @Composable
@@ -64,7 +68,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
         ProfileTitle()
         UserAccount(
             modifier = Modifier.padding(top = 28.dp),
-            account = Account.Google(email = "petudio@naver.com"),
+            account = Account(email = "petudio@naver.com", accountType = Account.AccountType.GOOGLE),
         )
         SettingList(modifier = Modifier.padding(top = 28.dp))
         Spacer(modifier = Modifier.weight(1F))
@@ -118,9 +122,9 @@ private fun UserAccount(
     modifier: Modifier = Modifier,
     account: Account,
 ) {
-    when (account) {
-        is Account.Google -> GoogleAccount(modifier, account.email)
-        is Account.Apple -> AppleAccount(modifier, account.email)
+    when (account.accountType) {
+        Account.AccountType.GOOGLE -> GoogleAccount(modifier, account.email)
+        Account.AccountType.APPLE -> AppleAccount(modifier, account.email)
     }
 }
 

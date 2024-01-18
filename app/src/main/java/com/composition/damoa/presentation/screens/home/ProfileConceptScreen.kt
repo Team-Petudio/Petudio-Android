@@ -24,12 +24,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,7 +36,7 @@ import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.composition.damoa.R
-import com.composition.damoa.presentation.ui.theme.PrimaryColors
+import com.composition.damoa.presentation.common.components.GradientPetudioTitle
 import com.composition.damoa.presentation.ui.theme.Purple60
 
 @Composable
@@ -52,25 +50,11 @@ fun ProfileConceptScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun ProfileConceptTopAppBar() {
     TopAppBar(
-        title = { ProfileConceptAppBarTitle() },
+        title = { GradientPetudioTitle(modifier = Modifier.offset(x = (-12).dp)) },
         navigationIcon = { ProfileConceptAppBarIcon() },
         backgroundColor = Color.Transparent,
         elevation = 0.dp,
         modifier = Modifier.background(Color.White),
-    )
-}
-
-@Composable
-fun ProfileConceptAppBarTitle(modifier: Modifier = Modifier) {
-    androidx.compose.material3.Text(
-        modifier = modifier.offset(x = (-12).dp),
-        text = stringResource(id = R.string.en_app_name),
-        style =
-            TextStyle(
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Black,
-                brush = Brush.horizontalGradient(PrimaryColors),
-            ),
     )
 }
 
