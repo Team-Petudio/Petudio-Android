@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -85,9 +86,10 @@ private fun LoginForeground() {
 @Composable
 private fun LoginBackground() {
     Box(modifier = Modifier.fillMaxSize()) {
-        val whiteGradientBrush = Brush.verticalGradient(
-            colors = listOf(Color(0x80FFFFFF), Color.White, Color.White)
-        )
+        val whiteGradientBrush =
+            Brush.verticalGradient(
+                colors = listOf(Color(0x80FFFFFF), Color.White, Color.White),
+            )
 
         Image(
             painter = painterResource(id = R.drawable.img_photo_upload_good_example1),
@@ -137,17 +139,19 @@ private fun LoginContent(modifier: Modifier = Modifier) {
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxWidth(0.7F),
         )
-        GradientPetudioTitle(fontSize = 60.sp)
-        GradientPetudioSubTitle(fontSize = 22.sp)
+
+        val offsetModifier = Modifier.offset(y = (-40).dp)
+        GradientPetudioTitle(modifier = offsetModifier, fontSize = 60.sp)
+        GradientPetudioSubTitle(modifier = offsetModifier, fontSize = 22.sp)
         GoogleLoginButton(
             modifier =
-                Modifier
+                offsetModifier
                     .padding(top = 40.dp)
                     .padding(horizontal = 20.dp),
         )
         AppleLoginButton(
             modifier =
-                Modifier
+                offsetModifier
                     .padding(top = 12.dp)
                     .padding(horizontal = 20.dp),
         )
