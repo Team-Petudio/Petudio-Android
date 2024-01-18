@@ -12,6 +12,7 @@ val Gray60 = Color(0xFF8A8A8A)
 val Gray40 = Color(0xFFAFAFAF)
 val Gray30 = Color(0xFFCACACA)
 val Gray20 = Color(0xFFE9E9E9)
+val Gray10 = Color(0xFFF5F5F5)
 
 val AlertIconColor = Color(0xFFAF0000)
 val GoodIconColor = Color(0xFF006304)

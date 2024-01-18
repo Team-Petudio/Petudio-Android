@@ -17,6 +17,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.screens.pointCharge.PointChargeActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.screens.album.AlbumActivity"
             android:exported="false" />
         <activity

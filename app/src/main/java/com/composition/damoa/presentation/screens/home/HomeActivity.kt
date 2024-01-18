@@ -139,7 +139,7 @@ private fun HomeNavHost(
                     ),
             )
         }
-        composable(HomeBottomNavItem.Profile.route) { /* Profile Screen UI */ }
+        composable(HomeBottomNavItem.Profile.route) { ProfileScreen() }
     }
 }
 

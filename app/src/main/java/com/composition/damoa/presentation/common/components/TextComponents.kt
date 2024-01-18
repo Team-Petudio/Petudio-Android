@@ -165,6 +165,35 @@ fun TinyTitle(
 }
 
 @Composable
+fun BigDescription(
+    modifier: Modifier = Modifier,
+    @StringRes descriptionRes: Int,
+    fontColor: Color = Gray60,
+) {
+    BigDescription(
+        modifier = modifier,
+        description = stringResource(id = descriptionRes),
+        fontColor = fontColor,
+    )
+}
+
+@Composable
+fun BigDescription(
+    modifier: Modifier = Modifier,
+    description: String,
+    fontColor: Color = Gray60,
+) {
+    Text(
+        text = description,
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Normal,
+        color = fontColor,
+        modifier = modifier,
+        overflow = TextOverflow.Ellipsis,
+    )
+}
+
+@Composable
 fun MediumDescription(
     modifier: Modifier = Modifier,
     @StringRes descriptionRes: Int,
@@ -197,10 +226,12 @@ fun MediumDescription(
 fun SmallDescription(
     modifier: Modifier = Modifier,
     @StringRes descriptionRes: Int,
+    fontColor: Color = Gray60,
 ) {
     SmallDescription(
         modifier = modifier,
         description = stringResource(id = descriptionRes),
+        fontColor = fontColor,
     )
 }
 
@@ -208,6 +239,7 @@ fun SmallDescription(
 fun SmallDescription(
     modifier: Modifier = Modifier,
     description: String,
+    fontColor: Color = Gray60,
 ) {
     Text(
         text = description,

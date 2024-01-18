@@ -72,6 +72,17 @@
     <string name="empty_album_content">AI 프로필을\n만들어 보시겠어요?</string>
     <string name="create_ai_profile_button_content">AI 프로필 제작하기</string>
     <string name="create_profile_as_concept">이 컨셉으로 AI 프로필 생성하기</string>
-
     <string name="save_all">모두 저장</string>
+
+    <string name="profile_title">내 정보</string>
+    <string name="profile_option_point">포인트 충전</string>
+    <string name="profile_option_question">자주 묻는 질문</string>
+    <string name="profile_option_ask">문의하기</string>
+    <string name="profile_option_terms_of_use">이용약관</string>
+    <string name="profile_option_privacy">개인정보 처리방침</string>
+    <string name="logout">로그아웃</string>
+    <string name="sign_out">회원탈퇴</string>
+
+    <string name="point_charge_title">포인트 충전</string>
+    <string name="my_point">보유 포인트</string>
 </resources>
