@@ -30,6 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
+import com.composition.damoa.presentation.common.components.NetworkErrorScreen
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.composition.damoa.presentation.ui.theme.Purple60
 import java.time.LocalDateTime
@@ -77,7 +78,7 @@ private fun HomeNavHost(
         navController = navController,
         startDestination = startDestination,
     ) {
-        composable(HomeBottomNavItem.ProfileConcept.route) { ProfileConceptScreen() }
+        composable(HomeBottomNavItem.ProfileConcept.route) { NetworkErrorScreen() }
         composable(HomeBottomNavItem.Gallery.route) {
             GalleryScreen(
                 navController = navController,

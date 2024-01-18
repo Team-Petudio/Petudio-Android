@@ -89,4 +89,7 @@
     <string name="my_point">보유 포인트</string>
     <string name="login_with_google">Google로 로그인</string>
     <string name="login_with_apple">Apple로 로그인</string>
+
+    <string name="network_error_occurred">네트워크 연결이 원활하지 않습니다.\n잠시 후 다시 시도해 주세요.</string>
+    <string name="refresh">새로고침</string>
 </resources>

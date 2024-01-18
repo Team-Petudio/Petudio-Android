@@ -198,11 +198,13 @@ fun MediumDescription(
     modifier: Modifier = Modifier,
     @StringRes descriptionRes: Int,
     fontColor: Color = Gray60,
+    textAlign: TextAlign? = null,
 ) {
     MediumDescription(
         modifier = modifier,
         description = stringResource(id = descriptionRes),
         fontColor = fontColor,
+        textAlign = textAlign
     )
 }
 
@@ -211,6 +213,7 @@ fun MediumDescription(
     modifier: Modifier = Modifier,
     description: String,
     fontColor: Color = Gray60,
+    textAlign: TextAlign? = null,
 ) {
     Text(
         text = description,
@@ -219,6 +222,7 @@ fun MediumDescription(
         color = fontColor,
         modifier = modifier,
         overflow = TextOverflow.Ellipsis,
+        textAlign = textAlign,
     )
 }
 
