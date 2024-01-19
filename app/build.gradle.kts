@@ -21,6 +21,7 @@ android {
             useSupportLibrary = true
         }
 
+        resValue("string", "google_client_id", getLocalPropertyValue("google_client_id"))
         resValue("string", "kakao_app_key", getLocalPropertyValue("kakao_app_key"))
         resValue("string", "kakao_scheme", "kakao${getLocalPropertyValue("kakao_app_key")}")
     }
