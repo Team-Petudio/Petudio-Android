@@ -52,6 +52,7 @@ data class Account(
 ) {
     enum class AccountType {
         GOOGLE,
+        KAKAO,
         APPLE,
     }
 }
@@ -124,6 +125,7 @@ private fun UserAccount(
 ) {
     when (account.accountType) {
         Account.AccountType.GOOGLE -> GoogleAccount(modifier, account.email)
+        Account.AccountType.KAKAO -> KakaoAccount(modifier, account.email)
         Account.AccountType.APPLE -> AppleAccount(modifier, account.email)
     }
 }
@@ -136,6 +138,18 @@ private fun GoogleAccount(
     Account(
         modifier = modifier,
         iconRes = R.drawable.ic_account_google,
+        email = email,
+    )
+}
+
+@Composable
+private fun KakaoAccount(
+    modifier: Modifier = Modifier,
+    email: String,
+) {
+    Account(
+        modifier = modifier,
+        iconRes = R.drawable.ic_account_kakao,
         email = email,
     )
 }

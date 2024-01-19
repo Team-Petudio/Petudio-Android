@@ -22,7 +22,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -77,8 +79,11 @@ private fun LoginScreen(modifier: Modifier = Modifier) {
 
 @Composable
 private fun LoginForeground() {
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.fillMaxHeight(0.3F))
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Spacer(modifier = Modifier.fillMaxHeight(0.25F))
         LoginContent()
     }
 }
@@ -95,9 +100,9 @@ private fun LoginBackground() {
             painter = painterResource(id = R.drawable.img_photo_upload_good_example1),
             contentDescription = null,
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1F),
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(1F),
             contentScale = ContentScale.Crop,
         )
         Box(
@@ -130,7 +135,7 @@ private fun LoginTopBar(onNavigationClick: () -> Unit = {}) {
 @Composable
 private fun LoginContent(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
@@ -147,6 +152,12 @@ private fun LoginContent(modifier: Modifier = Modifier) {
             modifier =
                 offsetModifier
                     .padding(top = 40.dp)
+                    .padding(horizontal = 20.dp),
+        )
+        KakaoLoginButton(
+            modifier =
+                offsetModifier
+                    .padding(top = 12.dp)
                     .padding(horizontal = 20.dp),
         )
         AppleLoginButton(
@@ -168,6 +179,19 @@ private fun GoogleLoginButton(
         onClick = { onClick(Account.AccountType.GOOGLE) },
         textRes = R.string.login_with_google,
         iconRes = R.drawable.ic_account_google,
+    )
+}
+
+@Composable
+private fun KakaoLoginButton(
+    modifier: Modifier = Modifier,
+    onClick: (Account.AccountType) -> Unit = {},
+) {
+    LoginButton(
+        modifier = modifier,
+        onClick = { onClick(Account.AccountType.KAKAO) },
+        textRes = R.string.login_with_kakao,
+        iconRes = R.drawable.ic_account_kakao,
     )
 }
 
