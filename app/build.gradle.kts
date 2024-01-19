@@ -87,4 +87,8 @@ dependencies {
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
     implementation("com.airbnb.android:lottie-compose:6.3.0")
     implementation("com.kakao.sdk:v2-user:2.10.0")
+    implementation("com.google.gms:google-services:4.4.0")
+    implementation("com.google.firebase:firebase-auth:22.3.1")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
 }
