@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -18,6 +20,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        resValue("string", "kakao_app_key", getLocalPropertyValue("kakao_app_key"))
+        resValue("string", "kakao_scheme", "kakao${getLocalPropertyValue("kakao_app_key")}")
     }
 
     buildTypes {
@@ -27,6 +32,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -47,6 +53,10 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+
+fun getLocalPropertyValue(propertyKey: String): String {
+    return gradleLocalProperties(rootDir).getProperty(propertyKey)
 }
 
 dependencies {
@@ -76,4 +86,5 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
     implementation("com.airbnb.android:lottie-compose:6.3.0")
+    implementation("com.kakao.sdk:v2-user:2.10.0")
 }
