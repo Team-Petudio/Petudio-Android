@@ -107,9 +107,9 @@ private fun LoginBackground() {
         )
         Box(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(whiteGradientBrush),
+            Modifier
+                .fillMaxSize()
+                .background(whiteGradientBrush),
         )
     }
 }
@@ -135,7 +135,9 @@ private fun LoginTopBar(onNavigationClick: () -> Unit = {}) {
 @Composable
 private fun LoginContent(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
@@ -150,21 +152,21 @@ private fun LoginContent(modifier: Modifier = Modifier) {
         GradientPetudioSubTitle(modifier = offsetModifier, fontSize = 22.sp)
         GoogleLoginButton(
             modifier =
-                offsetModifier
-                    .padding(top = 40.dp)
-                    .padding(horizontal = 20.dp),
+            offsetModifier
+                .padding(top = 40.dp)
+                .padding(horizontal = 20.dp),
         )
         KakaoLoginButton(
             modifier =
-                offsetModifier
-                    .padding(top = 12.dp)
-                    .padding(horizontal = 20.dp),
+            offsetModifier
+                .padding(top = 12.dp)
+                .padding(horizontal = 20.dp),
         )
         AppleLoginButton(
             modifier =
-                offsetModifier
-                    .padding(top = 12.dp)
-                    .padding(horizontal = 20.dp),
+            offsetModifier
+                .padding(top = 12.dp)
+                .padding(horizontal = 20.dp),
         )
     }
 }

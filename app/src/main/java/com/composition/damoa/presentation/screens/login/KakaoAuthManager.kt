@@ -8,10 +8,11 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 
 class KakaoAuthManager {
+    private var successCallback: (accessToken: String) -> Unit = {}
     private val loginCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         when {
             error != null -> Log.d("buna", "로그인 실패 $error")
-            token != null -> Log.d("buna", "로그인 성공 ${token.accessToken}")
+            token != null -> successCallback(token.accessToken)
         }
     }
 
@@ -19,6 +20,7 @@ class KakaoAuthManager {
         context: Context,
         onSuccess: (accessToken: String) -> Unit,
     ) {
+        successCallback = onSuccess
         val userApiClientInstance = UserApiClient.instance
 
         if (!isKakaoTalkLoginAvailable(context)) {
@@ -42,10 +44,12 @@ class KakaoAuthManager {
         context: Context,
         error: Throwable,
     ) {
-        Log.d("buna", "로그인 실패 $error")
-        // 사용자 취소로 인한 종료
-        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) return
+        if (isUserCancelled(error)) return
         loginWithKakaoAccount(context) // 카카오 이메일 로그인
+    }
+
+    private fun isUserCancelled(error: Throwable): Boolean {
+        return error is ClientError && error.reason == ClientErrorCause.Cancelled
     }
 
     private fun loginWithKakaoAccount(context: Context) {

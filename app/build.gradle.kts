@@ -21,34 +21,57 @@ android {
             useSupportLibrary = true
         }
 
-        resValue("string", "google_client_id", getLocalPropertyValue("google_client_id"))
         resValue("string", "kakao_app_key", getLocalPropertyValue("kakao_app_key"))
         resValue("string", "kakao_scheme", "kakao${getLocalPropertyValue("kakao_app_key")}")
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file(getLocalPropertyValue("SIGNED_STORE_FILE"))
+            storePassword = getLocalPropertyValue("SIGNED_STORE_PASSWORD")
+            keyAlias = getLocalPropertyValue("SIGNED_KEY_ALIAS")
+            keyPassword = getLocalPropertyValue("SIGNED_KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
-        release {
+        debug {
             isMinifyEnabled = false
+            isDebuggable = true
+            signingConfig = signingConfigs.getByName("debug")
+
+            resValue("string", "google_client_id", getLocalPropertyValue("google_client_id_debug"))
+        }
+        release {
+            isShrinkResources = true
+            isMinifyEnabled = true
+            isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
+            resValue("string", "google_client_id", getLocalPropertyValue("google_client_id_release"))
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
     buildFeatures {
         compose = true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -87,7 +110,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
     implementation("com.airbnb.android:lottie-compose:6.3.0")
-    implementation("com.kakao.sdk:v2-user:2.10.0")
+    implementation("com.kakao.sdk:v2-user:2.19.0")
     implementation("com.google.gms:google-services:4.4.0")
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
