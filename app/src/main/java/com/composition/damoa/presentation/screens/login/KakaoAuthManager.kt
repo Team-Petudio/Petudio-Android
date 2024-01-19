@@ -7,7 +7,7 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 
-class KakaoAutoManager {
+class KakaoAuthManager {
     private val loginCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         when {
             error != null -> Log.d("buna", "로그인 실패 $error")
