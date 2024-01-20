@@ -162,12 +162,6 @@ private fun LoginContent(modifier: Modifier = Modifier) {
                 .padding(top = 12.dp)
                 .padding(horizontal = 20.dp),
         )
-        AppleLoginButton(
-            modifier =
-            offsetModifier
-                .padding(top = 12.dp)
-                .padding(horizontal = 20.dp),
-        )
     }
 }
 
@@ -194,19 +188,6 @@ private fun KakaoLoginButton(
         onClick = { onClick(Account.AccountType.KAKAO) },
         textRes = R.string.login_with_kakao,
         iconRes = R.drawable.ic_account_kakao,
-    )
-}
-
-@Composable
-private fun AppleLoginButton(
-    modifier: Modifier = Modifier,
-    onClick: (Account.AccountType) -> Unit = {},
-) {
-    LoginButton(
-        modifier = modifier,
-        onClick = { onClick(Account.AccountType.APPLE) },
-        textRes = R.string.login_with_apple,
-        iconRes = R.drawable.ic_account_apple,
     )
 }
 
