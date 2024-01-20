@@ -22,6 +22,7 @@ android {
             useSupportLibrary = true
         }
 
+        resValue("string", "google_client_id", getLocalPropertyValue("google_client_id"))
         resValue("string", "kakao_app_key", getLocalPropertyValue("kakao_app_key"))
         resValue("string", "kakao_scheme", "kakao${getLocalPropertyValue("kakao_app_key")}")
     }
@@ -40,8 +41,6 @@ android {
             isMinifyEnabled = false
             isDebuggable = true
             signingConfig = signingConfigs.getByName("debug")
-
-            resValue("string", "google_client_id", getLocalPropertyValue("google_client_id_debug"))
         }
         release {
             isShrinkResources = true
@@ -52,7 +51,6 @@ android {
                 "proguard-rules.pro",
             )
             signingConfig = signingConfigs.getByName("release")
-            resValue("string", "google_client_id", getLocalPropertyValue("google_client_id_release"))
         }
     }
 
