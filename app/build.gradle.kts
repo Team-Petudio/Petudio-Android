@@ -53,6 +53,11 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
     }
+    packaging {
+        resources {
+            excludes += "/META-INF/DEPENDENCIES"
+        }
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -69,12 +74,6 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
-    }
-
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
     }
 }
 
@@ -114,4 +113,5 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
 }
