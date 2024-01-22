@@ -55,6 +55,14 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".presentation.service.fcm.PetudioFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />

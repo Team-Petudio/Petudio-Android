@@ -93,4 +93,7 @@
 
     <string name="network_error_occurred">네트워크 연결이 원활하지 않습니다.\n잠시 후 다시 시도해 주세요.</string>
     <string name="refresh">새로고침</string>
+
+    <string name="channel_name_profile_complete">프로필 생성 알림 채널</string>
+    <string name="channel_desc_profile_complete">프로필 생성이 완료되면 푸시 알림을 보내드려요!</string>
 </resources>
