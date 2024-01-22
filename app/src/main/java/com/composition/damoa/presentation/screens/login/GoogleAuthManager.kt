@@ -20,7 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class GoogleAuthManager(
-    activity: ComponentActivity,
+    private val activity: ComponentActivity,
     private val googleRepository: GoogleRepository,
 ) {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -31,16 +31,10 @@ class GoogleAuthManager(
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
         handleSignInResult(task)
     }
-    private lateinit var context: Context
 
-    fun login(
-        context: Context,
-        onSuccess: (accessToken: String) -> Unit,
-    ) {
-        this.context = context
-
+    fun login(onSuccess: (accessToken: String) -> Unit) {
         successCallback = onSuccess
-        with(getGoogleClient(context)) {
+        with(getGoogleClient(activity)) {
             signOut().addOnCompleteListener {
                 resultLauncher.launch(signInIntent)
             }
@@ -62,15 +56,10 @@ class GoogleAuthManager(
             val authCode = requireNotNull(account.serverAuthCode)
             val credential = GoogleAuthProvider.getCredential(account.idToken, null)
             auth.signInWithCredential(credential).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val token = googleRepository.getAccessToken(authCode, clientId, clientSecret)
-                        if (token is Success) {
-                            val a = token.data
-                            Log.d("buna", "token : $a")
-                            successCallback(a)
-                        }
-                    }
+                if (!task.isSuccessful) return@addOnCompleteListener
+                CoroutineScope(Dispatchers.IO).launch {
+                    val token = googleRepository.getAccessToken(authCode, clientId, clientSecret)
+                    if (token is Success) successCallback(token.data)
                 }
             }
         } catch (e: Exception) {

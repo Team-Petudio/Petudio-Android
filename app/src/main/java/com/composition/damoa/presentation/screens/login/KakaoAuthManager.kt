@@ -7,7 +7,7 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 
-class KakaoAuthManager {
+class KakaoAuthManager(private val context: Context) {
     private var successCallback: (accessToken: String) -> Unit = {}
     private val loginCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         when {
@@ -16,10 +16,7 @@ class KakaoAuthManager {
         }
     }
 
-    fun login(
-        context: Context,
-        onSuccess: (accessToken: String) -> Unit,
-    ) {
+    fun login(onSuccess: (accessToken: String) -> Unit) {
         successCallback = onSuccess
         val userApiClientInstance = UserApiClient.instance
 

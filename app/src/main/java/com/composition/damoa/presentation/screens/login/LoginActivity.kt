@@ -3,7 +3,6 @@ package com.composition.damoa.presentation.screens.login
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
@@ -49,9 +48,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
-import com.composition.damoa.data.common.retrofit.ServiceFactory
-import com.composition.damoa.data.repository.GoogleRepository
-import com.composition.damoa.data.service.GoogleService
 import com.composition.damoa.presentation.common.components.GradientPetudioSubTitle
 import com.composition.damoa.presentation.common.components.GradientPetudioTitle
 import com.composition.damoa.presentation.common.components.MediumDescription
@@ -61,11 +57,7 @@ import com.composition.damoa.presentation.ui.theme.Gray20
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val googleService = ServiceFactory().create(GoogleService::class.java, GoogleService.BASE_URL)
-        val googleRepository = GoogleRepository(googleService)
-        GoogleAuthManager(this, googleRepository).login(this) { accessToken ->
-            Log.d("buna", "accessToken : $accessToken")
-        }
+
         setContent {
             LoginScreen()
         }
