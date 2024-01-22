@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -21,8 +22,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
         resValue("string", "google_client_id", getLocalPropertyValue("google_client_id"))
+        resValue("string", "google_client_secret", getLocalPropertyValue("google_client_secret"))
         resValue("string", "kakao_app_key", getLocalPropertyValue("kakao_app_key"))
         resValue("string", "kakao_scheme", "kakao${getLocalPropertyValue("kakao_app_key")}")
     }
@@ -113,5 +114,15 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
+
+    // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    // Kotlinx-Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+
+    // OkHttp3
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.2")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
 }
