@@ -1,13 +1,15 @@
-package com.composition.damoa.data.repository
+package com.composition.damoa.data.repository.concretes
 
 import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
 import com.composition.damoa.data.dto.request.GoogleLoginRequest
+import com.composition.damoa.data.repository.interfaces.GoogleRepository
 import com.composition.damoa.data.service.GoogleService
+import javax.inject.Inject
 
-class GoogleRepository(
+class DefaultGoogleRepository @Inject constructor(
     private val service: GoogleService,
-) {
-    suspend fun getAccessToken(
+) : GoogleRepository {
+    override suspend fun getAccessToken(
         authCode: String,
         clientId: String,
         clientSecret: String,

@@ -5,6 +5,7 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
@@ -48,25 +49,93 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
+import com.composition.damoa.data.model.Account.SocialType
+import com.composition.damoa.di.other.GoogleAuth
+import com.composition.damoa.di.other.KakaoAuth
+import com.composition.damoa.presentation.common.base.BaseUiState.State
 import com.composition.damoa.presentation.common.components.GradientPetudioSubTitle
 import com.composition.damoa.presentation.common.components.GradientPetudioTitle
 import com.composition.damoa.presentation.common.components.MediumDescription
-import com.composition.damoa.presentation.screens.home.Account
+import com.composition.damoa.presentation.common.extensions.repeatOnStarted
+import com.composition.damoa.presentation.common.extensions.showToast
+import com.composition.damoa.presentation.screens.login.authManager.AuthManager
+import com.composition.damoa.presentation.screens.login.state.LoginUiEvent
 import com.composition.damoa.presentation.ui.theme.Gray20
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
+    private val viewModel: LoginViewModel by viewModels()
+
+    @GoogleAuth
+    @Inject
+    lateinit var googleAuthManager: AuthManager
+
+    @KakaoAuth
+    @Inject
+    lateinit var kakaoAuthManager: AuthManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
-            LoginScreen()
+            LoginScreen(onLogin = ::login)
+        }
+        collect()
+    }
+
+    private fun collect() {
+        collectLoginUiState()
+        collectLoginUiEvent()
+    }
+
+    private fun collectLoginUiState() {
+        repeatOnStarted {
+            viewModel.loginUiState.collectLatest { uiState ->
+                when (uiState.state) {
+                    State.NONE -> Unit
+                    State.LOADING -> Unit
+                    State.SUCCESS -> Unit
+                }
+            }
+        }
+    }
+
+    private fun collectLoginUiEvent() {
+        repeatOnStarted {
+            viewModel.loginUiEvent.collectLatest { uiEvent ->
+                when (uiEvent) {
+                    LoginUiEvent.NONE -> Unit
+                    LoginUiEvent.LOGIN_FAILURE -> showToast(R.string.login_failure_message)
+                }
+            }
+        }
+    }
+
+    private fun login(socialType: SocialType) {
+        when (socialType) {
+            SocialType.GOOGLE -> googleAuthManager.login(
+                onSuccess = { accessToken, fcmToken -> viewModel.login(SocialType.GOOGLE, accessToken, fcmToken) },
+                onFailure = { showToast(R.string.login_failure_message) }
+            )
+
+            SocialType.KAKAO -> kakaoAuthManager.login(
+                onSuccess = { accessToken, fcmToken -> viewModel.login(SocialType.KAKAO, accessToken, fcmToken) },
+                onFailure = { showToast(R.string.login_failure_message) }
+            )
+
+            SocialType.APPLE -> Unit
         }
     }
 }
 
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-private fun LoginScreen(modifier: Modifier = Modifier) {
+private fun LoginScreen(
+    modifier: Modifier = Modifier,
+    onLogin: (SocialType) -> Unit = {},
+) {
     val context = LocalContext.current
 
     Scaffold(
@@ -74,18 +143,20 @@ private fun LoginScreen(modifier: Modifier = Modifier) {
         topBar = { LoginTopBar { (context as? Activity)?.finish() } },
     ) {
         LoginBackground()
-        LoginForeground()
+        LoginForeground(onLogin = onLogin)
     }
 }
 
 @Composable
-private fun LoginForeground() {
+private fun LoginForeground(
+    onLogin: (SocialType) -> Unit,
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = Modifier.fillMaxHeight(0.25F))
-        LoginContent()
+        LoginContent(onLogin = onLogin)
     }
 }
 
@@ -134,7 +205,10 @@ private fun LoginTopBar(onNavigationClick: () -> Unit = {}) {
 }
 
 @Composable
-private fun LoginContent(modifier: Modifier = Modifier) {
+private fun LoginContent(
+    modifier: Modifier = Modifier,
+    onLogin: (SocialType) -> Unit,
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -152,16 +226,16 @@ private fun LoginContent(modifier: Modifier = Modifier) {
         GradientPetudioTitle(modifier = offsetModifier, fontSize = 60.sp)
         GradientPetudioSubTitle(modifier = offsetModifier, fontSize = 22.sp)
         GoogleLoginButton(
-            modifier =
-            offsetModifier
+            modifier = offsetModifier
                 .padding(top = 40.dp)
                 .padding(horizontal = 20.dp),
+            onClick = onLogin,
         )
         KakaoLoginButton(
-            modifier =
-            offsetModifier
+            modifier = offsetModifier
                 .padding(top = 12.dp)
                 .padding(horizontal = 20.dp),
+            onClick = onLogin,
         )
     }
 }
@@ -169,11 +243,11 @@ private fun LoginContent(modifier: Modifier = Modifier) {
 @Composable
 private fun GoogleLoginButton(
     modifier: Modifier = Modifier,
-    onClick: (Account.AccountType) -> Unit = {},
+    onClick: (SocialType) -> Unit = {},
 ) {
     LoginButton(
         modifier = modifier,
-        onClick = { onClick(Account.AccountType.GOOGLE) },
+        onClick = { onClick(SocialType.GOOGLE) },
         textRes = R.string.login_with_google,
         iconRes = R.drawable.ic_account_google,
     )
@@ -182,11 +256,11 @@ private fun GoogleLoginButton(
 @Composable
 private fun KakaoLoginButton(
     modifier: Modifier = Modifier,
-    onClick: (Account.AccountType) -> Unit = {},
+    onClick: (SocialType) -> Unit = {},
 ) {
     LoginButton(
         modifier = modifier,
-        onClick = { onClick(Account.AccountType.KAKAO) },
+        onClick = { onClick(SocialType.KAKAO) },
         textRes = R.string.login_with_kakao,
         iconRes = R.drawable.ic_account_kakao,
     )

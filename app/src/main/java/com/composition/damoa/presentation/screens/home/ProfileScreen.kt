@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
+import com.composition.damoa.data.model.Account
 import com.composition.damoa.presentation.common.components.BigDescription
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.MediumDescription
@@ -46,15 +47,6 @@ import com.composition.damoa.presentation.ui.theme.Gray10
 import com.composition.damoa.presentation.ui.theme.Gray30
 import com.composition.damoa.presentation.ui.theme.Gray40
 
-data class Account(
-    val email: String,
-    val accountType: AccountType,
-) {
-    enum class AccountType {
-        GOOGLE,
-        KAKAO,
-    }
-}
 
 @Composable
 fun ProfileScreen(modifier: Modifier = Modifier) {
@@ -68,7 +60,10 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
         ProfileTitle()
         UserAccount(
             modifier = Modifier.padding(top = 28.dp),
-            account = Account(email = "petudio@naver.com", accountType = Account.AccountType.GOOGLE),
+            account = com.composition.damoa.data.model.Account(
+                email = "petudio@naver.com",
+                socialType = Account.SocialType.GOOGLE
+            ),
         )
         SettingList(modifier = Modifier.padding(top = 28.dp))
         Spacer(modifier = Modifier.weight(1F))
@@ -84,9 +79,9 @@ private fun LogoutButton(
 ) {
     OutlinedButton(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .height(48.dp),
+        modifier
+            .fillMaxWidth()
+            .height(48.dp),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, Gray30),
         onClick = onClick,
@@ -122,9 +117,10 @@ private fun UserAccount(
     modifier: Modifier = Modifier,
     account: Account,
 ) {
-    when (account.accountType) {
-        Account.AccountType.GOOGLE -> GoogleAccount(modifier, account.email)
-        Account.AccountType.KAKAO -> KakaoAccount(modifier, account.email)
+    when (account.socialType) {
+        Account.SocialType.GOOGLE -> GoogleAccount(modifier, account.email)
+        Account.SocialType.KAKAO -> KakaoAccount(modifier, account.email)
+        Account.SocialType.APPLE -> Unit
     }
 }
 
@@ -160,12 +156,12 @@ private fun Account(
 ) {
     Row(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(Gray10)
-                .padding(horizontal = 12.dp),
+        modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(Gray10)
+            .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
@@ -303,13 +299,13 @@ private fun SettingOptionItem(
 ) {
     Row(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .clickable(onClick = onClick)
-                .background(Gray10)
-                .padding(vertical = 12.dp, horizontal = 16.dp),
+        modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(onClick = onClick)
+            .background(Gray10)
+            .padding(vertical = 12.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
