@@ -3,9 +3,8 @@ package com.composition.damoa.data.dataSource.local.concretes
 import android.content.SharedPreferences
 import com.composition.damoa.data.dataSource.local.interfaces.TokenDataSource
 import com.composition.damoa.data.model.User
-import javax.inject.Inject
 
-class DefaultTokenDataSource @Inject constructor(
+class DefaultTokenDataSource(
     private val preference: SharedPreferences,
 ) : TokenDataSource {
     private val preferenceEditor = preference.edit()
@@ -31,6 +30,7 @@ class DefaultTokenDataSource @Inject constructor(
     }
 
     companion object {
+        const val PETUDIO_PREF_KEY = "petudio"
         private const val TOKEN_FORMAT = "Bearer %s"
 
         private const val ACCESS_TOKEN_KEY = "access_token_key"

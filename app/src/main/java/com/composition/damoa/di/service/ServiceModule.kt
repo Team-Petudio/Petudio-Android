@@ -1,26 +1,40 @@
 package com.composition.damoa.di.service
 
-import com.composition.damoa.data.common.retrofit.ServiceFactory
+import com.composition.damoa.data.common.retrofit.serviceFactory.ServiceFactory
 import com.composition.damoa.data.service.GoogleService
+import com.composition.damoa.data.service.TokenService
 import com.composition.damoa.data.service.UserService
+import com.composition.damoa.di.other.ServiceFactoryWithAuthQualifier
+import com.composition.damoa.di.other.ServiceFactoryWithoutAuthQualifier
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class ServiceModule {
     @Provides
+    @Singleton
     fun provideGoogleService(
-        serviceFactory: ServiceFactory,
+        @ServiceFactoryWithoutAuthQualifier serviceFactory: ServiceFactory,
     ): GoogleService = serviceFactory.create(
         service = GoogleService::class.java,
         baseUrl = GoogleService.BASE_URL,
     )
 
     @Provides
+    @Singleton
     fun provideUserService(
-        serviceFactory: ServiceFactory,
+        @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
     ): UserService = serviceFactory.create(UserService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTokenService(
+        @ServiceFactoryWithoutAuthQualifier serviceFactory: ServiceFactory,
+    ): TokenService = serviceFactory.create(
+        service = TokenService::class.java,
+    )
 }
