@@ -51,6 +51,7 @@ class GoogleAuthManager @Inject constructor(
         val googleSignInClientOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(clientId)
             .requestServerAuthCode(clientId)
+            .requestEmail()
             .build()
 
         return GoogleSignIn.getClient(context, googleSignInClientOptions)
