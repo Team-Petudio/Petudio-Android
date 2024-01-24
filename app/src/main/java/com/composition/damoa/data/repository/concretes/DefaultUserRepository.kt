@@ -5,6 +5,7 @@ import com.composition.damoa.data.common.retrofit.callAdapter.Failure
 import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
+import com.composition.damoa.data.dataSource.local.interfaces.TokenDataSource
 import com.composition.damoa.data.dto.request.LoginRequest
 import com.composition.damoa.data.model.User
 import com.composition.damoa.data.repository.interfaces.UserRepository
@@ -15,14 +16,21 @@ import javax.inject.Inject
 
 class DefaultUserRepository @Inject constructor(
     private val userService: UserService,
+    private val tokenDataSource: TokenDataSource,
 ) : UserRepository {
+
     override suspend fun login(
         socialType: User.SocialType,
         accessToken: String,
         fcmToken: String,
     ): ApiResponse<User.Token> =
         when (val loginResult = userService.login(LoginRequest(socialType, accessToken, fcmToken))) {
-            is Success -> Success(parseToken(loginResult.headers))
+            is Success -> {
+                val token = parseToken(loginResult.headers)
+                tokenDataSource.saveToken(token)
+                Success(token)
+            }
+
             is Failure -> Failure(loginResult.code, loginResult.message)
             NetworkError -> NetworkError
             is Unexpected -> Unexpected(loginResult.error)
