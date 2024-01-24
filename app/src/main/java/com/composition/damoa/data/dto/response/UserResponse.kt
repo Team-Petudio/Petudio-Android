@@ -1,13 +1,16 @@
-package com.composition.damoa.data.model
+package com.composition.damoa.data.dto.response
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-data class User(
-    val email: String,
+@Serializable
+data class UserResponse(
     val socialType: SocialType,
-    val point: Int,
-    val token: Token = Token(),
+    val email: String,
+    val notificationStatus: Boolean,
+    val pointAmount: Int,
 ) {
+
     enum class SocialType {
         @SerialName("GOOGLE")
         GOOGLE,
@@ -18,9 +21,4 @@ data class User(
         @SerialName("APPLE")
         APPLE,
     }
-
-    data class Token(
-        val accessToken: String = "",
-        val refreshToken: String = "",
-    )
 }

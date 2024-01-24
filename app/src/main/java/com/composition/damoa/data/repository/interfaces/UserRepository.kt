@@ -11,4 +11,6 @@ interface UserRepository {
     ): ApiResponse<User.Token>
 
     suspend fun logout(): ApiResponse<Unit>
+
+    suspend fun getUser(): ApiResponse<User>
 }

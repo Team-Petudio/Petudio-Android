@@ -7,6 +7,7 @@ import com.composition.damoa.data.common.retrofit.callAdapter.Success
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.common.utils.TokenParser
 import com.composition.damoa.data.dto.request.LoginRequest
+import com.composition.damoa.data.mapper.toDomain
 import com.composition.damoa.data.model.User
 import com.composition.damoa.data.repository.interfaces.TokenRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
@@ -36,13 +37,11 @@ class DefaultUserRepository(
         }
 
     override suspend fun logout(): ApiResponse<Unit> {
-        return when (val logoutResult = userService.logout()) {
-            is Success -> {
-                tokenRepository.deleteToken()
-                Success(Unit)
-            }
+        return userService.logout().map { tokenRepository.deleteToken() }
+    }
 
-            else -> logoutResult
-        }
+    override suspend fun getUser(): ApiResponse<User> {
+        val token = tokenRepository.getToken()
+        return userService.getUser().map { it.data.toDomain(token) }
     }
 }

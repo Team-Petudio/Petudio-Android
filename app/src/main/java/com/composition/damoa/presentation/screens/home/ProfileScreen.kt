@@ -62,7 +62,8 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(top = 28.dp),
             user = User(
                 email = "petudio@naver.com",
-                socialType = User.SocialType.GOOGLE
+                socialType = User.SocialType.GOOGLE,
+                point = 0,
             ),
         )
         SettingList(modifier = Modifier.padding(top = 28.dp))
