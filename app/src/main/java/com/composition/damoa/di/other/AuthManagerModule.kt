@@ -1,7 +1,7 @@
 package com.composition.damoa.di.other
 
 import android.content.Context
-import com.composition.damoa.data.repository.concretes.DefaultGoogleRepository
+import com.composition.damoa.data.repository.interfaces.GoogleRepository
 import com.composition.damoa.presentation.screens.login.authManager.AuthManager
 import com.composition.damoa.presentation.screens.login.authManager.GoogleAuthManager
 import com.composition.damoa.presentation.screens.login.authManager.KakaoAuthManager
@@ -22,7 +22,7 @@ class AuthManagerModule {
     @ActivityScoped
     fun provideGoogleAuthManager(
         @ActivityContext context: Context,
-        googleRepository: DefaultGoogleRepository,
+        googleRepository: GoogleRepository,
     ): AuthManager = GoogleAuthManager(context, googleRepository)
 
     @KakaoAuth

@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import com.composition.damoa.R
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
-import com.composition.damoa.data.repository.concretes.DefaultGoogleRepository
+import com.composition.damoa.data.repository.interfaces.GoogleRepository
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 class GoogleAuthManager @Inject constructor(
     private val context: Context,
-    private val googleRepository: DefaultGoogleRepository,
+    private val googleRepository: GoogleRepository,
 ) : AuthManager() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val clientId = context.getString(R.string.google_client_id)
