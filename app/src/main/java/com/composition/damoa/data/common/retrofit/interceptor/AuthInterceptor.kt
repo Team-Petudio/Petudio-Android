@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
 import com.composition.damoa.data.repository.interfaces.TokenRepository
-import com.composition.damoa.presentation.screens.login.LoginActivity
+import com.composition.damoa.presentation.screens.pointCharge.PointChargeActivity
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -16,12 +16,12 @@ class AuthInterceptor(
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = tokenRepository.getToken()
-        val response = chain.proceedWithToken(token.accessToken)
+        val response = chain.proceedWithToken(TOKEN_FORMAT.format(token.accessToken))
 
         var newResponse = response
         if (response.isInvalidToken()) {
             reissueToken(
-                onSuccess = { newAccessToken -> newResponse = chain.proceedWithToken(newAccessToken) },
+                onSuccess = { accessToken -> newResponse = chain.proceedWithToken(TOKEN_FORMAT.format(accessToken)) },
                 onFailure = { navigateToLoginScreen() },
             )
         }
@@ -56,12 +56,13 @@ class AuthInterceptor(
     private fun Response.isInvalidToken(): Boolean = (code == 401)
 
     private fun navigateToLoginScreen() {
-        val loginStartIntent = Intent(context, LoginActivity::class.java)
+        val loginStartIntent = Intent(context, PointChargeActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(loginStartIntent)
     }
 
     companion object {
         private const val ACCESS_TOKEN_HEADER = "authorization"
+        private const val TOKEN_FORMAT = "Bearer %s"
     }
 }

@@ -15,8 +15,8 @@ class DefaultTokenDataSource(
     }
 
     override fun getToken(): User.Token {
-        val accessToken = TOKEN_FORMAT.format(preference.getString(ACCESS_TOKEN_KEY, DEFAULT_TOKEN_VALUE))
-        val refreshToken = TOKEN_FORMAT.format(preference.getString(REFRESH_TOKEN_KEY, DEFAULT_TOKEN_VALUE))
+        val accessToken = preference.getString(ACCESS_TOKEN_KEY, DEFAULT_TOKEN_VALUE) ?: ""
+        val refreshToken = preference.getString(REFRESH_TOKEN_KEY, DEFAULT_TOKEN_VALUE) ?: ""
 
         return User.Token(
             accessToken = accessToken,
@@ -31,7 +31,6 @@ class DefaultTokenDataSource(
 
     companion object {
         const val PETUDIO_PREF_KEY = "petudio"
-        private const val TOKEN_FORMAT = "Bearer %s"
 
         private const val ACCESS_TOKEN_KEY = "access_token_key"
         private const val REFRESH_TOKEN_KEY = "refresh_token_key"
