@@ -49,7 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
-import com.composition.damoa.data.model.Account.SocialType
+import com.composition.damoa.data.model.User.SocialType
 import com.composition.damoa.di.other.GoogleAuth
 import com.composition.damoa.di.other.KakaoAuth
 import com.composition.damoa.presentation.common.base.BaseUiState.State

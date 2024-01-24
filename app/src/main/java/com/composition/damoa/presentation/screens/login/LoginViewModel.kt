@@ -6,7 +6,7 @@ import com.composition.damoa.data.common.retrofit.callAdapter.Failure
 import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
-import com.composition.damoa.data.model.Account.SocialType
+import com.composition.damoa.data.model.User.SocialType
 import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.presentation.screens.login.state.LoginUiEvent
 import com.composition.damoa.presentation.screens.login.state.LoginUiState

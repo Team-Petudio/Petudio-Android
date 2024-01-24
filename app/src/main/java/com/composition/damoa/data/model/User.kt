@@ -2,7 +2,7 @@ package com.composition.damoa.data.model
 
 import kotlinx.serialization.SerialName
 
-data class Account(
+data class User(
     val email: String,
     val socialType: SocialType,
     val token: Token = Token(),

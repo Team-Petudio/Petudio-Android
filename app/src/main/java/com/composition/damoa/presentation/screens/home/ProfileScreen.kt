@@ -38,7 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
-import com.composition.damoa.data.model.Account
+import com.composition.damoa.data.model.User
 import com.composition.damoa.presentation.common.components.BigDescription
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.MediumDescription
@@ -60,9 +60,9 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
         ProfileTitle()
         UserAccount(
             modifier = Modifier.padding(top = 28.dp),
-            account = Account(
+            user = User(
                 email = "petudio@naver.com",
-                socialType = Account.SocialType.GOOGLE
+                socialType = User.SocialType.GOOGLE
             ),
         )
         SettingList(modifier = Modifier.padding(top = 28.dp))
@@ -115,12 +115,12 @@ private fun ProfileTitle() {
 @Composable
 private fun UserAccount(
     modifier: Modifier = Modifier,
-    account: Account,
+    user: User,
 ) {
-    when (account.socialType) {
-        Account.SocialType.GOOGLE -> GoogleAccount(modifier, account.email)
-        Account.SocialType.KAKAO -> KakaoAccount(modifier, account.email)
-        Account.SocialType.APPLE -> Unit
+    when (user.socialType) {
+        User.SocialType.GOOGLE -> GoogleAccount(modifier, user.email)
+        User.SocialType.KAKAO -> KakaoAccount(modifier, user.email)
+        User.SocialType.APPLE -> Unit
     }
 }
 

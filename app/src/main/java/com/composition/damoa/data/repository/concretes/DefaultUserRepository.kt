@@ -6,7 +6,7 @@ import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.dto.request.LoginRequest
-import com.composition.damoa.data.model.Account
+import com.composition.damoa.data.model.User
 import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.data.service.UserService
 import okhttp3.Headers
@@ -17,10 +17,10 @@ class DefaultUserRepository @Inject constructor(
     private val userService: UserService,
 ) : UserRepository {
     override suspend fun login(
-        socialType: Account.SocialType,
+        socialType: User.SocialType,
         accessToken: String,
         fcmToken: String,
-    ): ApiResponse<Account.Token> =
+    ): ApiResponse<User.Token> =
         when (val loginResult = userService.login(LoginRequest(socialType, accessToken, fcmToken))) {
             is Success -> Success(parseToken(loginResult.headers))
             is Failure -> Failure(loginResult.code, loginResult.message)
@@ -28,7 +28,7 @@ class DefaultUserRepository @Inject constructor(
             is Unexpected -> Unexpected(loginResult.error)
         }
 
-    private fun parseToken(headers: Headers): Account.Token {
+    private fun parseToken(headers: Headers): User.Token {
         val tokens = headers
             .filter { (key, _) -> key == "Set-Cookie" }
             .mapNotNull { (_, cookieValue) ->
@@ -42,7 +42,7 @@ class DefaultUserRepository @Inject constructor(
                 }
             }.toMap()
 
-        return Account.Token(
+        return User.Token(
             accessToken = tokens["accessToken"] ?: "",
             refreshToken = tokens["refreshToken"] ?: ""
         )
