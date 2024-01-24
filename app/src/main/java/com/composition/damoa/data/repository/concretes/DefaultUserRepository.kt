@@ -37,6 +37,18 @@ class DefaultUserRepository @Inject constructor(
             is Unexpected -> Unexpected(loginResult.error)
         }
 
+    override suspend fun logout(): ApiResponse<Unit> {
+        return when (val logoutResult = userService.logout()) {
+            is Success -> {
+                tokenDataSource.deleteToken()
+                Success(Unit)
+            }
+
+            else -> logoutResult
+        }
+    }
+
+
     override suspend fun reissueToken(): ApiResponse<Unit> {
         return when (val reissueResult = userService.reissueToken(ReissueTokenRequest(tokenDataSource.getToken()))) {
             is Success -> {
