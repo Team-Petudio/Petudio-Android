@@ -7,6 +7,7 @@ import com.composition.damoa.data.common.retrofit.callAdapter.Success
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.dataSource.local.interfaces.TokenDataSource
 import com.composition.damoa.data.dto.request.LoginRequest
+import com.composition.damoa.data.dto.request.ReissueTokenRequest
 import com.composition.damoa.data.model.User
 import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.data.service.UserService
@@ -36,6 +37,17 @@ class DefaultUserRepository @Inject constructor(
             is Unexpected -> Unexpected(loginResult.error)
         }
 
+    override suspend fun reissueToken(): ApiResponse<Unit> {
+        return when (val reissueResult = userService.reissueToken(ReissueTokenRequest(tokenDataSource.getToken()))) {
+            is Success -> {
+                parseToken(reissueResult.headers).also { tokenDataSource.saveToken(it) }
+                Success(Unit)
+            }
+
+            else -> reissueResult
+        }
+    }
+
     private fun parseToken(headers: Headers): User.Token {
         val tokens = headers
             .filter { (key, _) -> key == "Set-Cookie" }
@@ -45,14 +57,19 @@ class DefaultUserRepository @Inject constructor(
                 val token = tokenInfo[1]
 
                 when (tokenType) {
-                    "accessToken", "refreshToken" -> Pair(tokenType, token)
+                    ACCESS_TOKEN, REFRESH_TOKEN -> Pair(tokenType, token)
                     else -> null
                 }
             }.toMap()
 
         return User.Token(
-            accessToken = tokens["accessToken"] ?: "",
-            refreshToken = tokens["refreshToken"] ?: ""
+            accessToken = tokens[ACCESS_TOKEN] ?: "",
+            refreshToken = tokens[REFRESH_TOKEN] ?: ""
         )
+    }
+
+    companion object {
+        private const val ACCESS_TOKEN = "accessToken"
+        private const val REFRESH_TOKEN = "refreshToken"
     }
 }

@@ -16,12 +16,12 @@ class DefaultTokenDataSource @Inject constructor(
     }
 
     override fun getToken(): User.Token {
-        val accessToken = preference.getString(ACCESS_TOKEN_KEY, DEFAULT_TOKEN_VALUE)
-        val refreshToken = preference.getString(REFRESH_TOKEN_KEY, DEFAULT_TOKEN_VALUE)
+        val accessToken = TOKEN_FORMAT.format(preference.getString(ACCESS_TOKEN_KEY, DEFAULT_TOKEN_VALUE))
+        val refreshToken = TOKEN_FORMAT.format(preference.getString(REFRESH_TOKEN_KEY, DEFAULT_TOKEN_VALUE))
 
         return User.Token(
-            accessToken = accessToken ?: DEFAULT_TOKEN_VALUE,
-            refreshToken = refreshToken ?: DEFAULT_TOKEN_VALUE,
+            accessToken = accessToken,
+            refreshToken = refreshToken,
         )
     }
 
@@ -31,6 +31,8 @@ class DefaultTokenDataSource @Inject constructor(
     }
 
     companion object {
+        private const val TOKEN_FORMAT = "Bearer %s"
+
         private const val ACCESS_TOKEN_KEY = "access_token_key"
         private const val REFRESH_TOKEN_KEY = "refresh_token_key"
         private const val DEFAULT_TOKEN_VALUE = "default"

@@ -9,4 +9,6 @@ interface UserRepository {
         accessToken: String,
         fcmToken: String,
     ): ApiResponse<User.Token>
+
+    suspend fun reissueToken(): ApiResponse<Unit>
 }
