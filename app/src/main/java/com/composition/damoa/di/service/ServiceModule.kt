@@ -14,7 +14,10 @@ class ServiceModule {
     @Provides
     fun provideGoogleService(
         serviceFactory: ServiceFactory,
-    ): GoogleService = serviceFactory.create(GoogleService::class.java)
+    ): GoogleService = serviceFactory.create(
+        service = GoogleService::class.java,
+        baseUrl = GoogleService.BASE_URL,
+    )
 
     @Provides
     fun provideUserService(

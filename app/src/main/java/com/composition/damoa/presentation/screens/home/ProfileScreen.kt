@@ -60,7 +60,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
         ProfileTitle()
         UserAccount(
             modifier = Modifier.padding(top = 28.dp),
-            account = com.composition.damoa.data.model.Account(
+            account = Account(
                 email = "petudio@naver.com",
                 socialType = Account.SocialType.GOOGLE
             ),

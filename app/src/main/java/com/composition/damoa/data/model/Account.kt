@@ -5,6 +5,7 @@ import kotlinx.serialization.SerialName
 data class Account(
     val email: String,
     val socialType: SocialType,
+    val token: Token = Token(),
 ) {
     enum class SocialType {
         @SerialName("GOOGLE")
@@ -16,4 +17,9 @@ data class Account(
         @SerialName("APPLE")
         APPLE,
     }
+
+    data class Token(
+        val accessToken: String = "",
+        val refreshToken: String = "",
+    )
 }

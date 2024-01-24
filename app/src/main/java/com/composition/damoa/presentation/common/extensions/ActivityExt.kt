@@ -13,3 +13,7 @@ fun ComponentActivity.repeatOnStarted(block: suspend () -> Unit) {
         }
     }
 }
+
+fun ComponentActivity.onUi(block: suspend () -> Unit) {
+    lifecycleScope.launch { block() }
+}

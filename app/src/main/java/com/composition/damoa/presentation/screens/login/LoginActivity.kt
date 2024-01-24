@@ -56,6 +56,7 @@ import com.composition.damoa.presentation.common.base.BaseUiState.State
 import com.composition.damoa.presentation.common.components.GradientPetudioSubTitle
 import com.composition.damoa.presentation.common.components.GradientPetudioTitle
 import com.composition.damoa.presentation.common.components.MediumDescription
+import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.common.extensions.repeatOnStarted
 import com.composition.damoa.presentation.common.extensions.showToast
 import com.composition.damoa.presentation.screens.login.authManager.AuthManager
@@ -107,7 +108,8 @@ class LoginActivity : ComponentActivity() {
             viewModel.loginUiEvent.collectLatest { uiEvent ->
                 when (uiEvent) {
                     LoginUiEvent.NONE -> Unit
-                    LoginUiEvent.LOGIN_FAILURE -> showToast(R.string.login_failure_message)
+                    LoginUiEvent.LOGIN_FAILURE -> onUi { showToast(R.string.login_failure_message) }
+                    LoginUiEvent.LOGIN_SUCCESS -> finish()
                 }
             }
         }

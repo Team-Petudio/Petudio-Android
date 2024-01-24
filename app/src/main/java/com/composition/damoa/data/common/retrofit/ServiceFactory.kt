@@ -44,6 +44,6 @@ class ServiceFactory {
     }
 
     companion object {
-        private const val BASE_URL = "https://www.googleapis.com"
+        private const val BASE_URL = "http://13.125.155.71/"
     }
 }
