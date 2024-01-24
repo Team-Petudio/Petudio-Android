@@ -44,4 +44,8 @@ class DefaultUserRepository(
         val token = tokenRepository.getToken()
         return userService.getUser().map { it.data.toDomain(token) }
     }
+
+    override suspend fun signOut(): ApiResponse<Unit> {
+        return userService.signOut().map { tokenRepository.deleteToken() }
+    }
 }

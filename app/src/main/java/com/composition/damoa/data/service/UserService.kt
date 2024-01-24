@@ -5,6 +5,7 @@ import com.composition.damoa.data.dto.request.LoginRequest
 import com.composition.damoa.data.dto.response.BaseResponse
 import com.composition.damoa.data.dto.response.UserResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 
@@ -17,4 +18,7 @@ interface UserService {
 
     @GET("/api/v1/member/mypage")
     suspend fun getUser(): ApiResponse<BaseResponse<UserResponse>>
+
+    @DELETE("/api/v1/member/delete")
+    suspend fun signOut(): ApiResponse<Unit>
 }
