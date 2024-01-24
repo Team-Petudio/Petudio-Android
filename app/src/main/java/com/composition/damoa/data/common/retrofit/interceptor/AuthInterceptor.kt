@@ -21,7 +21,10 @@ class AuthInterceptor(
         var newResponse = response
         if (response.isInvalidToken()) {
             reissueToken(
-                onSuccess = { accessToken -> newResponse = chain.proceedWithToken(TOKEN_FORMAT.format(accessToken)) },
+                onSuccess = { accessToken ->
+                    response.close()
+                    newResponse = chain.proceedWithToken(TOKEN_FORMAT.format(accessToken))
+                },
                 onFailure = { navigateToLoginScreen() },
             )
         }
