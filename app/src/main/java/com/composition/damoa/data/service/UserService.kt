@@ -3,11 +3,14 @@ package com.composition.damoa.data.service
 import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
 import com.composition.damoa.data.dto.request.LoginRequest
 import com.composition.damoa.data.dto.response.BaseResponse
+import com.composition.damoa.data.dto.response.NotificationStatusUpdateResponse
 import com.composition.damoa.data.dto.response.UserResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface UserService {
     @POST("/api/v1/auth/login")
@@ -21,4 +24,9 @@ interface UserService {
 
     @DELETE("/api/v1/member/delete")
     suspend fun signOut(): ApiResponse<Unit>
+
+    @PATCH("/api/v1/member/notification/status-change")
+    suspend fun updateNotificationStatusUpdateResponse(
+        @Query("status") newStatus: Boolean,
+    ): ApiResponse<BaseResponse<NotificationStatusUpdateResponse>>
 }
