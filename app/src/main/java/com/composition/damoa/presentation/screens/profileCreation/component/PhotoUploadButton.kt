@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -34,16 +35,15 @@ fun PhotoUploadButton(
 }
 
 @Composable
-private fun PhotoUploadButton(
+fun PhotoUploadButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     GradientButton(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .aspectRatio(6 / 1F),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(60.dp),
         shape = RoundedCornerShape(12.dp),
         text = stringResource(id = R.string.pet_photo_add),
         fontColor = Color.White,

@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -25,6 +27,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.presentation.common.components.BigTitle
+import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.SmallDescription
 import com.composition.damoa.presentation.common.components.TinyTitle
@@ -42,19 +45,28 @@ fun PhotoUploadResultScreen(
     Surface(
         color = Color.White,
         modifier =
-            modifier
-                .background(Color.White)
-                .fillMaxSize()
-                .padding(horizontal = 20.dp),
+        modifier
+            .background(Color.White)
+            .fillMaxSize()
+            .padding(horizontal = 20.dp),
     ) {
         PhotoUploadIntroduceContent(
             petType = petType,
             badPetPhotos = badDogPhotoExamples(),
             goodPetPhotos = goodDogPhotoExamples(),
         )
-        PhotoUploadButton(onClick = {
-            // 갤러리
-        })
+        Column(Modifier.padding(bottom = 20.dp)) {
+            Spacer(modifier = Modifier.weight(1F))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                PhotoUploadButton(modifier = Modifier.weight(1F)) {
+                    // 갤러리
+                }
+                if (true) KeepGoingButton(modifier = Modifier.weight(1F)) {
+                    // 포인트 부족하면 결제하기 화면
+                    // 포인트 있으면 이미지 전송하고 완료 화면
+                }
+            }
+        }
     }
 }
 
@@ -109,10 +121,10 @@ private fun PetPhotoUploadResult(
 ) {
     LazyVerticalGrid(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .heightIn(max = 700.dp)
-                .wrapContentHeight(),
+        modifier
+            .fillMaxWidth()
+            .heightIn(max = 700.dp)
+            .wrapContentHeight(),
         userScrollEnabled = false,
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(12.dp),

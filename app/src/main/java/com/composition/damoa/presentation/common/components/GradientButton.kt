@@ -34,7 +34,7 @@ fun GradientButton(
     fontColor: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontWeight: FontWeight? = null,
-    gradient: Brush,
+    gradient: Brush = Brush.horizontalGradient(PrimaryColors),
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
