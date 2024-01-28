@@ -135,6 +135,9 @@ dependencies {
 
     // Billing
     implementation("com.android.billingclient:billing:6.1.0")
+
+    // Image Picker
+    implementation("com.github.esafirm:android-image-picker:3.0.0")
 }
 
 kapt {
