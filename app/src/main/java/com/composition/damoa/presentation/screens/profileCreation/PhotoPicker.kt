@@ -15,7 +15,9 @@ import com.esafirm.imagepicker.model.Image
 
 class PhotoPicker(activity: ComponentActivity) {
     private var onResult: (List<Image>) -> Unit = {}
-    private val photoPickerLauncher = activity.registerImagePicker(callback = onResult)
+    private val photoPickerLauncher = activity.registerImagePicker { images ->
+        onResult(images)
+    }
 
     fun launchPhotoPicker(
         context: Context,
@@ -30,7 +32,7 @@ class PhotoPicker(activity: ComponentActivity) {
             arrowColor = Color.White.toArgb()
             imageTitle = context.getString(R.string.app_name)
             doneButtonText = context.getString(R.string.done)
-            limit = 12
+            limit = 12 - excludedImages.size
             savePath = ImagePickerSavePath("petudio")
             ImagePickerConfig()
             isIncludeAnimation = true

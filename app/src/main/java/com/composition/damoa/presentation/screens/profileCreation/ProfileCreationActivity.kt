@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -24,18 +25,28 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class ProfileCreationActivity : ComponentActivity() {
-    private val launchPhotoPicker = PhotoPicker(this)
+    private val viewModel: ProfileCreationViewModel by viewModels()
+    private val photoPicker = PhotoPicker(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ProfileCreation(onPhotoSelect = {
-                launchPhotoPicker.launchPhotoPicker(this) { images ->
-                    // TODO(사진 선택 결과를 처리한다.)
-                }
-            })
+            ProfileCreation(onPhotoSelect = ::launchPhotoPicker)
+        }
+    }
+
+    private fun launchPhotoPicker() {
+        val selectedImages = viewModel.selectedImages.value
+        photoPicker.launchPhotoPicker(this, selectedImages) { images ->
+            // images를 용량 줄여서 File로 map (View 로직)
+            // viewModel에서 해당 file을 서버로 보내 동물 사진인지 파악 (ViewModel 로직)
+            // 동물 사진인 images만 viewModel.selectedImages에 저장 (ViewModel 로직)
+            // 해당 작업이 끝나면 PhotoUploadResultScreen으로 이동 (View 로직)
         }
     }
 }
