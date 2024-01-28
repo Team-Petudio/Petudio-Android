@@ -50,23 +50,22 @@ fun PhotoUploadIntroduceScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     petType: PetType = PetType.DOG,
+    onClickPhotoUpload: () -> Unit = {},
 ) {
     Surface(
         color = Color.White,
         modifier =
-            modifier
-                .background(Color.White)
-                .fillMaxSize()
-                .padding(horizontal = 20.dp),
+        modifier
+            .background(Color.White)
+            .fillMaxSize()
+            .padding(horizontal = 20.dp),
     ) {
         PhotoUploadIntroduceContent(
             petType = petType,
             badPetPhotos = badDogPhotoExamples(),
             goodPetPhotos = goodDogPhotoExamples(),
         )
-        PhotoUploadButton(onClick = {
-            // 갤러리
-        })
+        PhotoUploadButton(onClick = onClickPhotoUpload)
     }
 }
 
@@ -87,16 +86,20 @@ private fun PhotoUploadIntroduceContent(
         contentPadding = PaddingValues(bottom = 100.dp),
     ) {
         item {
-            BigTitle(
-                titleRes = R.string.pet_photo_upload_introduce_title,
-                modifier = Modifier.padding(top = 20.dp),
-            )
-        }
-        item {
-            MediumDescription(
-                descriptionRes = photoUploadDescRes,
-                modifier = Modifier.padding(top = 12.dp),
-            )
+            Column {
+                BigTitle(
+                    titleRes = R.string.pet_photo_upload_introduce_title,
+                    modifier = Modifier.padding(top = 20.dp),
+                )
+                SmallTitle(
+                    titleRes = R.string.pet_photo_add_desc,
+                    modifier = Modifier.padding(top = 12.dp),
+                )
+                MediumDescription(
+                    descriptionRes = photoUploadDescRes,
+                    modifier = Modifier.padding(top = 12.dp),
+                )
+            }
         }
         item {
             PetPhotoUploadExamples(
@@ -126,10 +129,10 @@ private fun PetPhotoUploadExamples(
 ) {
     LazyVerticalGrid(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .heightIn(max = 700.dp)
-                .wrapContentHeight(),
+        modifier
+            .fillMaxWidth()
+            .heightIn(max = 700.dp)
+            .wrapContentHeight(),
         userScrollEnabled = false,
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(12.dp),

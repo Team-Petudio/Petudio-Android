@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,16 +26,24 @@ import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 
 class ProfileCreationActivity : ComponentActivity() {
+    private val launchPhotoPicker = PhotoPicker(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ProfileCreation()
+            ProfileCreation(onPhotoSelect = {
+                launchPhotoPicker.launchPhotoPicker(this) { images ->
+                    // TODO(사진 선택 결과를 처리한다.)
+                }
+            })
         }
     }
 }
 
 @Composable
-private fun ProfileCreation() {
+private fun ProfileCreation(
+    onPhotoSelect: () -> Unit = {},
+) {
     PetudioTheme {
         val activity = LocalContext.current as? Activity
         val navController = rememberNavController()
@@ -51,6 +58,7 @@ private fun ProfileCreation() {
             ProfileCreationNavHost(
                 modifier = Modifier.padding(top = padding.calculateTopPadding()),
                 navController = navController,
+                onPhotoSelect = onPhotoSelect,
             )
         }
     }
@@ -78,6 +86,7 @@ private fun ProfileCreationTopAppBar(onNavigationClick: () -> Unit = {}) {
 private fun ProfileCreationNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    onPhotoSelect: () -> Unit = {},
     startDestination: ProfileCreationScreen = ProfileCreationScreen.PROFILE_CREATION_INTRODUCE,
 ) {
     NavHost(
@@ -98,7 +107,7 @@ private fun ProfileCreationNavHost(
             PetColorScreen(navController = navController)
         }
         composable(ProfileCreationScreen.PHOTO_UPLOAD_INTRODUCE.route) {
-            PhotoUploadIntroduceScreen(navController = navController)
+            PhotoUploadIntroduceScreen(navController = navController, onClickPhotoUpload = onPhotoSelect)
         }
         composable(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route) {
             PhotoUploadResultScreen(navController = navController)
@@ -123,10 +132,4 @@ enum class ProfileCreationScreen(
     PHOTO_UPLOAD_RESULT("photoUploadResult"),
     PAYMENT("payment"),
     PAYMENT_RESULT("paymentResult"),
-}
-
-@Preview
-@Composable
-private fun ProfileCreationPreview() {
-    ProfileCreation()
 }

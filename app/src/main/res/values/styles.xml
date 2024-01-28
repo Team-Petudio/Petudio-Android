@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ImagePickerTheme" parent="ef_BaseTheme">
+        <item name="colorPrimary">#AE9BF2</item>
+        <item name="colorPrimaryDark">#AE9BF2</item>
+        <item name="colorAccent">@color/ef_colorAccent</item>
+    </style>
+</resources>
