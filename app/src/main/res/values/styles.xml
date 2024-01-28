@@ -4,6 +4,6 @@
     <style name="ImagePickerTheme" parent="ef_BaseTheme">
         <item name="colorPrimary">#AE9BF2</item>
         <item name="colorPrimaryDark">#AE9BF2</item>
-        <item name="colorAccent">@color/ef_colorAccent</item>
+        <item name="colorAccent">#AE9BF2</item>
     </style>
 </resources>
