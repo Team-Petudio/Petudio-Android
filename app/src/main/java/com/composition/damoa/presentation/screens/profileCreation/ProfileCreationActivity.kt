@@ -29,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.data.model.Pet
+import com.composition.damoa.data.model.PetColor
 import com.composition.damoa.data.model.ProfileConceptDetail
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
@@ -101,6 +102,7 @@ private fun ProfileCreation(
                 pets = petPhotosUiState.pets,
                 petInfoUiState = petUiState,
                 onPetNameChanged = viewModel::updatePetName,
+                onPetColorSelected = viewModel::updateColor,
                 onPhotoSelect = onPhotoSelect,
             )
         }
@@ -133,6 +135,7 @@ private fun ProfileCreationNavHost(
     pets: List<Pet>,
     petInfoUiState: PetInfoUiState,
     onPetNameChanged: (String) -> Unit,
+    onPetColorSelected: (PetColor) -> Unit,
     onPhotoSelect: () -> Unit = {},
     startDestination: ProfileCreationScreen = ProfileCreationScreen.PROFILE_CREATION_INTRODUCE,
 ) {
@@ -158,7 +161,11 @@ private fun ProfileCreationNavHost(
             )
         }
         composable(ProfileCreationScreen.PET_COLOR.route) {
-            PetColorScreen(navController = navController)
+            PetColorScreen(
+                navController = navController,
+                selectedPetColor = petInfoUiState.petColor,
+                onPetColorSelected = onPetColorSelected,
+            )
         }
         composable(ProfileCreationScreen.PHOTO_UPLOAD_INTRODUCE.route) {
             PhotoUploadIntroduceScreen(navController = navController, onClickPhotoUpload = onPhotoSelect)
