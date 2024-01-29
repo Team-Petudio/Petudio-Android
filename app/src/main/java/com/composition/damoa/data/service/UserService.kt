@@ -26,7 +26,7 @@ interface UserService {
     suspend fun signOut(): ApiResponse<Unit>
 
     @PATCH("/api/v1/member/notification/status-change")
-    suspend fun updateNotificationStatusUpdateResponse(
+    suspend fun updateNotificationStatus(
         @Query("status") newStatus: Boolean,
     ): ApiResponse<BaseResponse<NotificationStatusUpdateResponse>>
 }

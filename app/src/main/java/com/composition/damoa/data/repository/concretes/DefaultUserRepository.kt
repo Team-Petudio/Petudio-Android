@@ -49,9 +49,9 @@ class DefaultUserRepository(
         return userService.signOut().map { tokenRepository.deleteToken() }
     }
 
-    override suspend fun updateNotificationStatusUpdateResponse(
+    override suspend fun updateNotificationStatus(
         newStatus: Boolean,
     ): ApiResponse<Boolean> = userService
-        .updateNotificationStatusUpdateResponse(newStatus)
+        .updateNotificationStatus(newStatus)
         .map { it.data.notificationStatus }
 }

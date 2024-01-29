@@ -16,7 +16,7 @@ interface UserRepository {
 
     suspend fun signOut(): ApiResponse<Unit>
 
-    suspend fun updateNotificationStatusUpdateResponse(
+    suspend fun updateNotificationStatus(
         newStatus: Boolean,
     ): ApiResponse<Boolean>
 }
