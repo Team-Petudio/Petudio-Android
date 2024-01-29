@@ -40,6 +40,7 @@ import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.composition.damoa.R
+import com.composition.damoa.data.model.Pet
 import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle

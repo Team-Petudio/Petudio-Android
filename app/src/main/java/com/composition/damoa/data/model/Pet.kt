@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation
+package com.composition.damoa.data.model
 
 data class Pet(
     val id: Long,

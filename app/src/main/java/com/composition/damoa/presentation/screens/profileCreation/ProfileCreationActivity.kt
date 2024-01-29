@@ -28,7 +28,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
+import com.composition.damoa.data.model.Pet
 import com.composition.damoa.data.model.ProfileConceptDetail
+import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -82,7 +84,8 @@ private fun ProfileCreation(
         val activity = LocalContext.current as? Activity
         val navController = rememberNavController()
         val conceptDetailUiState by viewModel.conceptDetailUiState.collectAsStateWithLifecycle()
-        val petsUiState by viewModel.petPhotosUiState.collectAsStateWithLifecycle()
+        val petPhotosUiState by viewModel.petPhotosUiState.collectAsStateWithLifecycle()
+        val petUiState by viewModel.petInfoUiState.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -95,7 +98,9 @@ private fun ProfileCreation(
                 modifier = Modifier.padding(top = padding.calculateTopPadding()),
                 navController = navController,
                 profileConceptDetail = conceptDetailUiState.profileConceptDetail,
-                pets = petsUiState.pets,
+                pets = petPhotosUiState.pets,
+                petInfoUiState = petUiState,
+                onPetNameChanged = viewModel::updatePetName,
                 onPhotoSelect = onPhotoSelect,
             )
         }
@@ -126,6 +131,8 @@ private fun ProfileCreationNavHost(
     navController: NavHostController = rememberNavController(),
     profileConceptDetail: ProfileConceptDetail,
     pets: List<Pet>,
+    petInfoUiState: PetInfoUiState,
+    onPetNameChanged: (String) -> Unit,
     onPhotoSelect: () -> Unit = {},
     startDestination: ProfileCreationScreen = ProfileCreationScreen.PROFILE_CREATION_INTRODUCE,
 ) {
@@ -144,7 +151,11 @@ private fun ProfileCreationNavHost(
             PetPhotoSelectScreen(pets = pets, navController = navController)
         }
         composable(ProfileCreationScreen.PET_NAME.route) {
-            PetNameScreen(navController = navController)
+            PetNameScreen(
+                navController = navController,
+                petName = petInfoUiState.petName,
+                onPetNameChanged = onPetNameChanged
+            )
         }
         composable(ProfileCreationScreen.PET_COLOR.route) {
             PetColorScreen(navController = navController)

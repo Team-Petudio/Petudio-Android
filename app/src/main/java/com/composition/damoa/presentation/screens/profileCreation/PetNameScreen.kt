@@ -14,20 +14,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.os.bundleOf
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.KeepGoingButton
@@ -41,24 +34,23 @@ import com.composition.damoa.presentation.ui.theme.Purple60
 fun PetNameScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    petName: String,
+    onPetNameChanged: (String) -> Unit,
 ) {
     Surface(
         color = Color.White,
-        modifier =
-            modifier
-                .background(Color.White)
-                .fillMaxSize()
-                .padding(horizontal = 20.dp),
+        modifier = modifier
+            .background(Color.White)
+            .fillMaxSize()
+            .padding(horizontal = 20.dp),
     ) {
-        var petName by remember { mutableStateOf("") }
-
         Column {
             PetNameTitle(modifier = Modifier.padding(top = 20.dp, bottom = 4.dp))
             PetNameDescription()
             PetNameInputTitle(modifier = Modifier.padding(top = 30.dp))
             PetNameInput(
                 name = petName,
-                onNameChanged = { newPetName -> petName = newPetName },
+                onNameChanged = onPetNameChanged,
                 onNext = { navigateToPetColorScreen(navController) },
                 modifier = Modifier.padding(top = 12.dp),
             )
@@ -114,16 +106,14 @@ private fun PetNameInput(
         placeholder = { PetNameHint() },
         singleLine = true,
         keyboardActions = KeyboardActions(onNext = { onNext() }),
-        keyboardOptions =
-            KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next,
-            ),
-        colors =
-            TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Purple60,
-                unfocusedBorderColor = Gray20,
-            ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next,
+        ),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Purple60,
+            unfocusedBorderColor = Gray20,
+        ),
     )
 }
 
@@ -133,10 +123,4 @@ private fun PetNameHint() {
         text = stringResource(R.string.pet_name_input_hint),
         color = Gray40,
     )
-}
-
-@Preview
-@Composable
-private fun PetNameScreenPreview() {
-    PetNameScreen(navController = rememberNavController())
 }

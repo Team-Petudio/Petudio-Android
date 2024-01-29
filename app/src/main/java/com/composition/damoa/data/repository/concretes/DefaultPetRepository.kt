@@ -2,9 +2,9 @@ package com.composition.damoa.data.repository.concretes
 
 import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
 import com.composition.damoa.data.mapper.toDomain
+import com.composition.damoa.data.model.Pet
 import com.composition.damoa.data.repository.interfaces.PetRepository
 import com.composition.damoa.data.service.PetService
-import com.composition.damoa.presentation.screens.profileCreation.Pet
 
 class DefaultPetRepository(
     private val service: PetService,

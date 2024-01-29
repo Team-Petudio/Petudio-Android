@@ -6,9 +6,11 @@ import com.composition.damoa.data.common.retrofit.callAdapter.Failure
 import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
+import com.composition.damoa.data.model.PetColor
 import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.repository.interfaces.PetRepository
 import com.composition.damoa.presentation.common.base.BaseUiState
+import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.ProfileConceptUiState
 import com.esafirm.imagepicker.model.Image
@@ -32,6 +34,9 @@ class ProfileCreationViewModel @Inject constructor(
 
     private val _selectedImages = MutableStateFlow<List<Image>>(emptyList())
     val selectedImages = _selectedImages.asStateFlow()
+
+    private val _petInfoUiState = MutableStateFlow(PetInfoUiState())
+    val petInfoUiState = _petInfoUiState.asStateFlow()
 
     init {
         fetchProfileConceptDetail()
@@ -80,5 +85,13 @@ class ProfileCreationViewModel @Inject constructor(
 
     fun uploadImageFiles(files: List<File>) {
 
+    }
+
+    fun updatePetName(name: String) {
+        _petInfoUiState.value = petInfoUiState.value.copy(petName = name)
+    }
+
+    fun updateColor(color: PetColor) {
+        _petInfoUiState.value = _petInfoUiState.value.copy(petColor = color)
     }
 }
