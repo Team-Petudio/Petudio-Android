@@ -15,7 +15,7 @@ data class ConceptResponse(
     val id: Long,
     @SerialName("name")
     val name: String,
-    @SerialName("description")
+    @SerialName("descriptionMessage")
     val description: String,
     @SerialName("mainImageUri")
     val thumbnailUrl: String,
@@ -25,7 +25,10 @@ data class ConceptResponse(
     val animalType: AnimalType,
 ) {
     enum class AnimalType {
+        @SerialName("DOG")
         DOG,
+
+        @SerialName("CAT")
         CAT
     }
 }
