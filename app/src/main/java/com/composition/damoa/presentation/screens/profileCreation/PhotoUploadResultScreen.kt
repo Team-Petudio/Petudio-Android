@@ -21,10 +21,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.data.model.PetType
 import com.composition.damoa.presentation.common.components.BigTitle
@@ -42,6 +40,8 @@ fun PhotoUploadResultScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     petType: PetType = PetType.DOG,
+    isShowKeepGoingButton: Boolean,
+    onPetAddClick: () -> Unit,
 ) {
     Surface(
         color = Color.White,
@@ -62,9 +62,8 @@ fun PhotoUploadResultScreen(
                 PhotoUploadButton(modifier = Modifier.weight(1F)) {
                     // 갤러리
                 }
-                if (true) KeepGoingButton(modifier = Modifier.weight(1F)) {
-                    // 포인트 부족하면 결제하기 화면
-                    // 포인트 있으면 이미지 전송하고 완료 화면
+                if (isShowKeepGoingButton) {
+                    KeepGoingButton(modifier = Modifier.weight(1F), onClick = onPetAddClick)
                 }
             }
         }
@@ -121,8 +120,7 @@ private fun PetPhotoUploadResult(
     photoType: PetPhoto.PhotoType,
 ) {
     LazyVerticalGrid(
-        modifier =
-        modifier
+        modifier = modifier
             .fillMaxWidth()
             .heightIn(max = 700.dp)
             .wrapContentHeight(),
@@ -159,13 +157,4 @@ private fun PetPhotoList(
             modifier = Modifier.padding(top = 8.dp),
         )
     }
-}
-
-@Preview
-@Composable
-private fun PhotoUploadIntroduceScreenPreview() {
-    PhotoUploadResultScreen(
-        navController = rememberNavController(),
-        petType = PetType.DOG,
-    )
 }

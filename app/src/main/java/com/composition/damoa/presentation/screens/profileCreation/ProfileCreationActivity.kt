@@ -1,6 +1,5 @@
 package com.composition.damoa.presentation.screens.profileCreation
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -31,10 +30,13 @@ import com.composition.damoa.R
 import com.composition.damoa.data.model.Pet
 import com.composition.damoa.data.model.PetColor
 import com.composition.damoa.data.model.ProfileConceptDetail
+import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.Companion.KEY_CONCEPT_ID
+import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.UiEvent
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 
 @AndroidEntryPoint
@@ -81,11 +83,20 @@ private fun ProfileCreation(
     onPhotoSelect: () -> Unit = {},
 ) {
     PetudioTheme {
-        val activity = LocalContext.current as? Activity
+        val activity = LocalContext.current as? ComponentActivity
         val navController = rememberNavController()
         val conceptDetailUiState by viewModel.conceptDetailUiState.collectAsStateWithLifecycle()
         val petPhotosUiState by viewModel.petPhotosUiState.collectAsStateWithLifecycle()
         val petUiState by viewModel.petInfoUiState.collectAsStateWithLifecycle()
+
+        activity?.onUi {
+            viewModel.uiEvent.collectLatest { event ->
+                when (event) {
+                    UiEvent.PAYMENT_SUCCESS -> navController.navigate(ProfileCreationScreen.PAYMENT_RESULT.route)
+                    UiEvent.PAYMENT_FAILED_LACK_OF_COIN -> navController.navigate(ProfileCreationScreen.PAYMENT.route)
+                }
+            }
+        }
 
         Scaffold(
             topBar = {
@@ -97,11 +108,12 @@ private fun ProfileCreation(
             ProfileCreationNavHost(
                 modifier = Modifier.padding(top = padding.calculateTopPadding()),
                 navController = navController,
-                profileConceptDetail = conceptDetailUiState.profileConceptDetail,
+                profileConceptDetail = conceptDetailUiState.conceptDetail,
                 pets = petPhotosUiState.pets,
                 petInfoUiState = petUiState,
                 onPetNameChanged = viewModel::updatePetName,
                 onPetColorSelected = viewModel::updateColor,
+                onPetAddClick = viewModel::addPetWithPayment,
                 onPhotoSelect = onPhotoSelect,
             )
         }
@@ -135,6 +147,7 @@ private fun ProfileCreationNavHost(
     petInfoUiState: PetInfoUiState,
     onPetNameChanged: (String) -> Unit,
     onPetColorSelected: (PetColor) -> Unit,
+    onPetAddClick: () -> Unit,
     onPhotoSelect: () -> Unit = {},
     startDestination: ProfileCreationScreen = ProfileCreationScreen.PROFILE_CREATION_INTRODUCE,
 ) {
@@ -170,7 +183,14 @@ private fun ProfileCreationNavHost(
             PhotoUploadIntroduceScreen(navController = navController, onClickPhotoUpload = onPhotoSelect)
         }
         composable(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route) {
-            PhotoUploadResultScreen(navController = navController)
+            PhotoUploadResultScreen(
+                navController = navController,
+                isShowKeepGoingButton = petInfoUiState.isValidPetPhotoSize(),
+                onPetAddClick = {
+                    // 포인트 부족하면 결제하기 화면
+                    // 포인트 있으면 이미지 전송하고 완료 화면
+                }
+            )
         }
         composable(ProfileCreationScreen.PAYMENT.route) {
             PaymentScreen(navController = navController)
