@@ -31,6 +31,7 @@ import com.composition.damoa.R
 import com.composition.damoa.data.model.Pet
 import com.composition.damoa.data.model.PetColor
 import com.composition.damoa.data.model.ProfileConceptDetail
+import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.Companion.KEY_CONCEPT_ID
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,8 +63,6 @@ class ProfileCreationActivity : ComponentActivity() {
     }
 
     companion object {
-        private const val KEY_CONCEPT_ID = "key_concept_id"
-
         fun startActivity(context: Context, conceptId: Long) {
             context.startActivity(getIntent(context, conceptId))
         }
