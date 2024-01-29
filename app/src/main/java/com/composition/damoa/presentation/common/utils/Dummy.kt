@@ -1,7 +1,7 @@
 package com.composition.damoa.presentation.common.utils
 
 import com.composition.damoa.R
-import com.composition.damoa.presentation.screens.pointCharge.PointChargeItem
+import com.composition.damoa.data.model.PointChargeItem
 import com.composition.damoa.presentation.screens.profileCreation.PetPhoto
 import com.composition.damoa.presentation.screens.profileCreation.UploadedPetPhoto
 import java.time.LocalDateTime
