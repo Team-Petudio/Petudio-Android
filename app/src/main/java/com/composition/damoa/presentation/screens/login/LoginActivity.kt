@@ -97,6 +97,7 @@ class LoginActivity : ComponentActivity() {
                 when (uiState.state) {
                     State.NONE -> Unit
                     State.LOADING -> Unit
+                    State.NETWORK_ERROR -> Unit
                     State.SUCCESS -> Unit
                 }
             }

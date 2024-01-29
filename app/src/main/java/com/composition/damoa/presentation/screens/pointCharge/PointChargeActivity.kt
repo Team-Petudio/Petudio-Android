@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
+import com.composition.damoa.data.model.PointChargeItem
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.DonationDescription
 import com.composition.damoa.presentation.common.components.GradientButton
@@ -53,12 +54,9 @@ import com.composition.damoa.presentation.common.components.SmallTitle
 import com.composition.damoa.presentation.common.utils.pointChargeItems
 import com.composition.damoa.presentation.ui.theme.Gray10
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
+import dagger.hilt.android.AndroidEntryPoint
 
-data class PointChargeItem(
-    val point: Int,
-    val price: Int,
-)
-
+@AndroidEntryPoint
 class PointChargeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,9 +79,9 @@ private fun PointChargeScreen() {
         ) { padding ->
             PointChargeContent(
                 modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(top = padding.calculateTopPadding()),
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = padding.calculateTopPadding()),
                 userOwnPoint = 0,
                 pointChargeItems = pointChargeItems(),
             )
@@ -166,10 +164,10 @@ private fun PointChargeItem(
 ) {
     Row(
         modifier =
-            modifier
-                .clip(RoundedCornerShape(12.dp))
-                .fillMaxWidth()
-                .clickable(onClick = onClick),
+        modifier
+            .clip(RoundedCornerShape(12.dp))
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -192,11 +190,11 @@ private fun PurchaseButton(
         text = String.format("%,d", price),
         shape = RoundedCornerShape(12.dp),
         gradient =
-            Brush.verticalGradient(
-                colors = listOf(Color.Black, Color.Black),
-                startY = Float.POSITIVE_INFINITY,
-                endY = 0F,
-            ),
+        Brush.verticalGradient(
+            colors = listOf(Color.Black, Color.Black),
+            startY = Float.POSITIVE_INFINITY,
+            endY = 0F,
+        ),
         fontSize = 18.sp,
         fontWeight = FontWeight.Bold,
         onClick = onClick,
@@ -211,12 +209,12 @@ private fun PointRow(
 ) {
     Row(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .height(72.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(Gray10)
-                .padding(horizontal = 20.dp),
+        modifier
+            .fillMaxWidth()
+            .height(72.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(Gray10)
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {

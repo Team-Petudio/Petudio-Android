@@ -34,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
@@ -49,7 +48,10 @@ import com.composition.damoa.presentation.ui.theme.Gray40
 
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(
+    modifier: Modifier = Modifier,
+    user: User,
+) {
     Column(
         modifier
             .background(Color.White)
@@ -60,13 +62,9 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
         ProfileTitle()
         UserAccount(
             modifier = Modifier.padding(top = 28.dp),
-            user = User(
-                email = "petudio@naver.com",
-                socialType = User.SocialType.GOOGLE,
-                point = 0,
-            ),
+            user = user,
         )
-        SettingList(modifier = Modifier.padding(top = 28.dp))
+        SettingList(modifier = Modifier.padding(top = 28.dp), point = user.point)
         Spacer(modifier = Modifier.weight(1F))
         LogoutButton(modifier = Modifier.padding(top = 28.dp))
         SignOutButton(modifier = Modifier.padding(top = 12.dp))
@@ -184,11 +182,11 @@ private fun Account(
 @Composable
 private fun SettingList(
     modifier: Modifier = Modifier,
-    coin: Int = 1000,
+    point: Int,
 ) {
     val context = LocalContext.current
     Column(modifier) {
-        PointCharge(coin) { context.startActivity(PointChargeActivity.getIntent(context)) }
+        PointCharge(point) { context.startActivity(PointChargeActivity.getIntent(context)) }
         Question()
         Ask()
         TermOfUse()
@@ -198,7 +196,7 @@ private fun SettingList(
 
 @Composable
 private fun PointCharge(
-    coin: Int,
+    point: Int,
     onClick: () -> Unit,
 ) {
     SettingOptionItem(
@@ -212,7 +210,7 @@ private fun PointCharge(
                     descriptionRes = R.string.profile_option_point,
                     fontColor = Color.Black,
                 )
-                Point(coin = coin)
+                Point(value = point)
             }
         },
         onClick = onClick,
@@ -270,7 +268,7 @@ private fun Privacy() {
 @Composable
 private fun Point(
     modifier: Modifier = Modifier,
-    coin: Int,
+    value: Int,
 ) {
     Row(
         modifier = modifier.padding(end = 12.dp),
@@ -283,7 +281,7 @@ private fun Point(
             tint = Color.Unspecified,
         )
         Text(
-            text = String.format("%,d", coin),
+            text = String.format("%,d", value),
             fontSize = 16.sp,
             color = Color.Black,
             fontWeight = FontWeight.Bold,
@@ -313,10 +311,4 @@ private fun SettingOptionItem(
         Box(modifier = Modifier.weight(1F)) { item() }
         endIcon()
     }
-}
-
-@Preview
-@Composable
-private fun ProfileScreenPreview() {
-    ProfileScreen()
 }

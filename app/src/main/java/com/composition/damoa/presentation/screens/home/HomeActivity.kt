@@ -32,6 +32,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
+import com.composition.damoa.data.model.User
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.composition.damoa.presentation.ui.theme.Purple60
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,7 +56,8 @@ private fun HomeScreen(
 ) {
     PetudioTheme {
         val homeNavController = rememberNavController()
-        val conceptUiState by viewModel.conceptUiState.collectAsStateWithLifecycle()
+        val profileUiState by viewModel.profileUiState.collectAsStateWithLifecycle()
+        val userUiState by viewModel.userUiState.collectAsStateWithLifecycle()
 
         Scaffold(
             bottomBar = { HomeBottomNavigationBar(navController = homeNavController) },
@@ -69,7 +71,8 @@ private fun HomeScreen(
                         bottom = padding.calculateBottomPadding(),
                     ),
                 navController = homeNavController,
-                profileConcepts = conceptUiState.profileConcepts,
+                profileConcepts = profileUiState.profileConcepts,
+                user = userUiState.user
             )
         }
     }
@@ -82,6 +85,7 @@ private fun HomeNavHost(
     navController: NavHostController = rememberNavController(),
     startDestination: String = HomeBottomNavItem.ProfileConcept.route,
     profileConcepts: List<ProfileConcept>,
+    user: User,
 ) {
     NavHost(
         modifier = modifier,
@@ -150,7 +154,7 @@ private fun HomeNavHost(
                 ),
             )
         }
-        composable(HomeBottomNavItem.Profile.route) { ProfileScreen() }
+        composable(HomeBottomNavItem.Profile.route) { ProfileScreen(user = user) }
     }
 }
 

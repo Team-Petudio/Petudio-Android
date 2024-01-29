@@ -6,6 +6,7 @@ abstract class BaseUiState {
     enum class State {
         NONE,
         LOADING,
+        NETWORK_ERROR,
         SUCCESS,
     }
 }
