@@ -3,6 +3,7 @@ package com.composition.damoa.presentation.screens.home
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -32,21 +34,28 @@ import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.composition.damoa.presentation.ui.theme.Purple60
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val viewModel: HomeViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HomeScreen()
+            HomeScreen(viewModel)
         }
     }
 }
 
 @Composable
-private fun HomeScreen() {
+private fun HomeScreen(
+    viewModel: HomeViewModel,
+) {
     PetudioTheme {
         val homeNavController = rememberNavController()
+        val conceptUiState by viewModel.conceptUiState.collectAsStateWithLifecycle()
 
         Scaffold(
             bottomBar = { HomeBottomNavigationBar(navController = homeNavController) },
@@ -60,6 +69,7 @@ private fun HomeScreen() {
                         bottom = padding.calculateBottomPadding(),
                     ),
                 navController = homeNavController,
+                profileConcepts = conceptUiState.profileConcepts,
             )
         }
     }
@@ -71,13 +81,14 @@ private fun HomeNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     startDestination: String = HomeBottomNavItem.ProfileConcept.route,
+    profileConcepts: List<ProfileConcept>,
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = startDestination,
     ) {
-        composable(HomeBottomNavItem.ProfileConcept.route) { ProfileConceptScreen() }
+        composable(HomeBottomNavItem.ProfileConcept.route) { ProfileConceptScreen(profileConcepts = profileConcepts) }
         composable(HomeBottomNavItem.Gallery.route) {
             GalleryScreen(
                 navController = navController,
@@ -185,12 +196,6 @@ private fun HomeBottomNavigationBar(navController: NavController = rememberNavCo
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun HomePreview() {
-    HomeScreen()
 }
 
 @Preview(showBackground = true)

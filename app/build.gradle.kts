@@ -117,6 +117,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-auth")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

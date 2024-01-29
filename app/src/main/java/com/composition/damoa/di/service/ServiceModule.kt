@@ -1,6 +1,7 @@
 package com.composition.damoa.di.service
 
 import com.composition.damoa.data.common.retrofit.serviceFactory.ServiceFactory
+import com.composition.damoa.data.service.ConceptService
 import com.composition.damoa.data.service.GoogleService
 import com.composition.damoa.data.service.TokenService
 import com.composition.damoa.data.service.UserService
@@ -34,7 +35,11 @@ class ServiceModule {
     @Singleton
     fun provideTokenService(
         @ServiceFactoryWithoutAuthQualifier serviceFactory: ServiceFactory,
-    ): TokenService = serviceFactory.create(
-        service = TokenService::class.java,
-    )
+    ): TokenService = serviceFactory.create(TokenService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideConceptService(
+        @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
+    ): ConceptService = serviceFactory.create(ConceptService::class.java)
 }

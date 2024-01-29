@@ -40,10 +40,13 @@ import com.composition.damoa.presentation.common.components.GradientPetudioTitle
 import com.composition.damoa.presentation.ui.theme.Purple60
 
 @Composable
-fun ProfileConceptScreen(modifier: Modifier = Modifier) {
+fun ProfileConceptScreen(
+    modifier: Modifier = Modifier,
+    profileConcepts: List<ProfileConcept>,
+) {
     Column {
         ProfileConceptTopAppBar()
-        ProfileConceptList(profileConcepts = ProfileConcept.dummy(), modifier = modifier.fillMaxSize())
+        ProfileConceptList(profileConcepts = profileConcepts, modifier = modifier.fillMaxSize())
     }
 }
 
@@ -73,7 +76,9 @@ private fun ProfileConceptList(
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
-        modifier = modifier.background(color = Color.White).padding(horizontal = 20.dp),
+        modifier = modifier
+            .background(color = Color.White)
+            .padding(horizontal = 20.dp),
         contentPadding = PaddingValues(top = 12.dp, bottom = 20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
@@ -120,8 +125,8 @@ private fun ProfileContent(
     Column(modifier = Modifier.padding(16.dp)) {
         val animalType =
             when (profileConcept.animalType) {
-                AiConceptAnimal.DOG -> stringResource(id = R.string.ai_profile_dog_only)
-                AiConceptAnimal.CAT -> stringResource(id = R.string.ai_profile_cat_only)
+                ProfileConcept.AnimalType.DOG -> stringResource(id = R.string.ai_profile_dog_only)
+                ProfileConcept.AnimalType.CAT -> stringResource(id = R.string.ai_profile_cat_only)
             }
 
         if (profileConcept.isNewConcept) NewConceptBadge(modifier = Modifier.weight(1F))
@@ -161,15 +166,15 @@ private fun ProfileCreationButton(onCreationButtonClick: () -> Unit) {
     Button(
         onClick = onCreationButtonClick,
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .heightIn(min = 40.dp, max = 60.dp),
+        Modifier
+            .fillMaxWidth()
+            .heightIn(min = 40.dp, max = 60.dp),
         shape = RoundedCornerShape(12.dp),
         colors =
-            ButtonDefaults.buttonColors(
-                backgroundColor = Purple60,
-                contentColor = Color.White,
-            ),
+        ButtonDefaults.buttonColors(
+            backgroundColor = Purple60,
+            contentColor = Color.White,
+        ),
     ) {
         Text(
             text = stringResource(id = R.string.ai_profile_creation),
@@ -201,5 +206,5 @@ private fun NewConceptBadge(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun ProfileConceptScreenPreview() {
-    ProfileConceptScreen()
+    ProfileConceptScreen(profileConcepts = ProfileConcept.dummy())
 }
