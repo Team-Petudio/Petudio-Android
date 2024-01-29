@@ -36,6 +36,8 @@ import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.composition.damoa.R
+import com.composition.damoa.data.model.PetType
+import com.composition.damoa.data.model.ProfileConcept
 import com.composition.damoa.presentation.common.components.GradientPetudioTitle
 import com.composition.damoa.presentation.ui.theme.Purple60
 
@@ -135,9 +137,9 @@ private fun ProfileContent(
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         val animalType =
-            when (profileConcept.animalType) {
-                ProfileConcept.AnimalType.DOG -> stringResource(id = R.string.ai_profile_dog_only)
-                ProfileConcept.AnimalType.CAT -> stringResource(id = R.string.ai_profile_cat_only)
+            when (profileConcept.petType) {
+                PetType.DOG -> stringResource(id = R.string.ai_profile_dog_only)
+                PetType.CAT -> stringResource(id = R.string.ai_profile_cat_only)
             }
 
         if (profileConcept.isNewConcept) NewConceptBadge(modifier = Modifier.weight(1F))

@@ -22,6 +22,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.composition.damoa.R
+import com.composition.damoa.data.model.PetType
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.MediumDescription
 
@@ -34,10 +35,10 @@ fun PaymentResultScreen(
     Surface(
         color = Color.White,
         modifier =
-            modifier
-                .background(Color.White)
-                .padding(horizontal = 20.dp)
-                .fillMaxSize(),
+        modifier
+            .background(Color.White)
+            .padding(horizontal = 20.dp)
+            .fillMaxSize(),
     ) {
         PaymentResultContent(
             modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -78,9 +79,9 @@ private fun PetAnimation(
     LottieAnimation(
         composition = composition,
         modifier =
-            modifier
-                .fillMaxWidth()
-                .aspectRatio(1F),
+        modifier
+            .fillMaxWidth()
+            .aspectRatio(1F),
         iterations = LottieConstants.IterateForever,
     )
 }

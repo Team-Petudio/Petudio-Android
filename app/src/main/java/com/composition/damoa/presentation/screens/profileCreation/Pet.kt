@@ -1,12 +1,7 @@
 package com.composition.damoa.presentation.screens.profileCreation
 
-enum class PetType {
-    DOG,
-    CAT,
-}
-
-enum class PetColor {
-    WHITE,
-    BLACK,
-    DYNAMIC,
-}
+data class Pet(
+    val id: Long,
+    val thumbnailUrl: String,
+    val petName: String,
+)

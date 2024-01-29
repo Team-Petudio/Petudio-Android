@@ -81,7 +81,8 @@ private fun ProfileCreation(
     PetudioTheme {
         val activity = LocalContext.current as? Activity
         val navController = rememberNavController()
-        val profileConceptDetail by viewModel.conceptDetailUiState.collectAsStateWithLifecycle()
+        val conceptDetailUiState by viewModel.conceptDetailUiState.collectAsStateWithLifecycle()
+        val petsUiState by viewModel.petPhotosUiState.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -93,7 +94,8 @@ private fun ProfileCreation(
             ProfileCreationNavHost(
                 modifier = Modifier.padding(top = padding.calculateTopPadding()),
                 navController = navController,
-                profileConceptDetail = profileConceptDetail.profileConceptDetail,
+                profileConceptDetail = conceptDetailUiState.profileConceptDetail,
+                pets = petsUiState.pets,
                 onPhotoSelect = onPhotoSelect,
             )
         }
@@ -123,6 +125,7 @@ private fun ProfileCreationNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     profileConceptDetail: ProfileConceptDetail,
+    pets: List<Pet>,
     onPhotoSelect: () -> Unit = {},
     startDestination: ProfileCreationScreen = ProfileCreationScreen.PROFILE_CREATION_INTRODUCE,
 ) {
@@ -138,7 +141,7 @@ private fun ProfileCreationNavHost(
             )
         }
         composable(ProfileCreationScreen.PET_PHOTO_SELECT.route) {
-            PetPhotoSelectScreen(navController = navController)
+            PetPhotoSelectScreen(pets = pets, navController = navController)
         }
         composable(ProfileCreationScreen.PET_NAME.route) {
             PetNameScreen(navController = navController)

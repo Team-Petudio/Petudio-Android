@@ -3,6 +3,7 @@ package com.composition.damoa.di.service
 import com.composition.damoa.data.common.retrofit.serviceFactory.ServiceFactory
 import com.composition.damoa.data.service.ConceptService
 import com.composition.damoa.data.service.GoogleService
+import com.composition.damoa.data.service.PetService
 import com.composition.damoa.data.service.TokenService
 import com.composition.damoa.data.service.UserService
 import com.composition.damoa.di.other.ServiceFactoryWithAuthQualifier
@@ -42,4 +43,10 @@ class ServiceModule {
     fun provideConceptService(
         @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
     ): ConceptService = serviceFactory.create(ConceptService::class.java)
+
+    @Provides
+    @Singleton
+    fun providePetService(
+        @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
+    ): PetService = serviceFactory.create(PetService::class.java)
 }

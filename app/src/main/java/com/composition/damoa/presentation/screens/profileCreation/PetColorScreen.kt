@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
+import com.composition.damoa.data.model.PetType
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription

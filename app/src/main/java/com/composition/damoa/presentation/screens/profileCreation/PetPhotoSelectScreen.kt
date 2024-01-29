@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -34,11 +33,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -46,29 +43,27 @@ import com.composition.damoa.R
 import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
-import com.composition.damoa.presentation.common.components.SmallTitle
-import com.composition.damoa.presentation.common.utils.uploadedPetPhotos
 import com.composition.damoa.presentation.ui.theme.Gray20
 import com.composition.damoa.presentation.ui.theme.Purple60
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun PetPhotoSelectScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    pets: List<Pet>,
 ) {
     Surface(
         color = Color.White,
         modifier =
-            modifier
-                .background(Color.White)
-                .fillMaxSize()
-                .padding(horizontal = 20.dp),
+        modifier
+            .background(Color.White)
+            .fillMaxSize()
+            .padding(horizontal = 20.dp),
     ) {
-        PetPhotoSelectContent(onNewPhotoUploadClick = {
-            navController.navigate(ProfileCreationScreen.PET_NAME.route)
-        })
+        PetPhotoSelectContent(
+            pets = pets,
+            onNewPhotoUploadClick = { navController.navigate(ProfileCreationScreen.PET_NAME.route) }
+        )
         KeepGoingButton(onClick = {
             // 결제하기 화면 이동
         })
@@ -76,9 +71,12 @@ fun PetPhotoSelectScreen(
 }
 
 @Composable
-private fun PetPhotoSelectContent(onNewPhotoUploadClick: () -> Unit) {
-    UploadedPetPhotoList(
-        uploadedPhotos = uploadedPetPhotos(),
+private fun PetPhotoSelectContent(
+    pets: List<Pet>,
+    onNewPhotoUploadClick: () -> Unit,
+) {
+    PetList(
+        pets = pets,
         onNewPhotoUploadClick = onNewPhotoUploadClick,
     )
 }
@@ -132,9 +130,9 @@ private fun NewPhotoUploadButton(
 }
 
 @Composable
-private fun UploadedPetPhotoList(
+private fun PetList(
     modifier: Modifier = Modifier,
-    uploadedPhotos: List<UploadedPetPhoto>,
+    pets: List<Pet>,
     onNewPhotoUploadClick: () -> Unit,
 ) {
     LazyColumn(
@@ -147,54 +145,39 @@ private fun UploadedPetPhotoList(
             PetPhotoSelectDescription()
             NewPhotoUploadButton(onClick = onNewPhotoUploadClick)
         }
-        items(uploadedPhotos) { uploadedPhoto ->
-            UploadedPetPhotoItem(photo = uploadedPhoto)
+        items(pets) { uploadedPhoto ->
+            PetItem(photo = uploadedPhoto)
         }
     }
 }
 
 @Composable
-private fun UploadedPetPhotoItem(
+private fun PetItem(
     modifier: Modifier = Modifier,
-    photo: UploadedPetPhoto,
+    photo: Pet,
     onClick: () -> Unit = {},
     selected: Boolean = false,
 ) {
-    val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy. MM. dd.")
-    val photoUploadedDate = dateTimeFormatter.format(photo.uploadedDate)
-
-    val borderWidth =
-        if (selected) {
-            2.dp
-        } else {
-            1.5.dp
-        }
-    val borderColor =
-        if (selected) {
-            Purple60
-        } else {
-            Gray20
-        }
+    val borderWidth = if (selected) 2.dp else 1.5.dp
+    val borderColor = if (selected) Purple60 else Gray20
     val interactionSource = remember { MutableInteractionSource() }
 
     Row(
-        modifier =
-            modifier
-                .selectable(
-                    selected = true,
-                    interactionSource = interactionSource,
-                    indication = null,
-                    onClick = onClick,
-                    role = Role.RadioButton,
-                )
-                .fillMaxWidth()
-                .aspectRatio(10 / 4F)
-                .border(borderWidth, borderColor, RoundedCornerShape(12.dp))
-                .padding(12.dp),
+        modifier = modifier
+            .selectable(
+                selected = true,
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick,
+                role = Role.RadioButton,
+            )
+            .fillMaxWidth()
+            .aspectRatio(10 / 4F)
+            .border(borderWidth, borderColor, RoundedCornerShape(12.dp))
+            .padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         UploadedPhotoThumbnail(thumbnailUrl = photo.thumbnailUrl)
-        UploadedPhotoInformation(photo, photoUploadedDate)
     }
 }
 
@@ -208,9 +191,9 @@ private fun UploadedPhotoThumbnail(
         shape = RoundedCornerShape(12.dp),
         elevation = 0.dp,
         modifier =
-            modifier
-                .fillMaxHeight()
-                .aspectRatio(1F),
+        modifier
+            .fillMaxHeight()
+            .aspectRatio(1F),
     ) {
         GlideImage(
             model = thumbnailUrl,
@@ -219,41 +202,4 @@ private fun UploadedPhotoThumbnail(
             contentScale = ContentScale.Crop,
         )
     }
-}
-
-@Composable
-private fun UploadedPhotoInformation(
-    uploadedPetPhoto: UploadedPetPhoto,
-    uploadedDate: String,
-) {
-    Column(
-        modifier = Modifier.fillMaxHeight(),
-        verticalArrangement = Arrangement.SpaceBetween,
-    ) {
-        SmallTitle(title = uploadedPetPhoto.petName)
-        MediumDescription(description = uploadedDate)
-    }
-}
-
-@Preview
-@Composable
-private fun PetPhotoSelectScreenPreview() {
-    PetPhotoSelectScreen(
-        navController = rememberNavController(),
-    )
-}
-
-@Preview
-@Composable
-private fun UploadedPhotoInformationPreview() {
-    UploadedPetPhotoItem(
-        modifier = Modifier.background(Color.White),
-        photo =
-            UploadedPetPhoto(
-                "",
-                "코코",
-                LocalDateTime.now(),
-            ),
-        selected = true,
-    )
 }

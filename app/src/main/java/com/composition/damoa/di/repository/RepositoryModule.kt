@@ -3,14 +3,17 @@ package com.composition.damoa.di.repository
 import com.composition.damoa.data.dataSource.local.interfaces.TokenDataSource
 import com.composition.damoa.data.repository.concretes.DefaultConceptRepository
 import com.composition.damoa.data.repository.concretes.DefaultGoogleRepository
+import com.composition.damoa.data.repository.concretes.DefaultPetRepository
 import com.composition.damoa.data.repository.concretes.DefaultTokenRepository
 import com.composition.damoa.data.repository.concretes.DefaultUserRepository
 import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.repository.interfaces.GoogleRepository
+import com.composition.damoa.data.repository.interfaces.PetRepository
 import com.composition.damoa.data.repository.interfaces.TokenRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.data.service.ConceptService
 import com.composition.damoa.data.service.GoogleService
+import com.composition.damoa.data.service.PetService
 import com.composition.damoa.data.service.TokenService
 import com.composition.damoa.data.service.UserService
 import dagger.Module
@@ -47,4 +50,10 @@ class RepositoryModule {
     fun provideConceptRepository(
         conceptService: ConceptService,
     ): ConceptRepository = DefaultConceptRepository(conceptService)
+
+    @Singleton
+    @Provides
+    fun providePetRepository(
+        petService: PetService,
+    ): PetRepository = DefaultPetRepository(petService)
 }
