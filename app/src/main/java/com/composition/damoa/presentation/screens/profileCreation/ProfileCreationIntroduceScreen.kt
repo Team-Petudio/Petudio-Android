@@ -4,51 +4,48 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.composition.damoa.R
+import com.composition.damoa.data.model.ProfileConceptDetail
 import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
 import com.composition.damoa.presentation.common.components.SmallTitle
-import com.composition.damoa.presentation.common.utils.profileExamplePhotoUrls
 
 @Composable
 fun ProfileCreationIntroduceScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    profileConceptDetail: ProfileConceptDetail,
 ) {
     Surface(
         color = Color.White,
-        modifier =
-            modifier
-                .background(Color.White)
-                .fillMaxSize()
-                .padding(horizontal = 20.dp),
+        modifier = modifier
+            .background(Color.White)
+            .fillMaxSize()
+            .padding(horizontal = 20.dp),
     ) {
-        ProfileCreationIntroduceContent(
-            Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = 100.dp),
-        )
+        ProfileCreationIntroduceContent(profileConceptDetail = profileConceptDetail)
         KeepGoingButton(onClick = {
             navController.navigate(ProfileCreationScreen.PET_PHOTO_SELECT.route)
         })
@@ -56,11 +53,29 @@ fun ProfileCreationIntroduceScreen(
 }
 
 @Composable
-private fun ProfileCreationIntroduceContent(modifier: Modifier = Modifier) {
-    Column(modifier) {
-        ProfileCreationIntroduceTitle()
-        ProfileCreationGoodExample()
-        ProfileCreationBadExample(modifier = Modifier.padding(top = 32.dp))
+private fun ProfileCreationIntroduceContent(
+    modifier: Modifier = Modifier,
+    profileConceptDetail: ProfileConceptDetail,
+) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(bottom = 100.dp),
+    ) {
+        item {
+            ProfileCreationIntroduceTitle()
+        }
+        item {
+            ProfileCreationGoodHeader()
+        }
+        item {
+            ProfileExamplePhotos(photoUrls = profileConceptDetail.successImageUrls)
+        }
+        item {
+            ProfileCreationBadHeader(modifier = Modifier.padding(top = 32.dp))
+        }
+        item {
+            ProfileExamplePhotos(photoUrls = profileConceptDetail.failImageUrls)
+        }
     }
 }
 
@@ -73,23 +88,25 @@ private fun ProfileCreationIntroduceTitle() {
 }
 
 @Composable
-private fun ProfileCreationGoodExample(modifier: Modifier = Modifier) {
+private fun ProfileCreationGoodHeader(
+    modifier: Modifier = Modifier,
+) {
     ProfileCreationIntroduce(
         modifier = modifier,
         titleRes = R.string.profile_create_good_example_intro_title,
         descriptionRes = R.string.profile_create_good_example_intro_desc,
-        profileExamplePhotoUrls = profileExamplePhotoUrls(),
     )
 }
 
 @Composable
-private fun ProfileCreationBadExample(modifier: Modifier = Modifier) {
+private fun ProfileCreationBadHeader(
+    modifier: Modifier = Modifier,
+) {
     ProfileCreationIntroduce(
         modifier = modifier,
         isShowAlertIcon = true,
         titleRes = R.string.profile_create_bad_example_intro_title,
         descriptionRes = R.string.profile_create_bad_example_intro_desc,
-        profileExamplePhotoUrls = profileExamplePhotoUrls(),
     )
 }
 
@@ -99,12 +116,10 @@ private fun ProfileCreationIntroduce(
     isShowAlertIcon: Boolean = false,
     @StringRes titleRes: Int,
     @StringRes descriptionRes: Int,
-    profileExamplePhotoUrls: List<String>,
 ) {
     Column(modifier) {
         ProfileCreationIntroduceTitle(titleRes = titleRes, isShowAlertIcon = isShowAlertIcon)
         ProfileCreationDescription(descriptionRes = descriptionRes)
-        ProfileExamplePhotos(profileExamplePhotoUrls)
     }
 }
 
@@ -133,15 +148,21 @@ private fun ProfileCreationDescription(
 }
 
 @Composable
-private fun ProfileExamplePhotos(photoUrls: List<String>) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            ProfileExamplePhoto(photoUrls[0], modifier = Modifier.weight(1F))
-            ProfileExamplePhoto(photoUrls[1], modifier = Modifier.weight(1F))
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            ProfileExamplePhoto(photoUrls[2], modifier = Modifier.weight(1F))
-            ProfileExamplePhoto(photoUrls[3], modifier = Modifier.weight(1F))
+private fun ProfileExamplePhotos(
+    modifier: Modifier = Modifier,
+    photoUrls: List<String>,
+) {
+    LazyVerticalGrid(
+        modifier = modifier
+            .background(Color.White)
+            .heightIn(max = 1000.dp),
+        columns = GridCells.Fixed(2),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(bottom = 20.dp),
+    ) {
+        items(photoUrls) { photoUrl ->
+            ProfileExamplePhoto(photoUrl = photoUrl)
         }
     }
 }
@@ -149,8 +170,8 @@ private fun ProfileExamplePhotos(photoUrls: List<String>) {
 @Composable
 @OptIn(ExperimentalGlideComposeApi::class)
 private fun ProfileExamplePhoto(
-    photoUrl: String,
     modifier: Modifier = Modifier,
+    photoUrl: String,
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -164,12 +185,4 @@ private fun ProfileExamplePhoto(
             contentScale = ContentScale.Crop,
         )
     }
-}
-
-@Preview
-@Composable
-private fun ProfileCreationPreview() {
-    ProfileCreationIntroduceScreen(
-        navController = rememberNavController(),
-    )
 }

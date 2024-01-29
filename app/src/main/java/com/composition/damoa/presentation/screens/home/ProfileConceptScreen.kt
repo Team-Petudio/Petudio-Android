@@ -43,10 +43,15 @@ import com.composition.damoa.presentation.ui.theme.Purple60
 fun ProfileConceptScreen(
     modifier: Modifier = Modifier,
     profileConcepts: List<ProfileConcept>,
+    onProfileConceptClick: (conceptId: Long) -> Unit = {},
 ) {
     Column {
         ProfileConceptTopAppBar()
-        ProfileConceptList(profileConcepts = profileConcepts, modifier = modifier.fillMaxSize())
+        ProfileConceptList(
+            modifier = modifier.fillMaxSize(),
+            profileConcepts = profileConcepts,
+            onProfileConceptClick = onProfileConceptClick,
+        )
     }
 }
 
@@ -74,6 +79,7 @@ fun ProfileConceptAppBarIcon() {
 private fun ProfileConceptList(
     profileConcepts: List<ProfileConcept>,
     modifier: Modifier = Modifier,
+    onProfileConceptClick: (conceptId: Long) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier
@@ -85,15 +91,20 @@ private fun ProfileConceptList(
         items(
             items = profileConcepts,
             key = { aiConcept -> aiConcept.conceptName },
-        ) { aiConcept -> ProfileConceptItem(aiConcept) }
+        ) { profileConcept ->
+            ProfileConceptItem(
+                profileConcept = profileConcept,
+                onCreationButtonClick = { onProfileConceptClick(profileConcept.id) },
+            )
+        }
     }
 }
 
 @Composable
 private fun ProfileConceptItem(
-    profileConcept: ProfileConcept,
     modifier: Modifier = Modifier,
-    onCreationButtonClick: () -> Unit = {},
+    profileConcept: ProfileConcept,
+    onCreationButtonClick: () -> Unit,
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),

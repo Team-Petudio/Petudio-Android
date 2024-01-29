@@ -7,5 +7,5 @@ import com.composition.damoa.presentation.screens.home.ProfileConcept
 interface ConceptRepository {
     suspend fun getConcepts(): ApiResponse<List<ProfileConcept>>
 
-    suspend fun getConceptDetail(): ApiResponse<ProfileConceptDetail>
+    suspend fun getConceptDetail(conceptId: Long): ApiResponse<ProfileConceptDetail>
 }

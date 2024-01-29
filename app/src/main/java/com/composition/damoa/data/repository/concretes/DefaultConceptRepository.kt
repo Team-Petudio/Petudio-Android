@@ -15,7 +15,7 @@ class DefaultConceptRepository(
         .getConcepts()
         .map { response -> response.data.toDomain() }
 
-    override suspend fun getConceptDetail(): ApiResponse<ProfileConceptDetail> = conceptService
-        .getConceptDetail()
+    override suspend fun getConceptDetail(conceptId: Long): ApiResponse<ProfileConceptDetail> = conceptService
+        .getConceptDetail(conceptId)
         .map { response -> response.data.toDomain() }
 }

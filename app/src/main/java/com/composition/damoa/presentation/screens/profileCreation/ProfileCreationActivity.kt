@@ -1,6 +1,8 @@
 package com.composition.damoa.presentation.screens.profileCreation
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,15 +17,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
+import com.composition.damoa.data.model.ProfileConceptDetail
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -36,7 +41,10 @@ class ProfileCreationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ProfileCreation(onPhotoSelect = ::launchPhotoPicker)
+            ProfileCreation(
+                viewModel = viewModel,
+                onPhotoSelect = ::launchPhotoPicker
+            )
         }
     }
 
@@ -49,15 +57,31 @@ class ProfileCreationActivity : ComponentActivity() {
             // 해당 작업이 끝나면 PhotoUploadResultScreen으로 이동 (View 로직)
         }
     }
+
+    companion object {
+        private const val KEY_CONCEPT_ID = "key_concept_id"
+
+        fun startActivity(context: Context, conceptId: Long) {
+            context.startActivity(getIntent(context, conceptId))
+        }
+
+        private fun getIntent(
+            context: Context,
+            conceptId: Long,
+        ): Intent = Intent(context, ProfileCreationActivity::class.java)
+            .putExtra(KEY_CONCEPT_ID, conceptId)
+    }
 }
 
 @Composable
 private fun ProfileCreation(
+    viewModel: ProfileCreationViewModel,
     onPhotoSelect: () -> Unit = {},
 ) {
     PetudioTheme {
         val activity = LocalContext.current as? Activity
         val navController = rememberNavController()
+        val profileConceptDetail by viewModel.conceptDetailUiState.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -69,6 +93,7 @@ private fun ProfileCreation(
             ProfileCreationNavHost(
                 modifier = Modifier.padding(top = padding.calculateTopPadding()),
                 navController = navController,
+                profileConceptDetail = profileConceptDetail.profileConceptDetail,
                 onPhotoSelect = onPhotoSelect,
             )
         }
@@ -97,6 +122,7 @@ private fun ProfileCreationTopAppBar(onNavigationClick: () -> Unit = {}) {
 private fun ProfileCreationNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    profileConceptDetail: ProfileConceptDetail,
     onPhotoSelect: () -> Unit = {},
     startDestination: ProfileCreationScreen = ProfileCreationScreen.PROFILE_CREATION_INTRODUCE,
 ) {
@@ -106,7 +132,10 @@ private fun ProfileCreationNavHost(
         startDestination = startDestination.route,
     ) {
         composable(ProfileCreationScreen.PROFILE_CREATION_INTRODUCE.route) {
-            ProfileCreationIntroduceScreen(navController = navController)
+            ProfileCreationIntroduceScreen(
+                navController = navController,
+                profileConceptDetail = profileConceptDetail
+            )
         }
         composable(ProfileCreationScreen.PET_PHOTO_SELECT.route) {
             PetPhotoSelectScreen(navController = navController)

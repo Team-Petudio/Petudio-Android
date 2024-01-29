@@ -1,5 +1,6 @@
 package com.composition.damoa.presentation.screens.home
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,6 +35,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.data.model.User
+import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationActivity
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.composition.damoa.presentation.ui.theme.Purple60
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,8 +66,7 @@ private fun HomeScreen(
             bottomBar = { HomeBottomNavigationBar(navController = homeNavController) },
         ) { padding ->
             HomeNavHost(
-                modifier =
-                Modifier
+                modifier = Modifier
                     .fillMaxSize()
                     .padding(
                         top = padding.calculateTopPadding(),
@@ -87,12 +89,18 @@ private fun HomeNavHost(
     profileConcepts: List<ProfileConcept>,
     user: User,
 ) {
+    val context: Context = LocalContext.current
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = startDestination,
     ) {
-        composable(HomeBottomNavItem.ProfileConcept.route) { ProfileConceptScreen(profileConcepts = profileConcepts) }
+        composable(HomeBottomNavItem.ProfileConcept.route) {
+            ProfileConceptScreen(
+                profileConcepts = profileConcepts,
+                onProfileConceptClick = { conceptId -> ProfileCreationActivity.startActivity(context, conceptId) }
+            )
+        }
         composable(HomeBottomNavItem.Gallery.route) {
             GalleryScreen(
                 navController = navController,
