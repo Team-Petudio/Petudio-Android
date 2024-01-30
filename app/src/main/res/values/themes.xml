@@ -1,8 +1,14 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Base.Theme.MyApplication" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.Petudio" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/white</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
+    <style name="Theme.Petudio" parent="Base.Theme.Petudio" />
+
+    <style name="Theme.Petudio.Login" parent="Base.Theme.Petudio">
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>

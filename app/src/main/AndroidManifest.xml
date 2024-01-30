@@ -21,7 +21,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApplication"
+        android:theme="@style/Theme.Petudio"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
@@ -41,7 +41,8 @@
         </activity>
         <activity
             android:name=".presentation.screens.login.LoginActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.Petudio.Login" />
         <activity
             android:name=".presentation.screens.pointCharge.PointChargeActivity"
             android:exported="false" />
@@ -55,7 +56,7 @@
         <activity
             android:name=".presentation.screens.home.HomeActivity"
             android:exported="true"
-            android:theme="@style/Theme.MyApplication">
+            android:theme="@style/Theme.Petudio">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
