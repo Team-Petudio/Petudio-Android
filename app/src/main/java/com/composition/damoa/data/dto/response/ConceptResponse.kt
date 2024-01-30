@@ -23,6 +23,10 @@ data class ConceptResponse(
     val isNew: Boolean,
     @SerialName("petType")
     val animalType: AnimalType,
+    @SerialName("conceptPrice")
+    val conceptPrice: Int,
+    @SerialName("discountedPrice")
+    val discountedPrice: Int,
 ) {
     enum class AnimalType {
         @SerialName("DOG")

@@ -215,9 +215,3 @@ private fun NewConceptBadge(modifier: Modifier = Modifier) {
         }
     }
 }
-
-@Preview
-@Composable
-private fun ProfileConceptScreenPreview() {
-    ProfileConceptScreen(profileConcepts = ProfileConcept.dummy())
-}
