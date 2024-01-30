@@ -1,5 +1,6 @@
 package com.composition.damoa.data.common.retrofit.serviceFactory
 
+import com.composition.damoa.data.common.retrofit.interceptor.LocaleInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
@@ -7,6 +8,7 @@ import java.util.concurrent.TimeUnit
 class ServiceFactoryWithoutAuth : ServiceFactory() {
     private val okhttpClientWithoutToken = OkHttpClient.Builder()
         .addInterceptor(httpLoggingInterceptor)
+        .addInterceptor(LocaleInterceptor())
         .connectTimeout(120, TimeUnit.SECONDS)
         .readTimeout(120, TimeUnit.SECONDS)
         .writeTimeout(120, TimeUnit.SECONDS)

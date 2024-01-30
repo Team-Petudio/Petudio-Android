@@ -2,6 +2,7 @@ package com.composition.damoa.data.common.retrofit.serviceFactory
 
 import android.content.Context
 import com.composition.damoa.data.common.retrofit.interceptor.AuthInterceptor
+import com.composition.damoa.data.common.retrofit.interceptor.LocaleInterceptor
 import com.composition.damoa.data.repository.interfaces.TokenRepository
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -14,6 +15,7 @@ class ServiceFactoryWithAuth(
     private val okhttpClient = OkHttpClient.Builder()
         .addInterceptor(httpLoggingInterceptor)
         .addInterceptor(AuthInterceptor(context, tokenRepository))
+        .addInterceptor(LocaleInterceptor())
         .connectTimeout(120, TimeUnit.SECONDS)
         .readTimeout(120, TimeUnit.SECONDS)
         .writeTimeout(120, TimeUnit.SECONDS)
