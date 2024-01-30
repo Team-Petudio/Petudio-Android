@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 import com.composition.damoa.R
 import com.composition.damoa.data.model.ProfileConceptDetail
 import com.composition.damoa.presentation.common.components.KeepGoingButton
@@ -183,6 +184,8 @@ private fun ProfileExamplePhoto(
             contentDescription = null,
             transition = CrossFade,
             contentScale = ContentScale.Crop,
+            failure = placeholder(R.drawable.img_placeholder),
+            loading = placeholder(R.drawable.img_placeholder),
         )
     }
 }
