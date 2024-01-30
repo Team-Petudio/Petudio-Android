@@ -6,5 +6,4 @@ import com.composition.damoa.data.model.ProfileConceptDetail
 fun ConceptDetailResponse.toDomain(): ProfileConceptDetail = ProfileConceptDetail(
     successImageUrls = successImageUrls,
     failImageUrls = failImageUrls,
-    conceptPoint = conceptPoint,
 )

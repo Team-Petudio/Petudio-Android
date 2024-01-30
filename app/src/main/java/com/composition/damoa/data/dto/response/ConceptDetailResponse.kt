@@ -9,6 +9,4 @@ data class ConceptDetailResponse(
     val successImageUrls: List<String>,
     @SerialName("failImageUris")
     val failImageUrls: List<String>,
-    @SerialName("conceptPrice")
-    val conceptPoint: Int,
 )

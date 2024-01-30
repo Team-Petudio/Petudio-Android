@@ -29,12 +29,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 import com.composition.damoa.R
 import com.composition.damoa.data.model.PetType
 import com.composition.damoa.data.model.ProfileConcept
@@ -127,6 +127,8 @@ private fun ProfileConceptImage(profileConcept: ProfileConcept) {
         modifier = Modifier.fillMaxSize(),
         transition = CrossFade,
         contentScale = ContentScale.Crop,
+        failure = placeholder(R.drawable.img_placeholder),
+        loading = placeholder(R.drawable.img_placeholder),
     )
 }
 

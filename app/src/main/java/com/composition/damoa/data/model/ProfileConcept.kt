@@ -7,6 +7,6 @@ data class ProfileConcept(
     val conceptImageUrl: String,
     val petType: PetType,
     val isNewConcept: Boolean,
-    val conceptPrice: Int,
-    val discountedPrice: Int,
+    val conceptPoint: Int,
+    val discountedPoint: Int,
 )

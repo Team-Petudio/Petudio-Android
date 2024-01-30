@@ -28,12 +28,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileCreationViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val userRepository: UserRepository,
     private val conceptRepository: ConceptRepository,
     private val petRepository: PetRepository,
 //    private val paymentRepository: PaymentRepository,
 ) : ViewModel() {
+    private val conceptId = requireNotNull(savedStateHandle.get<Long>(KEY_CONCEPT_ID))
+
     private val _pointUiState = MutableStateFlow(PointUiState())
 
     private val _conceptDetailUiState = MutableStateFlow(ConceptDetailUiState())
@@ -70,7 +72,6 @@ class ProfileCreationViewModel @Inject constructor(
     private fun fetchProfileConceptDetail() {
         viewModelScope.launch {
             _conceptDetailUiState.value = conceptDetailUiState.value.copy(state = State.LOADING)
-            val conceptId = savedStateHandle.get<Long>(KEY_CONCEPT_ID) ?: return@launch
 
             when (val conceptDetail = conceptRepository.getConceptDetail(conceptId)) {
                 is Success -> _conceptDetailUiState.value = conceptDetailUiState.value.copy(
@@ -152,8 +153,12 @@ class ProfileCreationViewModel @Inject constructor(
         // TODO(결제 완료 후, PAYMENT_SUCCESS 이벤트를 emit 해주세요.)
     }
 
-    private fun satisfyPaymentPoint(): Boolean {
-        return _pointUiState.value.point >= conceptDetailUiState.value.conceptDetail.conceptPoint
+    private suspend fun satisfyPaymentPoint(): Boolean {
+        val concepts = conceptRepository.getConcepts()
+        if (concepts !is Success) return false
+
+        val concept = concepts.data.find { it.id == conceptId } ?: return false
+        return _pointUiState.value.point >= concept.discountedPoint
     }
 
     enum class UiEvent {
