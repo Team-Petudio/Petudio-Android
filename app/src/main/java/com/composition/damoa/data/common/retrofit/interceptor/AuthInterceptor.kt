@@ -1,17 +1,13 @@
 package com.composition.damoa.data.common.retrofit.interceptor
 
-import android.content.Context
-import android.content.Intent
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
 import com.composition.damoa.data.repository.interfaces.TokenRepository
-import com.composition.damoa.presentation.screens.login.LoginActivity
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 
 class AuthInterceptor(
-    private val context: Context,
     private val tokenRepository: TokenRepository,
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -25,7 +21,6 @@ class AuthInterceptor(
                     response.close()
                     newResponse = chain.proceedWithToken(TOKEN_FORMAT.format(accessToken))
                 },
-                onFailure = { navigateToLoginScreen() },
             )
         }
         return newResponse
@@ -33,12 +28,11 @@ class AuthInterceptor(
 
     private fun reissueToken(
         onSuccess: (accessToken: String) -> Unit,
-        onFailure: () -> Unit,
     ) {
         runBlocking {
             when (tokenRepository.reissueToken()) {
                 is Success -> onSuccess(tokenRepository.getToken().accessToken)
-                else -> onFailure()
+                else -> Unit
             }
         }
     }
@@ -57,12 +51,6 @@ class AuthInterceptor(
     ): Request = newBuilder().addHeader(key, value).build()
 
     private fun Response.isInvalidToken(): Boolean = (code == 401)
-
-    private fun navigateToLoginScreen() {
-        val loginStartIntent = Intent(context, LoginActivity::class.java)
-            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(loginStartIntent)
-    }
 
     companion object {
         private const val ACCESS_TOKEN_HEADER = "authorization"

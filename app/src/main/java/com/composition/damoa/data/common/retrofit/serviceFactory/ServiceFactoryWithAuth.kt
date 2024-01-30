@@ -1,6 +1,5 @@
 package com.composition.damoa.data.common.retrofit.serviceFactory
 
-import android.content.Context
 import com.composition.damoa.data.common.retrofit.interceptor.AuthInterceptor
 import com.composition.damoa.data.common.retrofit.interceptor.LocaleInterceptor
 import com.composition.damoa.data.repository.interfaces.TokenRepository
@@ -9,12 +8,11 @@ import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
 class ServiceFactoryWithAuth(
-    context: Context,
     tokenRepository: TokenRepository,
 ) : ServiceFactory() {
     private val okhttpClient = OkHttpClient.Builder()
         .addInterceptor(httpLoggingInterceptor)
-        .addInterceptor(AuthInterceptor(context, tokenRepository))
+        .addInterceptor(AuthInterceptor(tokenRepository))
         .addInterceptor(LocaleInterceptor())
         .connectTimeout(120, TimeUnit.SECONDS)
         .readTimeout(120, TimeUnit.SECONDS)
