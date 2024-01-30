@@ -2,6 +2,7 @@ package com.composition.damoa.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val Purple80 = Color(0xFF9C85F0)
 val Purple60 = Color(0xFFAE9BF2)
 val Pink80 = Color(0xFFF1AEF2)
 val Pink40 = Color(0xFFF2A7CA)

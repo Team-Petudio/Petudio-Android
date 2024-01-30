@@ -24,6 +24,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,7 +45,9 @@ import com.composition.damoa.data.model.User
 import com.composition.damoa.presentation.common.components.BigDescription
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.MediumDescription
+import com.composition.damoa.presentation.common.components.PetudioDialog
 import com.composition.damoa.presentation.screens.pointCharge.PointChargeActivity
+import com.composition.damoa.presentation.ui.theme.AlertIconColor
 import com.composition.damoa.presentation.ui.theme.Gray10
 import com.composition.damoa.presentation.ui.theme.Gray30
 import com.composition.damoa.presentation.ui.theme.Gray40
@@ -51,7 +57,12 @@ import com.composition.damoa.presentation.ui.theme.Gray40
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     user: User,
+    onLogout: () -> Unit,
+    onSignOut: () -> Unit,
 ) {
+    var isShowLogoutDialog by rememberSaveable { mutableStateOf(false) }
+    var isShowSignOutDialog by rememberSaveable { mutableStateOf(false) }
+
     Column(
         modifier
             .background(Color.White)
@@ -66,8 +77,27 @@ fun ProfileScreen(
         )
         SettingList(modifier = Modifier.padding(top = 28.dp), point = user.point)
         Spacer(modifier = Modifier.weight(1F))
-        LogoutButton(modifier = Modifier.padding(top = 28.dp))
-        SignOutButton(modifier = Modifier.padding(top = 12.dp))
+        LogoutButton(modifier = Modifier.padding(top = 28.dp)) { isShowLogoutDialog = true }
+        SignOutButton(modifier = Modifier.padding(top = 12.dp)) { isShowSignOutDialog = true }
+
+        if (isShowLogoutDialog) {
+            LogoutDialog(
+                onDismissClick = { isShowLogoutDialog = false },
+                onLogoutClick = {
+                    onLogout()
+                    isShowLogoutDialog = false
+                },
+            )
+        }
+        if (isShowSignOutDialog) {
+            SignOutDialog(
+                onDismissClick = { isShowSignOutDialog = false },
+                onSignOutClick = {
+                    onSignOut()
+                    isShowSignOutDialog = false
+                },
+            )
+        }
     }
 }
 
@@ -77,8 +107,7 @@ private fun LogoutButton(
     onClick: () -> Unit = {},
 ) {
     OutlinedButton(
-        modifier =
-        modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(48.dp),
         shape = RoundedCornerShape(12.dp),
@@ -297,8 +326,7 @@ private fun SettingOptionItem(
     onClick: () -> Unit = {},
 ) {
     Row(
-        modifier =
-        modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 12.dp)
             .clip(RoundedCornerShape(12.dp))
@@ -311,4 +339,32 @@ private fun SettingOptionItem(
         Box(modifier = Modifier.weight(1F)) { item() }
         endIcon()
     }
+}
+
+@Composable
+private fun LogoutDialog(
+    onDismissClick: () -> Unit = {},
+    onLogoutClick: () -> Unit,
+) {
+    PetudioDialog(
+        dialogTitleRes = R.string.logout,
+        dialogDescRes = R.string.logout_desc,
+        onDismissClick = onDismissClick,
+        onConfirmClick = onLogoutClick,
+    )
+}
+
+@Composable
+private fun SignOutDialog(
+    onDismissClick: () -> Unit = {},
+    onSignOutClick: () -> Unit,
+) {
+    PetudioDialog(
+        painter = painterResource(R.drawable.alert),
+        iconColor = AlertIconColor,
+        dialogTitleRes = R.string.sign_out,
+        dialogDescRes = R.string.sign_out_desc,
+        onDismissClick = onDismissClick,
+        onConfirmClick = onSignOutClick,
+    )
 }

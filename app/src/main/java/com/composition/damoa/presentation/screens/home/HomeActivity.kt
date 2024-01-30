@@ -1,6 +1,7 @@
 package com.composition.damoa.presentation.screens.home
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -36,20 +37,35 @@ import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.data.model.ProfileConcept
 import com.composition.damoa.data.model.User
+import com.composition.damoa.presentation.common.extensions.onUi
+import com.composition.damoa.presentation.common.extensions.showToast
+import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.LOGOUT_FAILURE
+import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.LOGOUT_SUCCESS
+import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.SIGN_OUT_FAILURE
+import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.SIGN_OUT_SUCCESS
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationActivity
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.composition.damoa.presentation.ui.theme.Purple60
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDateTime
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class HomeActivity : ComponentActivity() {
     private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             HomeScreen(viewModel)
+        }
+    }
+
+    companion object {
+        fun startActivity(context: Context) {
+            val homeStartIntent = Intent(context, HomeActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(homeStartIntent)
         }
     }
 }
@@ -59,9 +75,19 @@ private fun HomeScreen(
     viewModel: HomeViewModel,
 ) {
     PetudioTheme {
+        val activity = LocalContext.current as? ComponentActivity
         val homeNavController = rememberNavController()
         val profileUiState by viewModel.profileUiState.collectAsStateWithLifecycle()
         val userUiState by viewModel.userUiState.collectAsStateWithLifecycle()
+
+        activity?.onUi {
+            viewModel.event.collectLatest { event ->
+                when (event) {
+                    LOGOUT_SUCCESS, SIGN_OUT_SUCCESS -> HomeActivity.startActivity(activity)
+                    LOGOUT_FAILURE, SIGN_OUT_FAILURE -> activity.showToast(R.string.network_failure_message)
+                }
+            }
+        }
 
         Scaffold(
             bottomBar = { HomeBottomNavigationBar(navController = homeNavController) },
@@ -75,7 +101,9 @@ private fun HomeScreen(
                     ),
                 navController = homeNavController,
                 profileConcepts = profileUiState.profileConcepts,
-                user = userUiState.user
+                user = userUiState.user,
+                onLogout = { viewModel.logout() },
+                onSignOut = { viewModel.signOut() },
             )
         }
     }
@@ -89,6 +117,8 @@ private fun HomeNavHost(
     startDestination: String = HomeBottomNavItem.ProfileConcept.route,
     profileConcepts: List<ProfileConcept>,
     user: User,
+    onLogout: () -> Unit = {},
+    onSignOut: () -> Unit = {},
 ) {
     val context: Context = LocalContext.current
     NavHost(
@@ -163,7 +193,13 @@ private fun HomeNavHost(
                 ),
             )
         }
-        composable(HomeBottomNavItem.Profile.route) { ProfileScreen(user = user) }
+        composable(HomeBottomNavItem.Profile.route) {
+            ProfileScreen(
+                user = user,
+                onLogout = onLogout,
+                onSignOut = onSignOut,
+            )
+        }
     }
 }
 

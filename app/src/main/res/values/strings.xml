@@ -10,8 +10,10 @@
     <string name="ai_profile_cat_only">반려묘 전용</string>
     <string name="navigate_back">뒤로가기</string>
     <string name="keep_going">계속하기</string>
-    가
+    <string name="confirm">확인</string>
+    <string name="cancel">취소</string>
     <string name="done">완료</string>
+    <string name="network_failure_message">네트워크 연결이 원활하지 않습니다\n잠시 후 다시 시도해 주세요 😢</string>
 
     <string name="profile_create_introduce_title">시작하기 전</string>
     <string name="profile_create_good_example_intro_title">무한한 강아지 프로필을 만나보세요.</string>
@@ -86,7 +88,9 @@
     <string name="profile_option_terms_of_use">이용약관</string>
     <string name="profile_option_privacy">개인정보 처리방침</string>
     <string name="logout">로그아웃</string>
+    <string name="logout_desc">정말로 로그아웃 하시겠습니까?</string>
     <string name="sign_out">회원탈퇴</string>
+    <string name="sign_out_desc">탈퇴하시면 이용내역 및 AI 프로필 제작 내역이 모두 삭제되며, 복구할 수 없습니다.\n정말로 탈퇴 하시겠습니까?</string>
 
     <string name="point_charge_title">포인트 충전</string>
     <string name="my_point">보유 포인트</string>

@@ -12,7 +12,9 @@ import com.composition.damoa.presentation.common.base.BaseUiState
 import com.composition.damoa.presentation.screens.home.state.ProfileUiState
 import com.composition.damoa.presentation.screens.home.state.UserUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,6 +29,9 @@ class HomeViewModel @Inject constructor(
 
     private val _userUiState = MutableStateFlow(UserUiState())
     val userUiState = _userUiState.asStateFlow()
+
+    private val _event = MutableSharedFlow<Event>()
+    val event = _event.asSharedFlow()
 
     init {
         fetchProfileConcepts()
@@ -71,5 +76,31 @@ class HomeViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            when (userRepository.logout()) {
+                is Success -> _event.emit(Event.LOGOUT_SUCCESS)
+                else -> _event.emit(Event.LOGOUT_FAILURE)
+            }
+        }
+    }
+
+    fun signOut() {
+        viewModelScope.launch {
+            when (userRepository.signOut()) {
+                is Success -> _event.emit(Event.SIGN_OUT_SUCCESS)
+                else -> _event.emit(Event.SIGN_OUT_FAILURE)
+
+            }
+        }
+    }
+
+    enum class Event {
+        LOGOUT_SUCCESS,
+        LOGOUT_FAILURE,
+        SIGN_OUT_SUCCESS,
+        SIGN_OUT_FAILURE,
     }
 }

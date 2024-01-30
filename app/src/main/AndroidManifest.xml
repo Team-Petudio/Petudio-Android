@@ -53,7 +53,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
         <activity
-            android:name=".presentation.screens.home.MainActivity"
+            android:name=".presentation.screens.home.HomeActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
