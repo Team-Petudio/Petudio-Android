@@ -55,6 +55,8 @@ import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.composition.damoa.R
+import com.composition.damoa.data.model.Album
+import com.composition.damoa.data.model.PetFeed
 import com.composition.damoa.presentation.common.components.GradientButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
@@ -72,23 +74,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-data class Album(
-    val id: Int,
-    val title: String,
-    val concept: String,
-    val thumbnailUrl: String,
-    val photoUrls: List<String>,
-    val date: LocalDateTime,
-)
-
-data class PetFeed(
-    val id: Int,
-    val title: String,
-    val concept: String,
-    val likeCount: Int,
-    val isLike: Boolean,
-    val thumbnailUrl: String,
-)
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
@@ -216,7 +201,7 @@ private fun EmptyAlbumScreen(
         )
         GradientButton(
             modifier =
-                Modifier.aspectRatio(5 / 1F),
+            Modifier.aspectRatio(5 / 1F),
             text = stringResource(id = R.string.create_ai_profile_button_content),
             gradient = Brush.linearGradient(PrimaryColors),
             fontSize = 18.sp,
@@ -254,10 +239,10 @@ private fun AlbumItem(
 ) {
     Column(
         modifier =
-            modifier
-                .border(BorderStroke(3.dp, Brush.verticalGradient(PrimaryColors)), RoundedCornerShape(12.dp))
-                .clip(RoundedCornerShape(12.dp))
-                .clickable { onClick() },
+        modifier
+            .border(BorderStroke(3.dp, Brush.verticalGradient(PrimaryColors)), RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { onClick() },
     ) {
         AlbumThumbnailImage(thumbnailUrl = album.thumbnailUrl)
         AlbumBody(modifier = Modifier.padding(bottom = 12.dp), album = album)
@@ -293,9 +278,9 @@ private fun AlbumBody(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Bottom,
         modifier =
-            modifier
-                .padding(top = 16.dp, start = 12.dp, end = 12.dp)
-                .fillMaxWidth(),
+        modifier
+            .padding(top = 16.dp, start = 12.dp, end = 12.dp)
+            .fillMaxWidth(),
     ) {
         AlbumTitle(album = album)
         AlbumDate(date = album.date)
@@ -396,9 +381,9 @@ private fun FeedBody(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier =
-            modifier
-                .padding(top = 16.dp)
-                .fillMaxWidth(),
+        modifier
+            .padding(top = 16.dp)
+            .fillMaxWidth(),
     ) {
         FeedTitle(petFeed)
         LikeButton(petFeed = petFeed)
@@ -485,19 +470,19 @@ private fun navigateToProfileCreation(context: Context) {
 private fun AlbumItemPreview() {
     AlbumItem(
         album =
-            Album(
-                id = 0,
-                title = "코코",
-                concept = "트렌디 룩북 컨셉",
-                thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                photoUrls =
-                    listOf(
-                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                    ),
-                date = LocalDateTime.now(),
+        Album(
+            id = 0,
+            title = "코코",
+            concept = "트렌디 룩북 컨셉",
+            thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+            photoUrls =
+            listOf(
+                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
             ),
+            date = LocalDateTime.now(),
+        ),
     )
 }
 
@@ -506,14 +491,14 @@ private fun AlbumItemPreview() {
 private fun PetFeedItemPreview() {
     PetFeedItem(
         petFeed =
-            PetFeed(
-                id = 0,
-                title = "코코",
-                concept = "트렌디 룩북 컨셉",
-                isLike = false,
-                thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                likeCount = 0,
-            ),
+        PetFeed(
+            id = 0,
+            title = "코코",
+            concept = "트렌디 룩북 컨셉",
+            isLike = false,
+            thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+            likeCount = 0,
+        ),
     )
 }
 
@@ -545,31 +530,31 @@ private fun GalleryPetFeedScreenPreview() {
         navController = rememberNavController(),
         pagerState = rememberPagerState(initialPage = 1) { 0 },
         petFeeds =
-            listOf(
-                PetFeed(
-                    id = 0,
-                    title = "코코",
-                    concept = "트렌디 룩북 컨셉",
-                    isLike = false,
-                    thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                    likeCount = 0,
-                ),
-                PetFeed(
-                    id = 0,
-                    title = "코코",
-                    concept = "트렌디 룩북 컨셉",
-                    isLike = false,
-                    thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                    likeCount = 0,
-                ),
-                PetFeed(
-                    id = 0,
-                    title = "코코",
-                    concept = "트렌디 룩북 컨셉",
-                    isLike = false,
-                    thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                    likeCount = 0,
-                ),
+        listOf(
+            PetFeed(
+                id = 0,
+                title = "코코",
+                concept = "트렌디 룩북 컨셉",
+                isLike = false,
+                thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                likeCount = 0,
             ),
+            PetFeed(
+                id = 0,
+                title = "코코",
+                concept = "트렌디 룩북 컨셉",
+                isLike = false,
+                thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                likeCount = 0,
+            ),
+            PetFeed(
+                id = 0,
+                title = "코코",
+                concept = "트렌디 룩북 컨셉",
+                isLike = false,
+                thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                likeCount = 0,
+            ),
+        ),
     )
 }
