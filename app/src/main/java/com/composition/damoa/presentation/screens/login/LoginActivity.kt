@@ -59,6 +59,7 @@ import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.common.extensions.repeatOnStarted
 import com.composition.damoa.presentation.common.extensions.showToast
+import com.composition.damoa.presentation.screens.home.HomeActivity
 import com.composition.damoa.presentation.screens.login.authManager.AuthManager
 import com.composition.damoa.presentation.screens.login.state.LoginUiEvent
 import com.composition.damoa.presentation.ui.theme.Gray20
@@ -110,7 +111,7 @@ class LoginActivity : ComponentActivity() {
                 when (uiEvent) {
                     LoginUiEvent.NONE -> Unit
                     LoginUiEvent.LOGIN_FAILURE -> onUi { showToast(R.string.login_failure_message) }
-                    LoginUiEvent.LOGIN_SUCCESS -> finish()
+                    LoginUiEvent.LOGIN_SUCCESS -> HomeActivity.startActivity(this)
                 }
             }
         }
