@@ -7,6 +7,8 @@ import kotlinx.serialization.Serializable
 data class GoogleLoginResponse(
     @SerialName("access_token")
     val accessToken: String,
+    @SerialName("refresh_token")
+    val refreshToken: String? = null,
     @SerialName("expires_in")
     val expiresIn: Int,
     @SerialName("scope")
