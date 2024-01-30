@@ -38,6 +38,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -46,19 +47,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composition.damoa.R
 import com.composition.damoa.data.model.User.SocialType
 import com.composition.damoa.di.other.GoogleAuth
 import com.composition.damoa.di.other.KakaoAuth
 import com.composition.damoa.presentation.common.base.BaseUiState.State
+import com.composition.damoa.presentation.common.components.CircularLoadingBar
 import com.composition.damoa.presentation.common.components.GradientPetudioSubTitle
 import com.composition.damoa.presentation.common.components.GradientPetudioTitle
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.extensions.onUi
-import com.composition.damoa.presentation.common.extensions.repeatOnStarted
 import com.composition.damoa.presentation.common.extensions.showToast
 import com.composition.damoa.presentation.screens.home.HomeActivity
 import com.composition.damoa.presentation.screens.login.authManager.AuthManager
@@ -83,51 +84,34 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LoginScreen(onLogin = ::login)
-        }
-        collect()
-    }
-
-    private fun collect() {
-        collectLoginUiState()
-        collectLoginUiEvent()
-    }
-
-    private fun collectLoginUiState() {
-        repeatOnStarted {
-            viewModel.loginUiState.collectLatest { uiState ->
-                when (uiState.state) {
-                    State.NONE -> Unit
-                    State.LOADING -> Unit
-                    State.NETWORK_ERROR -> Unit
-                    State.SUCCESS -> Unit
-                }
-            }
-        }
-    }
-
-    private fun collectLoginUiEvent() {
-        repeatOnStarted {
-            viewModel.loginUiEvent.collectLatest { uiEvent ->
-                when (uiEvent) {
-                    LoginUiEvent.NONE -> Unit
-                    LoginUiEvent.LOGIN_FAILURE -> onUi { showToast(R.string.login_failure_message) }
-                    LoginUiEvent.LOGIN_SUCCESS -> HomeActivity.startActivity(this)
-                }
-            }
+            LoginScreen(
+                viewModel = viewModel,
+                onLogin = ::login
+            )
         }
     }
 
     private fun login(socialType: SocialType) {
+        viewModel.changeToLoading()
         when (socialType) {
             SocialType.GOOGLE -> googleAuthManager.login(
                 onSuccess = { accessToken, fcmToken -> viewModel.login(SocialType.GOOGLE, accessToken, fcmToken) },
-                onFailure = { onUi { showToast(R.string.login_failure_message) } }
+                onFailure = {
+                    onUi {
+                        showToast(R.string.login_failure_message)
+                        viewModel.changeToNone()
+                    }
+                }
             )
 
             SocialType.KAKAO -> kakaoAuthManager.login(
                 onSuccess = { accessToken, fcmToken -> viewModel.login(SocialType.KAKAO, accessToken, fcmToken) },
-                onFailure = { onUi { showToast(R.string.login_failure_message) } }
+                onFailure = {
+                    onUi {
+                        showToast(R.string.login_failure_message)
+                        viewModel.changeToNone()
+                    }
+                }
             )
 
             SocialType.APPLE -> onUi { showToast(R.string.login_failure_message) }
@@ -147,16 +131,28 @@ class LoginActivity : ComponentActivity() {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 private fun LoginScreen(
     modifier: Modifier = Modifier,
+    viewModel: LoginViewModel,
     onLogin: (SocialType) -> Unit = {},
 ) {
-    val context = LocalContext.current
+    val activity = LocalContext.current as? ComponentActivity
+    val loginUiState by viewModel.loginUiState.collectAsStateWithLifecycle()
+
+    activity?.onUi {
+        viewModel.loginUiEvent.collectLatest { uiEvent ->
+            when (uiEvent) {
+                LoginUiEvent.LOGIN_FAILURE -> activity.showToast(R.string.login_failure_message)
+                LoginUiEvent.LOGIN_SUCCESS -> HomeActivity.startActivity(activity)
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = { LoginTopBar { (context as? Activity)?.finish() } },
+        topBar = { LoginTopBar { activity?.finish() } },
     ) {
         LoginBackground()
         LoginForeground(onLogin = onLogin)
+        if (loginUiState.state == State.LOADING) LoadingScreen()
     }
 }
 
@@ -310,8 +306,14 @@ private fun LoginButton(
     }
 }
 
-@Preview
 @Composable
-private fun LoginPreview() {
-    LoginScreen()
+private fun LoadingScreen(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.Transparent),
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularLoadingBar(size = 60.dp)
+    }
 }
