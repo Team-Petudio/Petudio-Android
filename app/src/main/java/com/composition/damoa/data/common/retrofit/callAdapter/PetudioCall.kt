@@ -18,6 +18,7 @@ class PetudioCall<T : Any>(
         call.enqueue(object : Callback<T> {
             override fun onResponse(call: Call<T>, result: Response<T>) {
                 val apiResult = when {
+                    !result.isSuccessful && result.code() == 401 -> TokenExpired
                     !result.isSuccessful -> Failure(result.code(), result.errorBody()?.string())
                     responseType == Unit::class.java -> Success(Unit as T, result.headers())
                     result.body() == null -> Unexpected(Throwable(NOT_EXIST_BODY))

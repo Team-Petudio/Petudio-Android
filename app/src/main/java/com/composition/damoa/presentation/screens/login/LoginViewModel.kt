@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.composition.damoa.data.common.retrofit.callAdapter.Failure
 import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
+import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.model.User.SocialType
 import com.composition.damoa.data.repository.interfaces.UserRepository
@@ -36,7 +37,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             when (userRepository.login(socialType, socialAccessToken, fcmToken)) {
                 is Success -> _loginUiEvent.emit(LoginUiEvent.LOGIN_SUCCESS)
-                is Failure, NetworkError, is Unexpected -> _loginUiEvent.emit(LoginUiEvent.LOGIN_FAILURE)
+                is Failure, NetworkError, TokenExpired, is Unexpected -> _loginUiEvent.emit(LoginUiEvent.LOGIN_FAILURE)
             }
         }
     }

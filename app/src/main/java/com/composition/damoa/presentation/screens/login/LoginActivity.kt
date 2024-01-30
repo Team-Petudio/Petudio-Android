@@ -2,6 +2,7 @@ package com.composition.damoa.presentation.screens.login
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -130,6 +131,12 @@ class LoginActivity : ComponentActivity() {
             )
 
             SocialType.APPLE -> Unit
+        }
+    }
+
+    companion object {
+        fun startActivity(activity: Activity) {
+            activity.startActivity(Intent(activity, LoginActivity::class.java))
         }
     }
 }

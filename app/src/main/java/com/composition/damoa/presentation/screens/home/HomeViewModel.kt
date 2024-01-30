@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.composition.damoa.data.common.retrofit.callAdapter.Failure
 import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
+import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
@@ -47,7 +48,7 @@ class HomeViewModel @Inject constructor(
                     profileConcepts = concepts.data
                 )
 
-                NetworkError -> _profileUiState.value = profileUiState.value.copy(
+                NetworkError, TokenExpired -> _profileUiState.value = profileUiState.value.copy(
                     state = BaseUiState.State.NETWORK_ERROR
                 )
 
@@ -67,7 +68,7 @@ class HomeViewModel @Inject constructor(
                     user = user.data
                 )
 
-                NetworkError -> _userUiState.value = userUiState.value.copy(
+                NetworkError, TokenExpired -> _userUiState.value = userUiState.value.copy(
                     state = BaseUiState.State.NETWORK_ERROR
                 )
 

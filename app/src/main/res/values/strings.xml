@@ -87,6 +87,7 @@
     <string name="profile_option_ask">문의하기</string>
     <string name="profile_option_terms_of_use">이용약관</string>
     <string name="profile_option_privacy">개인정보 처리방침</string>
+    <string name="login">로그인</string>
     <string name="logout">로그아웃</string>
     <string name="logout_desc">정말로 로그아웃 하시겠습니까?</string>
     <string name="sign_out">회원탈퇴</string>

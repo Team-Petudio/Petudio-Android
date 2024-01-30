@@ -4,6 +4,7 @@ import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
 import com.composition.damoa.data.common.retrofit.callAdapter.Failure
 import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
+import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.common.utils.TokenParser
 import com.composition.damoa.data.dto.request.LoginRequest
@@ -33,6 +34,7 @@ class DefaultUserRepository(
 
             is Failure -> Failure(loginResult.code, loginResult.message)
             NetworkError -> NetworkError
+            TokenExpired -> TokenExpired
             is Unexpected -> Unexpected(loginResult.error)
         }
 

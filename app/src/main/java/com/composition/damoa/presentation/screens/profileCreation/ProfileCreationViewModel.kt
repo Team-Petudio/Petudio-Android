@@ -7,6 +7,7 @@ import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
 import com.composition.damoa.data.common.retrofit.callAdapter.Failure
 import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
+import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.model.PetColor
 import com.composition.damoa.data.repository.interfaces.ConceptRepository
@@ -63,8 +64,13 @@ class ProfileCreationViewModel @Inject constructor(
         viewModelScope.launch {
             when (val user = userRepository.getUser()) {
                 is Success -> _pointUiState.value = PointUiState(point = user.data.point)
-                NetworkError -> _pointUiState.value = _pointUiState.value.copy(state = State.NETWORK_ERROR)
-                is Failure, is Unexpected -> _pointUiState.value = _pointUiState.value.copy(state = State.NONE)
+                NetworkError, TokenExpired -> _pointUiState.value = _pointUiState.value.copy(
+                    state = State.NETWORK_ERROR
+                )
+
+                is Failure, is Unexpected -> _pointUiState.value = _pointUiState.value.copy(
+                    state = State.NONE
+                )
             }
         }
     }
@@ -79,7 +85,7 @@ class ProfileCreationViewModel @Inject constructor(
                     conceptDetail = conceptDetail.data
                 )
 
-                NetworkError -> _conceptDetailUiState.value = conceptDetailUiState.value.copy(
+                NetworkError, TokenExpired -> _conceptDetailUiState.value = conceptDetailUiState.value.copy(
                     state = State.NETWORK_ERROR
                 )
 
@@ -99,7 +105,7 @@ class ProfileCreationViewModel @Inject constructor(
                     pets = conceptDetail.data
                 )
 
-                NetworkError -> _petPhotosUiState.value = petPhotosUiState.value.copy(
+                NetworkError, TokenExpired -> _petPhotosUiState.value = petPhotosUiState.value.copy(
                     state = State.NETWORK_ERROR
                 )
 
@@ -127,7 +133,9 @@ class ProfileCreationViewModel @Inject constructor(
                     payment()
                 }
 
-                NetworkError -> _petInfoUiState.value = petInfoUiState.value.copy(state = State.NETWORK_ERROR)
+                NetworkError, TokenExpired -> _petInfoUiState.value =
+                    petInfoUiState.value.copy(state = State.NETWORK_ERROR)
+
                 is Failure, is Unexpected -> _petInfoUiState.value = petInfoUiState.value.copy(state = State.NONE)
             }
         }

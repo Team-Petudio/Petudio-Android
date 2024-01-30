@@ -42,10 +42,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
 import com.composition.damoa.data.model.User
+import com.composition.damoa.presentation.common.base.BaseUiState
 import com.composition.damoa.presentation.common.components.BigDescription
 import com.composition.damoa.presentation.common.components.BigTitle
+import com.composition.damoa.presentation.common.components.LoginButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.PetudioDialog
+import com.composition.damoa.presentation.screens.home.state.UserUiState
 import com.composition.damoa.presentation.screens.pointCharge.PointChargeActivity
 import com.composition.damoa.presentation.ui.theme.AlertIconColor
 import com.composition.damoa.presentation.ui.theme.Gray10
@@ -56,12 +59,15 @@ import com.composition.damoa.presentation.ui.theme.Gray40
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    user: User,
+    userUiState: UserUiState,
     onLogout: () -> Unit,
     onSignOut: () -> Unit,
+    onLogin: () -> Unit,
 ) {
     var isShowLogoutDialog by rememberSaveable { mutableStateOf(false) }
     var isShowSignOutDialog by rememberSaveable { mutableStateOf(false) }
+    val user = userUiState.user
+    val isLogin = userUiState.state != BaseUiState.State.NETWORK_ERROR
 
     Column(
         modifier
@@ -71,14 +77,15 @@ fun ProfileScreen(
             .verticalScroll(rememberScrollState()),
     ) {
         ProfileTitle()
-        UserAccount(
-            modifier = Modifier.padding(top = 28.dp),
-            user = user,
-        )
-        SettingList(modifier = Modifier.padding(top = 28.dp), point = user.point)
+        if (isLogin) UserAccount(modifier = Modifier.padding(top = 28.dp), user = user)
+        SettingList(modifier = Modifier.padding(top = 28.dp), point = user.point, isLogin = isLogin)
         Spacer(modifier = Modifier.weight(1F))
-        LogoutButton(modifier = Modifier.padding(top = 28.dp)) { isShowLogoutDialog = true }
-        SignOutButton(modifier = Modifier.padding(top = 12.dp)) { isShowSignOutDialog = true }
+        if (isLogin) {
+            LogoutButton(modifier = Modifier.padding(top = 28.dp)) { isShowLogoutDialog = true }
+            SignOutButton(modifier = Modifier.padding(top = 12.dp)) { isShowSignOutDialog = true }
+        } else {
+            LoginButton(modifier = Modifier.padding(bottom = 28.dp), onClick = onLogin)
+        }
 
         if (isShowLogoutDialog) {
             LogoutDialog(
@@ -212,10 +219,11 @@ private fun Account(
 private fun SettingList(
     modifier: Modifier = Modifier,
     point: Int,
+    isLogin: Boolean,
 ) {
     val context = LocalContext.current
     Column(modifier) {
-        PointCharge(point) { context.startActivity(PointChargeActivity.getIntent(context)) }
+        if (isLogin) PointCharge(point) { context.startActivity(PointChargeActivity.getIntent(context)) }
         Question()
         Ask()
         TermOfUse()

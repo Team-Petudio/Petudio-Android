@@ -36,13 +36,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.data.model.ProfileConcept
-import com.composition.damoa.data.model.User
 import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.common.extensions.showToast
 import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.LOGOUT_FAILURE
 import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.LOGOUT_SUCCESS
 import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.SIGN_OUT_FAILURE
 import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.SIGN_OUT_SUCCESS
+import com.composition.damoa.presentation.screens.home.state.UserUiState
+import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationActivity
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.composition.damoa.presentation.ui.theme.Purple60
@@ -101,9 +102,10 @@ private fun HomeScreen(
                     ),
                 navController = homeNavController,
                 profileConcepts = profileUiState.profileConcepts,
-                user = userUiState.user,
+                userUiState = userUiState,
                 onLogout = { viewModel.logout() },
                 onSignOut = { viewModel.signOut() },
+                onLogin = { activity?.run { LoginActivity.startActivity(this) } },
             )
         }
     }
@@ -116,9 +118,10 @@ private fun HomeNavHost(
     navController: NavHostController = rememberNavController(),
     startDestination: String = HomeBottomNavItem.ProfileConcept.route,
     profileConcepts: List<ProfileConcept>,
-    user: User,
+    userUiState: UserUiState,
     onLogout: () -> Unit = {},
     onSignOut: () -> Unit = {},
+    onLogin: () -> Unit = {},
 ) {
     val context: Context = LocalContext.current
     NavHost(
@@ -195,9 +198,10 @@ private fun HomeNavHost(
         }
         composable(HomeBottomNavItem.Profile.route) {
             ProfileScreen(
-                user = user,
+                userUiState = userUiState,
                 onLogout = onLogout,
                 onSignOut = onSignOut,
+                onLogin = onLogin,
             )
         }
     }
@@ -218,7 +222,7 @@ private fun HomeBottomNavigationBar(navController: NavController = rememberNavCo
                 selected = isSelected,
                 onClick = {
                     if (currentRoute == item.route) return@BottomNavigationItem
-                    
+
                     navController.navigate(item.route) {
                         popUpTo(navController.graph.startDestinationId)
                         launchSingleTop = true
