@@ -1,6 +1,5 @@
 package com.composition.damoa.presentation.screens.pointCharge
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -53,10 +52,14 @@ import com.composition.damoa.presentation.common.components.GradientButton
 import com.composition.damoa.presentation.common.components.PaymentInformationList
 import com.composition.damoa.presentation.common.components.PolicyButtonList
 import com.composition.damoa.presentation.common.components.SmallTitle
+import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.common.utils.pointChargeItems
+import com.composition.damoa.presentation.screens.login.LoginActivity
+import com.composition.damoa.presentation.screens.pointCharge.PointChargeViewModel.Event
 import com.composition.damoa.presentation.ui.theme.Gray10
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class PointChargeActivity : ComponentActivity() {
@@ -79,11 +82,23 @@ private fun PointChargeScreen(
     viewModel: PointChargeViewModel,
 ) {
     PetudioTheme {
-        val context = LocalContext.current
+        val activity = LocalContext.current as? ComponentActivity
         val pointChargeUiState by viewModel.pointChargeUiState.collectAsStateWithLifecycle()
 
+
+        activity?.onUi {
+            viewModel.event.collectLatest { event ->
+                when (event) {
+                    Event.TOKEN_EXPIRED -> {
+                        LoginActivity.startActivity(activity)
+                        activity.finish()
+                    }
+                }
+            }
+        }
+
         Scaffold(
-            topBar = { PointChargeTopBar { (context as? Activity)?.finish() } },
+            topBar = { PointChargeTopBar { activity?.finish() } },
         ) { padding ->
             PointChargeContent(
                 modifier =

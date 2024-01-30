@@ -11,7 +11,9 @@ import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.presentation.common.base.BaseUiState.State
 import com.composition.damoa.presentation.screens.pointCharge.state.PointChargeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,6 +25,9 @@ class PointChargeViewModel @Inject constructor(
 ) : ViewModel() {
     private val _pointChargeUiState = MutableStateFlow(PointChargeUiState())
     val pointChargeUiState = _pointChargeUiState.asStateFlow()
+
+    private val _event = MutableSharedFlow<Event>()
+    val event = _event.asSharedFlow()
 
     init {
         fetchPoint()
@@ -37,14 +42,16 @@ class PointChargeViewModel @Inject constructor(
                     point = user.data.point,
                 )
 
-                NetworkError, TokenExpired -> _pointChargeUiState.value = pointChargeUiState.value.copy(
-                    state = State.NETWORK_ERROR
-                )
-
+                NetworkError -> _pointChargeUiState.value = pointChargeUiState.value.copy(state = State.NETWORK_ERROR)
+                TokenExpired -> _event.emit(Event.TOKEN_EXPIRED)
                 is Failure, is Unexpected -> _pointChargeUiState.value = pointChargeUiState.value.copy(
                     state = State.NONE
                 )
             }
         }
+    }
+
+    enum class Event {
+        TOKEN_EXPIRED,
     }
 }

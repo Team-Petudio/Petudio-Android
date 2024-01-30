@@ -4,6 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 fun ComponentActivity.repeatOnStarted(block: suspend () -> Unit) {
@@ -15,5 +16,5 @@ fun ComponentActivity.repeatOnStarted(block: suspend () -> Unit) {
 }
 
 fun ComponentActivity.onUi(block: suspend () -> Unit) {
-    lifecycleScope.launch { block() }
+    lifecycleScope.launch(Dispatchers.Main) { block() }
 }

@@ -122,15 +122,15 @@ class LoginActivity : ComponentActivity() {
         when (socialType) {
             SocialType.GOOGLE -> googleAuthManager.login(
                 onSuccess = { accessToken, fcmToken -> viewModel.login(SocialType.GOOGLE, accessToken, fcmToken) },
-                onFailure = { showToast(R.string.login_failure_message) }
+                onFailure = { onUi { showToast(R.string.login_failure_message) } }
             )
 
             SocialType.KAKAO -> kakaoAuthManager.login(
                 onSuccess = { accessToken, fcmToken -> viewModel.login(SocialType.KAKAO, accessToken, fcmToken) },
-                onFailure = { showToast(R.string.login_failure_message) }
+                onFailure = { onUi { showToast(R.string.login_failure_message) } }
             )
 
-            SocialType.APPLE -> Unit
+            SocialType.APPLE -> onUi { showToast(R.string.login_failure_message) }
         }
     }
 
