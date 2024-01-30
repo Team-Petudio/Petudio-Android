@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
 import com.composition.damoa.data.model.User
-import com.composition.damoa.presentation.common.base.BaseUiState
 import com.composition.damoa.presentation.common.components.BigDescription
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.LoginButton
@@ -67,7 +66,7 @@ fun ProfileScreen(
     var isShowLogoutDialog by rememberSaveable { mutableStateOf(false) }
     var isShowSignOutDialog by rememberSaveable { mutableStateOf(false) }
     val user = userUiState.user
-    val isLogin = userUiState.state != BaseUiState.State.NETWORK_ERROR
+    val isLogin = userUiState.isLogined
 
     Column(
         modifier

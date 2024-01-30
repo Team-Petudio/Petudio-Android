@@ -9,7 +9,9 @@ import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
-import com.composition.damoa.presentation.common.base.BaseUiState
+import com.composition.damoa.presentation.common.base.BaseUiState.State
+import com.composition.damoa.presentation.screens.home.state.AlbumUiState
+import com.composition.damoa.presentation.screens.home.state.PetFeedUiState
 import com.composition.damoa.presentation.screens.home.state.ProfileUiState
 import com.composition.damoa.presentation.screens.home.state.UserUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +33,12 @@ class HomeViewModel @Inject constructor(
     private val _userUiState = MutableStateFlow(UserUiState())
     val userUiState = _userUiState.asStateFlow()
 
+    private val _albumUiState = MutableStateFlow(AlbumUiState.dummy)
+    val albumUiState = _albumUiState.asStateFlow()
+
+    private val _petFeedUiState = MutableStateFlow(PetFeedUiState.dummy)
+    val petFeedUiState = _petFeedUiState.asStateFlow()
+
     private val _event = MutableSharedFlow<Event>()
     val event = _event.asSharedFlow()
 
@@ -41,19 +49,19 @@ class HomeViewModel @Inject constructor(
 
     private fun fetchProfileConcepts() {
         viewModelScope.launch {
-            _profileUiState.value = profileUiState.value.copy(state = BaseUiState.State.LOADING)
+            _profileUiState.value = profileUiState.value.copy(state = State.LOADING)
             when (val concepts = conceptRepository.getConcepts()) {
                 is Success -> _profileUiState.value = profileUiState.value.copy(
-                    state = BaseUiState.State.SUCCESS,
+                    state = State.SUCCESS,
                     profileConcepts = concepts.data
                 )
 
                 NetworkError, TokenExpired -> _profileUiState.value = profileUiState.value.copy(
-                    state = BaseUiState.State.NETWORK_ERROR
+                    state = State.NETWORK_ERROR
                 )
 
                 is Failure, is Unexpected -> _profileUiState.value = profileUiState.value.copy(
-                    state = BaseUiState.State.NONE
+                    state = State.NONE
                 )
             }
         }
@@ -61,20 +69,15 @@ class HomeViewModel @Inject constructor(
 
     private fun fetchUser() {
         viewModelScope.launch {
-            _userUiState.value = userUiState.value.copy(state = BaseUiState.State.LOADING)
+            _userUiState.value = userUiState.value.copy(state = State.LOADING)
             when (val user = userRepository.getUser()) {
                 is Success -> _userUiState.value = userUiState.value.copy(
-                    state = BaseUiState.State.SUCCESS,
+                    state = State.SUCCESS,
                     user = user.data
                 )
 
-                NetworkError, TokenExpired -> _userUiState.value = userUiState.value.copy(
-                    state = BaseUiState.State.NETWORK_ERROR
-                )
-
-                is Failure, is Unexpected -> _userUiState.value = userUiState.value.copy(
-                    state = BaseUiState.State.NONE
-                )
+                NetworkError, TokenExpired -> _userUiState.value = userUiState.value.copy(state = State.NETWORK_ERROR)
+                is Failure, is Unexpected -> _userUiState.value = userUiState.value.copy(state = State.NONE)
             }
         }
     }

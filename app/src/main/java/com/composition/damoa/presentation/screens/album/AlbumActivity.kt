@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -39,10 +38,10 @@ import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.composition.damoa.R
+import com.composition.damoa.data.model.Album
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.SmallTitle
-import com.composition.damoa.presentation.screens.home.Album
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.composition.damoa.presentation.ui.theme.Purple60
 import java.time.LocalDateTime
@@ -68,26 +67,25 @@ private fun AlbumScreen() {
                 modifier = Modifier
                     .padding(top = padding.calculateTopPadding())
                     .padding(horizontal = 20.dp),
-                album =
-                    Album(
-                        id = 0,
-                        title = "코코",
-                        concept = "트렌디 룩북 컨셉",
-                        thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        photoUrls =
-                            listOf(
-                                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                            ),
-                        date = LocalDateTime.now(),
+                album = Album(
+                    id = 0,
+                    title = "코코",
+                    concept = "트렌디 룩북 컨셉",
+                    thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                    photoUrls =
+                    listOf(
+                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
+                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
                     ),
+                    date = LocalDateTime.now(),
+                ),
             )
         }
     }
@@ -126,9 +124,9 @@ private fun AlbumContent(
 ) {
     LazyVerticalGrid(
         modifier =
-            modifier
-                .fillMaxSize()
-                .background(Color.White),
+        modifier
+            .fillMaxSize()
+            .background(Color.White),
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),

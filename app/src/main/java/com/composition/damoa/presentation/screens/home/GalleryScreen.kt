@@ -50,7 +50,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -58,9 +57,12 @@ import com.composition.damoa.R
 import com.composition.damoa.data.model.Album
 import com.composition.damoa.data.model.PetFeed
 import com.composition.damoa.presentation.common.components.GradientButton
+import com.composition.damoa.presentation.common.components.LoginButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
 import com.composition.damoa.presentation.screens.album.AlbumActivity
+import com.composition.damoa.presentation.screens.home.state.AlbumUiState
+import com.composition.damoa.presentation.screens.home.state.PetFeedUiState
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationActivity
 import com.composition.damoa.presentation.ui.theme.Gray20
 import com.composition.damoa.presentation.ui.theme.Gray30
@@ -68,12 +70,15 @@ import com.composition.damoa.presentation.ui.theme.Gray40
 import com.composition.damoa.presentation.ui.theme.Gray60
 import com.composition.damoa.presentation.ui.theme.PrimaryColors
 import com.composition.damoa.presentation.ui.theme.Purple60
+import com.composition.damoa.presentation.ui.theme.Purple80
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+private const val ALBUM_PAGE = 0
+private const val PET_FEED_PAGE = 1
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
@@ -82,8 +87,9 @@ fun GalleryScreen(
     navController: NavController,
     pagerState: PagerState = rememberPagerState { 2 },
     scope: CoroutineScope = rememberCoroutineScope(),
-    albums: List<Album> = emptyList(),
-    petFeeds: List<PetFeed> = emptyList(),
+    albumUiState: AlbumUiState,
+    petFeedUiState: PetFeedUiState,
+    onLoginClick: () -> Unit,
 ) {
     Column(
         modifier
@@ -92,7 +98,13 @@ fun GalleryScreen(
     ) {
         val tabTitlesRes = listOf(R.string.album, R.string.pet_feed)
         GalleryTabRow(pagerState = pagerState, tabTitlesRes = tabTitlesRes, scope = scope)
-        ContentScreen(pagerState = pagerState, navController = navController, albums = albums, petFeeds = petFeeds)
+        ContentScreen(
+            pagerState = pagerState,
+            navController = navController,
+            albumUiState = albumUiState,
+            petFeedUiState = petFeedUiState,
+            onLoginClick = onLoginClick,
+        )
     }
 }
 
@@ -143,42 +155,66 @@ private fun ContentScreen(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
     navController: NavController,
-    albums: List<Album> = emptyList(),
-    petFeeds: List<PetFeed> = emptyList(),
+    albumUiState: AlbumUiState,
+    petFeedUiState: PetFeedUiState,
+    onLoginClick: () -> Unit,
 ) {
+
     HorizontalPager(
         modifier = modifier.fillMaxSize(),
         state = pagerState,
     ) { page ->
         when (page) {
-            0 ->
-                AlbumScreen(
-                    albums = albums,
-                    onAiProfileClick = {
-                        navigateToProfileConceptScreen(navController = navController)
-                    },
-                )
+            ALBUM_PAGE -> AlbumScreen(
+                albumUiState = albumUiState,
+                onAiProfileClick = { navigateToProfileConceptScreen(navController = navController) },
+                onLoginClick = onLoginClick,
+            )
 
-            1 ->
-                PetFeedScreen(
-                    petFeeds = petFeeds,
-                    navController = navController,
-                )
+            PET_FEED_PAGE -> PetFeedScreen(
+                petFeeds = petFeedUiState.petFeeds,
+                navController = navController,
+            )
         }
+    }
+}
+
+@Composable
+private fun LoginRequireScreen(
+    onLoginClick: () -> Unit = {},
+) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        MediumTitle(
+            fontColor = Purple80,
+            titleRes = R.string.login_required_message,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(bottom = 48.dp),
+        )
+        LoginButton(
+            modifier = Modifier.fillMaxWidth(0.8F),
+            onClick = onLoginClick,
+        )
     }
 }
 
 @Composable
 private fun AlbumScreen(
     modifier: Modifier = Modifier,
-    albums: List<Album> = emptyList(),
+    albumUiState: AlbumUiState,
     onAiProfileClick: () -> Unit,
+    onLoginClick: () -> Unit,
 ) {
+    val albums = albumUiState.albums
+
     Surface(modifier = modifier.padding(horizontal = 20.dp)) {
-        if (albums.isEmpty()) {
-            EmptyAlbumScreen(modifier, onAiProfileClick)
-        } else {
-            AlbumListScreen(modifier, albums)
+        when {
+            !albumUiState.isLogined -> LoginRequireScreen(onLoginClick = onLoginClick)
+            albums.isEmpty() -> EmptyAlbumScreen(modifier, onAiProfileClick)
+            else -> AlbumListScreen(modifier, albums)
         }
     }
 }
@@ -498,63 +534,6 @@ private fun PetFeedItemPreview() {
             isLike = false,
             thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
             likeCount = 0,
-        ),
-    )
-}
-
-@Preview
-@Composable
-@OptIn(ExperimentalFoundationApi::class)
-private fun GalleryEmptyAlbumScreenPreview() {
-    GalleryScreen(
-        navController = rememberNavController(),
-        pagerState = rememberPagerState(initialPage = 0) { 0 },
-    )
-}
-
-@Preview
-@Composable
-@OptIn(ExperimentalFoundationApi::class)
-private fun GalleryAlbumScreenPreview() {
-    GalleryScreen(
-        navController = rememberNavController(),
-        pagerState = rememberPagerState(initialPage = 0) { 0 },
-    )
-}
-
-@Preview
-@Composable
-@OptIn(ExperimentalFoundationApi::class)
-private fun GalleryPetFeedScreenPreview() {
-    GalleryScreen(
-        navController = rememberNavController(),
-        pagerState = rememberPagerState(initialPage = 1) { 0 },
-        petFeeds =
-        listOf(
-            PetFeed(
-                id = 0,
-                title = "코코",
-                concept = "트렌디 룩북 컨셉",
-                isLike = false,
-                thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                likeCount = 0,
-            ),
-            PetFeed(
-                id = 0,
-                title = "코코",
-                concept = "트렌디 룩북 컨셉",
-                isLike = false,
-                thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                likeCount = 0,
-            ),
-            PetFeed(
-                id = 0,
-                title = "코코",
-                concept = "트렌디 룩북 컨셉",
-                isLike = false,
-                thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                likeCount = 0,
-            ),
         ),
     )
 }

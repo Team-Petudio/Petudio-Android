@@ -5,6 +5,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
@@ -15,10 +16,11 @@ fun LoginButton(
     onClick: () -> Unit = {},
 ) {
     GradientButton(
-        modifier = modifier.height(52.dp),
+        modifier = modifier.height(56.dp),
         text = stringResource(R.string.login),
         shape = RoundedCornerShape(12.dp),
         fontSize = 16.sp,
+        fontWeight = FontWeight.Bold,
         onClick = onClick,
     )
 }

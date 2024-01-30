@@ -42,6 +42,8 @@ import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.LOGOU
 import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.LOGOUT_SUCCESS
 import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.SIGN_OUT_FAILURE
 import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.SIGN_OUT_SUCCESS
+import com.composition.damoa.presentation.screens.home.state.AlbumUiState
+import com.composition.damoa.presentation.screens.home.state.PetFeedUiState
 import com.composition.damoa.presentation.screens.home.state.UserUiState
 import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationActivity
@@ -49,7 +51,6 @@ import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.composition.damoa.presentation.ui.theme.Purple60
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
@@ -80,6 +81,8 @@ private fun HomeScreen(
         val homeNavController = rememberNavController()
         val profileUiState by viewModel.profileUiState.collectAsStateWithLifecycle()
         val userUiState by viewModel.userUiState.collectAsStateWithLifecycle()
+        val albumUiState by viewModel.albumUiState.collectAsStateWithLifecycle()
+        val petFeedUiState by viewModel.petFeedUiState.collectAsStateWithLifecycle()
 
         activity?.onUi {
             viewModel.event.collectLatest { event ->
@@ -102,6 +105,8 @@ private fun HomeScreen(
                     ),
                 navController = homeNavController,
                 profileConcepts = profileUiState.profileConcepts,
+                albumUiState = albumUiState,
+                petFeedUiState = petFeedUiState,
                 userUiState = userUiState,
                 onLogout = { viewModel.logout() },
                 onSignOut = { viewModel.signOut() },
@@ -118,6 +123,8 @@ private fun HomeNavHost(
     navController: NavHostController = rememberNavController(),
     startDestination: String = HomeBottomNavItem.ProfileConcept.route,
     profileConcepts: List<ProfileConcept>,
+    albumUiState: AlbumUiState,
+    petFeedUiState: PetFeedUiState,
     userUiState: UserUiState,
     onLogout: () -> Unit = {},
     onSignOut: () -> Unit = {},
@@ -138,62 +145,9 @@ private fun HomeNavHost(
         composable(HomeBottomNavItem.Gallery.route) {
             GalleryScreen(
                 navController = navController,
-                petFeeds =
-                listOf(
-                    PetFeed(
-                        id = 0,
-                        title = "코코",
-                        concept = "트렌디 룩북 컨셉",
-                        isLike = true,
-                        thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        likeCount = 12300,
-                    ),
-                    PetFeed(
-                        id = 0,
-                        title = "코코",
-                        concept = "트렌디 룩북 컨셉",
-                        isLike = false,
-                        thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        likeCount = 2122,
-                    ),
-                    PetFeed(
-                        id = 0,
-                        title = "코코",
-                        concept = "트렌디 룩북 컨셉",
-                        isLike = false,
-                        thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        likeCount = 0,
-                    ),
-                ),
-                albums =
-                listOf(
-                    Album(
-                        id = 0,
-                        title = "코코",
-                        concept = "트렌디 룩북 컨셉",
-                        thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        photoUrls =
-                        listOf(
-                            "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                            "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                            "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        ),
-                        date = LocalDateTime.now(),
-                    ),
-                    Album(
-                        id = 1,
-                        title = "루다",
-                        concept = "트렌디 룩북 컨셉",
-                        thumbnailUrl = "https://mblogthumb-phinf.pstatic.net/MjAxODA3MTBfMTY4/MDAxNTMxMjAyODE5MDc2.kVMC7FdEN76iOiSRi672EUoT9bDm6WJnHn0YFIaglo8g.uAQXzhnbWUkd30hXVCQdGhga_J3hJgXdshwo4dM-Awog.JPEG.pp0_0/IMG_0475.jpg?type=w800",
-                        photoUrls =
-                        listOf(
-                            "https://mblogthumb-phinf.pstatic.net/MjAxODA3MTBfMTY4/MDAxNTMxMjAyODE5MDc2.kVMC7FdEN76iOiSRi672EUoT9bDm6WJnHn0YFIaglo8g.uAQXzhnbWUkd30hXVCQdGhga_J3hJgXdshwo4dM-Awog.JPEG.pp0_0/IMG_0475.jpg?type=w800",
-                            "https://mblogthumb-phinf.pstatic.net/MjAxODA3MTBfMTY4/MDAxNTMxMjAyODE5MDc2.kVMC7FdEN76iOiSRi672EUoT9bDm6WJnHn0YFIaglo8g.uAQXzhnbWUkd30hXVCQdGhga_J3hJgXdshwo4dM-Awog.JPEG.pp0_0/IMG_0475.jpg?type=w800",
-                            "https://mblogthumb-phinf.pstatic.net/MjAxODA3MTBfMTY4/MDAxNTMxMjAyODE5MDc2.kVMC7FdEN76iOiSRi672EUoT9bDm6WJnHn0YFIaglo8g.uAQXzhnbWUkd30hXVCQdGhga_J3hJgXdshwo4dM-Awog.JPEG.pp0_0/IMG_0475.jpg?type=w800",
-                        ),
-                        date = LocalDateTime.now(),
-                    ),
-                ),
+                albumUiState = albumUiState,
+                petFeedUiState = petFeedUiState,
+                onLoginClick = onLogin,
             )
         }
         composable(HomeBottomNavItem.Profile.route) {

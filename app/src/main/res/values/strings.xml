@@ -76,6 +76,7 @@
 
     <string name="album">앨범</string>
     <string name="pet_feed">펫 피드</string>
+    <string name="login_required_message">로그인이 필요한 서비스입니다.</string>
     <string name="empty_album_content">AI 프로필을\n만들어 보시겠어요?</string>
     <string name="create_ai_profile_button_content">AI 프로필 제작하기</string>
     <string name="create_profile_as_concept">이 컨셉으로 AI 프로필 생성하기</string>
