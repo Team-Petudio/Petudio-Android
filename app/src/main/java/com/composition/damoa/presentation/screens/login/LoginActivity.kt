@@ -136,7 +136,9 @@ class LoginActivity : ComponentActivity() {
 
     companion object {
         fun startActivity(activity: Activity) {
-            activity.startActivity(Intent(activity, LoginActivity::class.java))
+            val intent = Intent(activity, LoginActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            activity.startActivity(intent)
         }
     }
 }

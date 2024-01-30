@@ -31,6 +31,7 @@ import com.composition.damoa.data.model.Pet
 import com.composition.damoa.data.model.PetColor
 import com.composition.damoa.data.model.ProfileConceptDetail
 import com.composition.damoa.presentation.common.extensions.onUi
+import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.Companion.KEY_CONCEPT_ID
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.UiEvent
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
@@ -94,6 +95,10 @@ private fun ProfileCreation(
                 when (event) {
                     UiEvent.PAYMENT_SUCCESS -> navController.navigate(ProfileCreationScreen.PAYMENT_RESULT.route)
                     UiEvent.PAYMENT_FAILED_LACK_OF_COIN -> navController.navigate(ProfileCreationScreen.PAYMENT.route)
+                    UiEvent.TOKEN_EXPIRED -> {
+                        LoginActivity.startActivity(activity)
+                        activity.finish()
+                    }
                 }
             }
         }

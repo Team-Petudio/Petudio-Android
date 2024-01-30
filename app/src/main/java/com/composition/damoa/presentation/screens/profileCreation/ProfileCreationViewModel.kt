@@ -64,10 +64,8 @@ class ProfileCreationViewModel @Inject constructor(
         viewModelScope.launch {
             when (val user = userRepository.getUser()) {
                 is Success -> _pointUiState.value = PointUiState(point = user.data.point)
-                NetworkError, TokenExpired -> _pointUiState.value = _pointUiState.value.copy(
-                    state = State.NETWORK_ERROR
-                )
-
+                NetworkError -> _pointUiState.value = _pointUiState.value.copy(state = State.NETWORK_ERROR)
+                TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
                 is Failure, is Unexpected -> _pointUiState.value = _pointUiState.value.copy(
                     state = State.NONE
                 )
@@ -85,10 +83,11 @@ class ProfileCreationViewModel @Inject constructor(
                     conceptDetail = conceptDetail.data
                 )
 
-                NetworkError, TokenExpired -> _conceptDetailUiState.value = conceptDetailUiState.value.copy(
+                NetworkError -> _conceptDetailUiState.value = conceptDetailUiState.value.copy(
                     state = State.NETWORK_ERROR
                 )
 
+                TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
                 is Failure, is Unexpected -> _conceptDetailUiState.value = conceptDetailUiState.value.copy(
                     state = State.NONE
                 )
@@ -105,10 +104,8 @@ class ProfileCreationViewModel @Inject constructor(
                     pets = conceptDetail.data
                 )
 
-                NetworkError, TokenExpired -> _petPhotosUiState.value = petPhotosUiState.value.copy(
-                    state = State.NETWORK_ERROR
-                )
-
+                NetworkError -> _petPhotosUiState.value = petPhotosUiState.value.copy(state = State.NETWORK_ERROR)
+                TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
                 is Failure, is Unexpected -> _petPhotosUiState.value = petPhotosUiState.value.copy(
                     state = State.NONE
                 )
@@ -133,9 +130,8 @@ class ProfileCreationViewModel @Inject constructor(
                     payment()
                 }
 
-                NetworkError, TokenExpired -> _petInfoUiState.value =
-                    petInfoUiState.value.copy(state = State.NETWORK_ERROR)
-
+                NetworkError -> _petInfoUiState.value = petInfoUiState.value.copy(state = State.NETWORK_ERROR)
+                TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
                 is Failure, is Unexpected -> _petInfoUiState.value = petInfoUiState.value.copy(state = State.NONE)
             }
         }
@@ -172,6 +168,7 @@ class ProfileCreationViewModel @Inject constructor(
     enum class UiEvent {
         PAYMENT_SUCCESS,
         PAYMENT_FAILED_LACK_OF_COIN,
+        TOKEN_EXPIRED,
     }
 
     companion object {
