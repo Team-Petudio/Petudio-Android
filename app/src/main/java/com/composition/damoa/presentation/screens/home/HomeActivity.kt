@@ -217,6 +217,8 @@ private fun HomeBottomNavigationBar(navController: NavController = rememberNavCo
             BottomNavigationItem(
                 selected = isSelected,
                 onClick = {
+                    if (currentRoute == item.route) return@BottomNavigationItem
+                    
                     navController.navigate(item.route) {
                         popUpTo(navController.graph.startDestinationId)
                         launchSingleTop = true
