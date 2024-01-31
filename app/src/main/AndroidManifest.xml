@@ -41,8 +41,7 @@
         </activity>
         <activity
             android:name=".presentation.screens.login.LoginActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Petudio.Login" />
+            android:exported="false" />
         <activity
             android:name=".presentation.screens.pointCharge.PointChargeActivity"
             android:exported="false" />

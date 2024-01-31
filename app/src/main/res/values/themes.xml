@@ -7,8 +7,4 @@
     </style>
 
     <style name="Theme.Petudio" parent="Base.Theme.Petudio" />
-
-    <style name="Theme.Petudio.Login" parent="Base.Theme.Petudio">
-        <item name="android:windowFullscreen">true</item>
-    </style>
 </resources>
