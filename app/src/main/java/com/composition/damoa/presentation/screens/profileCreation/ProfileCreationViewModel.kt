@@ -12,6 +12,7 @@ import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.model.PetColor
 import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.repository.interfaces.PetRepository
+import com.composition.damoa.data.repository.interfaces.S3ImageUrlRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.presentation.common.base.BaseUiState.State
 import com.composition.damoa.presentation.screens.profileCreation.state.ConceptDetailUiState
@@ -33,6 +34,7 @@ class ProfileCreationViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val conceptRepository: ConceptRepository,
     private val petRepository: PetRepository,
+    private val s3ImageUrlRepository: S3ImageUrlRepository,
 //    private val paymentRepository: PaymentRepository,
 ) : ViewModel() {
     private val conceptId = requireNotNull(savedStateHandle.get<Long>(KEY_CONCEPT_ID))
