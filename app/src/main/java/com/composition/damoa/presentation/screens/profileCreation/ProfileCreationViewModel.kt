@@ -53,7 +53,7 @@ class ProfileCreationViewModel @Inject constructor(
     private val _petInfoUiState = MutableStateFlow(PetInfoUiState())
     val petInfoUiState = _petInfoUiState.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    private val _uiEvent = MutableSharedFlow<UiEvent>(replay = 1)
     val uiEvent = _uiEvent.asSharedFlow()
 
     init {
