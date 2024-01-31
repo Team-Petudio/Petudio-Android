@@ -40,10 +40,10 @@ fun PetPhoto(
     isDeletable: Boolean = false,
     onDelete: () -> Unit = {},
 ) {
-    Box(modifier.padding(6.dp)) {
+    Box(modifier) {
         PetPhoto(petPhoto = petPhoto)
         ExampleIcon(
-            modifier = Modifier.size(28.dp),
+            modifier = Modifier.padding(6.dp).size(28.dp),
             photoType = photoType,
         )
         if (isDeletable) {
