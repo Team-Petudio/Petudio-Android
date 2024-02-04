@@ -139,6 +139,9 @@ dependencies {
 
     // Image Picker
     implementation("com.github.esafirm:android-image-picker:3.0.0")
+
+    // Image Compressor
+    implementation("id.zelory:compressor:3.0.1")
 }
 
 kapt {
