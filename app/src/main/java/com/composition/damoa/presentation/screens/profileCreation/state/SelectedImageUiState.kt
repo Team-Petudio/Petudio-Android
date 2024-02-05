@@ -8,5 +8,7 @@ data class SelectedImageUiState(
     val selectedImageFiles: List<File> = emptyList(),
     val badImageFiles: List<File> = emptyList(),
 ) : BaseUiState() {
+    val canMoreSelectPhotoSize = 12 - selectedImageFiles.size
+
     fun isValidPetPhotoSize() = selectedImageFiles.size in 10..12
 }

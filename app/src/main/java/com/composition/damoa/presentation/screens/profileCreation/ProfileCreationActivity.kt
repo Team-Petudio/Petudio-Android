@@ -126,7 +126,10 @@ class ProfileCreationActivity : ComponentActivity() {
     }
 
     private fun launchPhotoPicker() {
-        photoPicker.launchPhotoPicker(this) photoPicker@{ images ->
+        photoPicker.launchPhotoPicker(
+            context = this,
+            maxSelectSize = viewModel.selectedImageUiState.value.canMoreSelectPhotoSize,
+        ) photoPicker@{ images ->
             if (images.isEmpty()) return@photoPicker
             reduceImageSizeAndDetect(images)
         }

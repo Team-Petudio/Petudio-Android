@@ -20,6 +20,7 @@ class PhotoPicker(activity: ComponentActivity) {
 
     fun launchPhotoPicker(
         context: Context,
+        maxSelectSize: Int = 12,
         onResult: (List<Image>) -> Unit,
     ) {
         this.onResult = onResult
@@ -30,7 +31,7 @@ class PhotoPicker(activity: ComponentActivity) {
             arrowColor = Color.White.toArgb()
             imageTitle = context.getString(R.string.app_name)
             doneButtonText = context.getString(R.string.done)
-            limit = 12 - excludedImages.size
+            limit = maxSelectSize
             savePath = ImagePickerSavePath("petudio")
             ImagePickerConfig()
             isIncludeAnimation = true
