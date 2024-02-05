@@ -8,6 +8,4 @@ data class PetInfoUiState(
     val petName: String = "",
     val petColor: PetColor? = null,
     val petPhotoUrls: List<String> = emptyList(),
-) : BaseUiState() {
-    fun isValidPetPhotoSize() = petPhotoUrls.size in 10..12
-}
+) : BaseUiState()

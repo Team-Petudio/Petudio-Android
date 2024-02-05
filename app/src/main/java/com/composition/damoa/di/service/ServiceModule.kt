@@ -5,6 +5,7 @@ import com.composition.damoa.data.service.ConceptService
 import com.composition.damoa.data.service.GoogleService
 import com.composition.damoa.data.service.PetDetectService
 import com.composition.damoa.data.service.PetService
+import com.composition.damoa.data.service.S3ImageService
 import com.composition.damoa.data.service.S3ImageUrlService
 import com.composition.damoa.data.service.TokenService
 import com.composition.damoa.data.service.UserService
@@ -54,7 +55,7 @@ class ServiceModule {
 
     @Provides
     @Singleton
-    fun provideS3ImageService(
+    fun provideS3ImageUrlService(
         @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
     ): S3ImageUrlService = serviceFactory.create(S3ImageUrlService::class.java)
 
@@ -65,5 +66,14 @@ class ServiceModule {
     ): PetDetectService = serviceFactory.create(
         service = PetDetectService::class.java,
         baseUrl = PetDetectService.BASE_URL,
+    )
+
+    @Provides
+    @Singleton
+    fun provideS3ImageService(
+        @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
+    ): S3ImageService = serviceFactory.create(
+        service = S3ImageService::class.java,
+        baseUrl = S3ImageService.BASE_URL,
     )
 }

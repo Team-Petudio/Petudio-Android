@@ -15,7 +15,7 @@ class DefaultPetRepository(
         .getPets()
         .map { petResponse -> petResponse.data.toDomain() }
 
-    override suspend fun addPet(
+    override suspend fun uploadPet(
         petName: String,
         petColor: PetColor,
         petPhotoUrls: List<String>,

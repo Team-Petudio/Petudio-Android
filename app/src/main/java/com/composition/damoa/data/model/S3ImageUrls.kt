@@ -1,5 +1,7 @@
 package com.composition.damoa.data.model
 
+import com.composition.damoa.data.service.S3ImageService
+
 data class S3ImageUrls(
     val s3DirectoryPath: String,
     val preSignedImageUrls: List<PreSignedImageUrl>,
@@ -7,7 +9,9 @@ data class S3ImageUrls(
     data class PreSignedImageUrl(
         val preSignedUrl: String,
         val storedImageUrl: String,
-    )
+    ) {
+        val pathWithoutHost = preSignedUrl.removePrefix(S3ImageService.BASE_URL)
+    }
 
     init {
         validateS3ImageUrls()

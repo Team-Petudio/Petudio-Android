@@ -283,7 +283,7 @@ private fun ProfileCreationNavHost(
         composable(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route) {
             PhotoUploadResultScreen(
                 navController = navController,
-                isShowKeepGoingButton = petInfoUiState.isValidPetPhotoSize(),
+                isShowKeepGoingButton = selectedImageUiState.isValidPetPhotoSize(),
                 onPetUploadClick = onPetUploadClick,
             )
         }

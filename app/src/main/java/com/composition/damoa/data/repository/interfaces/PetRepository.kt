@@ -7,7 +7,7 @@ import com.composition.damoa.data.model.PetColor
 interface PetRepository {
     suspend fun getPets(): ApiResponse<List<Pet>>
 
-    suspend fun addPet(
+    suspend fun uploadPet(
         petName: String,
         petColor: PetColor,
         petPhotoUrls: List<String>,

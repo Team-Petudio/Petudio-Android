@@ -11,9 +11,11 @@ import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.model.PetColor
 import com.composition.damoa.data.model.ProfileConcept
+import com.composition.damoa.data.model.S3ImageUrls
 import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.repository.interfaces.PetDetectRepository
 import com.composition.damoa.data.repository.interfaces.PetRepository
+import com.composition.damoa.data.repository.interfaces.S3ImageRepository
 import com.composition.damoa.data.repository.interfaces.S3ImageUrlRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.presentation.common.base.BaseUiState.State
@@ -24,6 +26,8 @@ import com.composition.damoa.presentation.screens.profileCreation.state.Selected
 import com.composition.damoa.presentation.screens.profileCreation.state.TicketUiState
 import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -39,6 +43,7 @@ class ProfileCreationViewModel @Inject constructor(
     private val conceptRepository: ConceptRepository,
     private val petRepository: PetRepository,
     private val s3ImageUrlRepository: S3ImageUrlRepository,
+    private val s3ImageRepository: S3ImageRepository,
     private val petDetectRepository: PetDetectRepository,
 //    private val paymentRepository: PaymentRepository,
 ) : ViewModel() {
@@ -58,6 +63,8 @@ class ProfileCreationViewModel @Inject constructor(
 
     private val _petInfoUiState = MutableStateFlow(PetInfoUiState())
     val petInfoUiState = _petInfoUiState.asStateFlow()
+
+    private lateinit var s3ImageUrls: S3ImageUrls
 
     private val _uiEvent = MutableSharedFlow<UiEvent>(replay = 1)
     val uiEvent = _uiEvent.asSharedFlow()
@@ -132,24 +139,68 @@ class ProfileCreationViewModel @Inject constructor(
     fun uploadPetWithPayment() {
         _petInfoUiState.value = _petInfoUiState.value.copy(state = State.LOADING)
         viewModelScope.launch {
-            when (addPet(petInfoUiState.value)) {
-                is Success -> {
-                    _petInfoUiState.value = petInfoUiState.value.copy(state = State.SUCCESS)
-                    payment()
-                }
-
-                NetworkError -> _petInfoUiState.value = petInfoUiState.value.copy(state = State.NETWORK_ERROR)
-                TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
-                is Failure, is Unexpected -> _petInfoUiState.value = petInfoUiState.value.copy(state = State.NONE)
-            }
+            uploadPetImagesToS3()
         }
     }
 
-    private suspend fun addPet(petInfoUiState: PetInfoUiState): ApiResponse<Unit> {
-        val petColor = petInfoUiState.petColor ?: return Unexpected(Error("[ERROR] PetColor가 null입니다."))
-        if (!petInfoUiState.isValidPetPhotoSize()) return Unexpected(Error("[ERROR] PetPhotoUrls 개수가 10개 미만이거나 12개 초과입니다."))
+    private suspend fun uploadPetImagesToS3() {
+        val selectImageFiles = selectedImageUiState.value.selectedImageFiles
+        when (val preSignedUrlsResult = s3ImageUrlRepository.getPreSignedUrls(selectImageFiles.size)) {
+            is Success -> {
+                s3ImageUrls = preSignedUrlsResult.data
 
-        return petRepository.addPet(
+                if (!uploadPetImagesToS3(selectImageFiles)) {
+                    _uiEvent.emit(UiEvent.UNKNOWN_ERROR)
+                    s3ImageUrlRepository.deleteS3ImageDirectory(s3ImageUrls.s3DirectoryPath)
+                    return
+                }
+
+                _petInfoUiState.value = petInfoUiState.value.copy(
+                    petPhotoUrls = s3ImageUrls.preSignedImageUrls.map { it.storedImageUrl }
+                )
+
+                when (uploadPet()) {
+                    is Success -> {
+                        _petInfoUiState.value = petInfoUiState.value.copy(state = State.SUCCESS)
+                        payment()
+                    }
+
+                    NetworkError -> _petInfoUiState.value = petInfoUiState.value.copy(state = State.NETWORK_ERROR)
+                    TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
+                    is Failure, is Unexpected -> _petInfoUiState.value = petInfoUiState.value.copy(state = State.NONE)
+                }
+            }
+
+            NetworkError -> _uiEvent.emit(UiEvent.NETWORK_ERROR)
+            TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
+            is Failure, is Unexpected -> _uiEvent.emit(UiEvent.UNKNOWN_ERROR)
+        }
+    }
+
+    private suspend fun uploadPetImagesToS3(
+        imageFiles: List<File>,
+    ): Boolean = viewModelScope.async {
+        s3ImageUrls.preSignedImageUrls
+            .zip(imageFiles)
+            .map { (preSignedImageUrl, imageFile) -> async { uploadPetImageToS3(preSignedImageUrl, imageFile) } }
+            .awaitAll()
+            .all { result -> result }
+    }.await()
+
+    private suspend fun uploadPetImageToS3(
+        preSignedImageUrl: S3ImageUrls.PreSignedImageUrl,
+        imageFile: File,
+    ): Boolean = when (s3ImageRepository.uploadImage(preSignedImageUrl.pathWithoutHost, imageFile)) {
+        is Success -> true
+        else -> false
+    }
+
+    private suspend fun uploadPet(): ApiResponse<Unit> {
+        val petInfoUiState = petInfoUiState.value
+        val petColor = petInfoUiState.petColor ?: return Unexpected(Error("[ERROR] PetColor가 null입니다."))
+        if (!selectedImageUiState.value.isValidPetPhotoSize()) return Unexpected(Error("[ERROR] PetPhotoUrls 개수가 10개 미만이거나 12개 초과입니다."))
+
+        return petRepository.uploadPet(
             petName = petInfoUiState.petName,
             petColor = petColor,
             petPhotoUrls = petInfoUiState.petPhotoUrls,
@@ -157,17 +208,19 @@ class ProfileCreationViewModel @Inject constructor(
     }
 
     private suspend fun payment() {
-        if (hasTicket()) {
+        if (!hasTicket()) {
             _uiEvent.emit(UiEvent.PAYMENT_FAILED_LACK_OF_TICKET)
             return
         }
 
+        /*
+        * 결제 로직 구현 요망
+        * */
         // TODO(결제 완료 후, PAYMENT_SUCCESS 이벤트를 emit 해주세요.)
     }
 
-    private suspend fun hasTicket(): Boolean {
-        val concept = getConcept(1L) ?: return false
-        return _ticketUiState.value.ticketCount >= concept.ticketCount
+    private fun hasTicket(): Boolean {
+        return _ticketUiState.value.ticketCount >= 1
     }
 
     private suspend fun getConcept(conceptId: Long): ProfileConcept? {

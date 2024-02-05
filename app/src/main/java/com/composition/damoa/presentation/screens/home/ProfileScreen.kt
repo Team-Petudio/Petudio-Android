@@ -222,7 +222,7 @@ private fun SettingList(
 ) {
     val context = LocalContext.current
     Column(modifier) {
-        if (!isLogin) TicketPurchase(ticket) { context.startActivity(TicketPurchaseActivity.getIntent(context)) }
+        if (isLogin) TicketPurchase(ticket) { context.startActivity(TicketPurchaseActivity.getIntent(context)) }
         Question()
         Ask()
         TermOfUse()

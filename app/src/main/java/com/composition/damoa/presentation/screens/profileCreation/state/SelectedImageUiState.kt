@@ -7,4 +7,6 @@ data class SelectedImageUiState(
     override val state: State = State.NONE,
     val selectedImageFiles: List<File> = emptyList(),
     val badImageFiles: List<File> = emptyList(),
-) : BaseUiState()
+) : BaseUiState() {
+    fun isValidPetPhotoSize() = selectedImageFiles.size in 10..12
+}

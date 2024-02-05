@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.composition.damoa.R
-import com.composition.damoa.data.model.PetType
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
@@ -39,7 +38,6 @@ import com.composition.damoa.presentation.screens.profileCreation.component.Phot
 fun PhotoUploadResultScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    petType: PetType = PetType.DOG,
     isShowKeepGoingButton: Boolean,
     onPetUploadClick: () -> Unit,
 ) {
@@ -52,7 +50,6 @@ fun PhotoUploadResultScreen(
             .padding(horizontal = 20.dp),
     ) {
         PhotoUploadIntroduceContent(
-            petType = petType,
             badPetPhotos = badDogPhotoExamples(),
             goodPetPhotos = goodDogPhotoExamples(),
         )
@@ -73,7 +70,6 @@ fun PhotoUploadResultScreen(
 @Composable
 private fun PhotoUploadIntroduceContent(
     modifier: Modifier = Modifier,
-    petType: PetType,
     badPetPhotos: List<PetPhoto>,
     goodPetPhotos: List<PetPhoto>,
 ) {
