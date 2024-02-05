@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 data class User(
     val email: String,
     val socialType: SocialType,
-    val point: Int,
+    val ticket: Int,
     val token: Token = Token(),
 ) {
     enum class SocialType {

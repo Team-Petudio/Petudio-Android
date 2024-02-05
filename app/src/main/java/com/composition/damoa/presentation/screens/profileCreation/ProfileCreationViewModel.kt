@@ -20,8 +20,8 @@ import com.composition.damoa.presentation.common.base.BaseUiState.State
 import com.composition.damoa.presentation.screens.profileCreation.state.ConceptDetailUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoUiState
-import com.composition.damoa.presentation.screens.profileCreation.state.PointUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
+import com.composition.damoa.presentation.screens.profileCreation.state.TicketUiState
 import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -45,7 +45,7 @@ class ProfileCreationViewModel @Inject constructor(
     //    private val conceptId = requireNotNull(savedStateHandle.get<Long>(KEY_CONCEPT_ID))
     private var profileConcept: ProfileConcept? = null
 
-    private val _pointUiState = MutableStateFlow(PointUiState())
+    private val _ticketUiState = MutableStateFlow(TicketUiState())
 
     private val _conceptDetailUiState = MutableStateFlow(ConceptDetailUiState())
     val conceptDetailUiState = _conceptDetailUiState.asStateFlow()
@@ -63,18 +63,18 @@ class ProfileCreationViewModel @Inject constructor(
     val uiEvent = _uiEvent.asSharedFlow()
 
     init {
-        fetchPoint()
+        fetchTicket()
         fetchProfileConceptDetail()
         fetchPets()
     }
 
-    private fun fetchPoint() {
+    private fun fetchTicket() {
         viewModelScope.launch {
             when (val user = userRepository.getUser()) {
-                is Success -> _pointUiState.value = PointUiState(point = user.data.point)
-                NetworkError -> _pointUiState.value = _pointUiState.value.copy(state = State.NETWORK_ERROR)
+                is Success -> _ticketUiState.value = TicketUiState(ticketCount = user.data.ticket)
+                NetworkError -> _ticketUiState.value = _ticketUiState.value.copy(state = State.NETWORK_ERROR)
                 TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
-                is Failure, is Unexpected -> _pointUiState.value = _pointUiState.value.copy(
+                is Failure, is Unexpected -> _ticketUiState.value = _ticketUiState.value.copy(
                     state = State.NONE
                 )
             }
@@ -157,17 +157,17 @@ class ProfileCreationViewModel @Inject constructor(
     }
 
     private suspend fun payment() {
-        if (satisfyPaymentPoint()) {
-            _uiEvent.emit(UiEvent.PAYMENT_FAILED_LACK_OF_COIN)
+        if (hasTicket()) {
+            _uiEvent.emit(UiEvent.PAYMENT_FAILED_LACK_OF_TICKET)
             return
         }
 
         // TODO(결제 완료 후, PAYMENT_SUCCESS 이벤트를 emit 해주세요.)
     }
 
-    private suspend fun satisfyPaymentPoint(): Boolean {
+    private suspend fun hasTicket(): Boolean {
         val concept = getConcept(1L) ?: return false
-        return _pointUiState.value.point >= concept.discountedPoint
+        return _ticketUiState.value.ticketCount >= concept.ticketCount
     }
 
     private suspend fun getConcept(conceptId: Long): ProfileConcept? {
@@ -241,7 +241,7 @@ class ProfileCreationViewModel @Inject constructor(
 
     enum class UiEvent {
         PAYMENT_SUCCESS,
-        PAYMENT_FAILED_LACK_OF_COIN,
+        PAYMENT_FAILED_LACK_OF_TICKET,
         INVALID_PET_IMAGE_SIZE,
         PET_DETECT_SUCCESS,
         TOKEN_EXPIRED,

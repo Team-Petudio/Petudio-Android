@@ -48,7 +48,7 @@ import com.composition.damoa.presentation.common.components.LoginButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.PetudioDialog
 import com.composition.damoa.presentation.screens.home.state.UserUiState
-import com.composition.damoa.presentation.screens.pointCharge.PointChargeActivity
+import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseActivity
 import com.composition.damoa.presentation.ui.theme.AlertIconColor
 import com.composition.damoa.presentation.ui.theme.Gray10
 import com.composition.damoa.presentation.ui.theme.Gray30
@@ -77,7 +77,7 @@ fun ProfileScreen(
     ) {
         ProfileTitle()
         if (isLogin) UserAccount(modifier = Modifier.padding(top = 28.dp), user = user)
-        SettingList(modifier = Modifier.padding(top = 28.dp), point = user.point, isLogin = isLogin)
+        SettingList(modifier = Modifier.padding(top = 28.dp), ticket = user.ticket, isLogin = isLogin)
         Spacer(modifier = Modifier.weight(1F))
         if (isLogin) {
             LogoutButton(modifier = Modifier.padding(top = 28.dp)) { isShowLogoutDialog = true }
@@ -217,12 +217,12 @@ private fun Account(
 @Composable
 private fun SettingList(
     modifier: Modifier = Modifier,
-    point: Int,
+    ticket: Int,
     isLogin: Boolean,
 ) {
     val context = LocalContext.current
     Column(modifier) {
-        if (isLogin) PointCharge(point) { context.startActivity(PointChargeActivity.getIntent(context)) }
+        if (!isLogin) TicketPurchase(ticket) { context.startActivity(TicketPurchaseActivity.getIntent(context)) }
         Question()
         Ask()
         TermOfUse()
@@ -231,8 +231,8 @@ private fun SettingList(
 }
 
 @Composable
-private fun PointCharge(
-    point: Int,
+private fun TicketPurchase(
+    ticketCount: Int,
     onClick: () -> Unit,
 ) {
     SettingOptionItem(
@@ -243,10 +243,10 @@ private fun PointCharge(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 BigDescription(
-                    descriptionRes = R.string.profile_option_point,
+                    descriptionRes = R.string.profile_option_ticket,
                     fontColor = Color.Black,
                 )
-                Point(value = point)
+                Ticket(value = ticketCount)
             }
         },
         onClick = onClick,
@@ -302,7 +302,7 @@ private fun Privacy() {
 }
 
 @Composable
-private fun Point(
+private fun Ticket(
     modifier: Modifier = Modifier,
     value: Int,
 ) {
@@ -312,7 +312,7 @@ private fun Point(
     ) {
         Icon(
             modifier = Modifier.padding(end = 4.dp),
-            painter = painterResource(id = R.drawable.img_gold_coin),
+            painter = painterResource(id = R.drawable.ic_ticket),
             contentDescription = null,
             tint = Color.Unspecified,
         )

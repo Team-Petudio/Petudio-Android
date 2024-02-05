@@ -5,10 +5,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserResponse(
+    @SerialName("socialType")
     val socialType: SocialType,
+    @SerialName("email")
     val email: String,
+    @SerialName("notificationStatus")
     val notificationStatus: Boolean,
-    val pointAmount: Int,
+    @SerialName("ticketCount")
+    val ticketCount: Int,
 ) {
 
     enum class SocialType {

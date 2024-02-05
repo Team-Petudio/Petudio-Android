@@ -98,9 +98,9 @@ private fun PaymentPrice(
 ) {
     Row(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp),
+        modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End,
     ) {
@@ -119,16 +119,12 @@ private fun PaymentPrice(
     val priceTextSize = if (isDiscounted) 16.sp else 22.sp
     val priceFontWeight = if (isDiscounted) FontWeight.Bold else FontWeight.ExtraBold
     val priceColor = if (isDiscounted) Color.Gray else Color.Black
-    val priceStrike =
-        if (isDiscounted) {
-            TextStyle(textDecoration = TextDecoration.LineThrough)
-        } else {
-            LocalTextStyle.current
-        }
-
+    val priceStrike = if (isDiscounted) {
+        TextStyle(textDecoration = TextDecoration.LineThrough)
+    } else {
+        LocalTextStyle.current
+    }
     val priceAndIconPadding = if (isDiscounted) 4.dp else 8.dp
-    val coinIconRes = if (isDiscounted) R.drawable.img_gray_coin else R.drawable.img_gold_coin
-    val iconSize = if (isDiscounted) 20.dp else 32.dp
 
     Row(
         modifier = modifier,
@@ -136,13 +132,12 @@ private fun PaymentPrice(
         horizontalArrangement = Arrangement.Center,
     ) {
         Icon(
-            painter = painterResource(id = coinIconRes),
+            painter = painterResource(id = R.drawable.ic_ticket),
             contentDescription = null,
             tint = Color.Unspecified,
-            modifier =
-                Modifier
-                    .padding(end = priceAndIconPadding)
-                    .size(iconSize),
+            modifier = Modifier
+                .padding(end = priceAndIconPadding)
+                .size(32.dp),
         )
         Text(
             text = "%,d".format(price),

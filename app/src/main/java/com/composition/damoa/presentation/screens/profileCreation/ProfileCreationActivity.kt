@@ -177,7 +177,7 @@ private fun ProfileCreation(
             viewModel.uiEvent.collectLatest { event ->
                 when (event) {
                     UiEvent.PAYMENT_SUCCESS -> navController.navigate(ProfileCreationScreen.PAYMENT_RESULT.route)
-                    UiEvent.PAYMENT_FAILED_LACK_OF_COIN -> navController.navigate(ProfileCreationScreen.PAYMENT.route)
+                    UiEvent.PAYMENT_FAILED_LACK_OF_TICKET -> navController.navigate(ProfileCreationScreen.PAYMENT.route)
                     UiEvent.INVALID_PET_IMAGE_SIZE -> activity.showToast(R.string.pet_photo_size_invalid_message)
                     UiEvent.PET_DETECT_SUCCESS -> navController.navigate(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route)
                     UiEvent.NETWORK_ERROR -> activity.showToast(R.string.network_failure_message)

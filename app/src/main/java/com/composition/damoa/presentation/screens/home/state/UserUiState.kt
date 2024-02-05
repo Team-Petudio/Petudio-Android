@@ -8,6 +8,6 @@ data class UserUiState(
     val user: User = User(
         email = "",
         socialType = User.SocialType.GOOGLE,
-        point = 0,
+        ticket = 0,
     ),
 ) : BaseUiState()

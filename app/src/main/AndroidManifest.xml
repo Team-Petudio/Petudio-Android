@@ -41,7 +41,7 @@
             android:name=".presentation.screens.login.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.screens.pointCharge.PointChargeActivity"
+            android:name=".presentation.screens.ticketPurchase.TicketPurchaseActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.screens.album.AlbumActivity"

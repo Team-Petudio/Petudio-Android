@@ -2,7 +2,7 @@ package com.composition.damoa.presentation.screens.profileCreation.state
 
 import com.composition.damoa.presentation.common.base.BaseUiState
 
-data class PointUiState(
+data class TicketUiState(
     override val state: State = State.NONE,
-    val point: Int = 0,
+    val ticketCount: Int = 0,
 ) : BaseUiState()

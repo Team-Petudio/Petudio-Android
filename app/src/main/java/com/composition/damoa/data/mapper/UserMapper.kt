@@ -6,7 +6,7 @@ import com.composition.damoa.data.model.User
 fun UserResponse.toDomain(token: User.Token): User = User(
     email = email,
     socialType = socialType.toDomain(),
-    point = pointAmount,
+    ticket = ticketCount,
     token = token,
 )
 

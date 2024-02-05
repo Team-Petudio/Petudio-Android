@@ -13,8 +13,7 @@ fun ConceptsResponse.toDomain(): List<ProfileConcept> = concepts.map { conceptRe
         conceptImageUrl = conceptResponse.thumbnailUrl,
         isNewConcept = conceptResponse.isNew,
         petType = conceptResponse.animalType.toDomain(),
-        conceptPoint = conceptResponse.conceptPrice,
-        discountedPoint = conceptResponse.discountedPrice,
+        ticketCount = conceptResponse.conceptPrice,
     )
 }
 

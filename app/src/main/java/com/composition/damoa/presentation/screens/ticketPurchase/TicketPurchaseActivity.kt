@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.pointCharge
+package com.composition.damoa.presentation.screens.ticketPurchase
 
 import android.content.Context
 import android.content.Intent
@@ -6,20 +6,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -45,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composition.damoa.R
-import com.composition.damoa.data.model.PointChargeItem
+import com.composition.damoa.data.model.Ticket
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.DonationDescription
 import com.composition.damoa.presentation.common.components.GradientButton
@@ -53,37 +51,37 @@ import com.composition.damoa.presentation.common.components.PaymentInformationLi
 import com.composition.damoa.presentation.common.components.PolicyButtonList
 import com.composition.damoa.presentation.common.components.SmallTitle
 import com.composition.damoa.presentation.common.extensions.onUi
-import com.composition.damoa.presentation.common.utils.pointChargeItems
+import com.composition.damoa.presentation.common.utils.ticketPurchaseItems
 import com.composition.damoa.presentation.screens.login.LoginActivity
-import com.composition.damoa.presentation.screens.pointCharge.PointChargeViewModel.Event
+import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseViewModel.Event
 import com.composition.damoa.presentation.ui.theme.Gray10
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
-class PointChargeActivity : ComponentActivity() {
-    private val viewModel: PointChargeViewModel by viewModels()
+class TicketPurchaseActivity : ComponentActivity() {
+    private val viewModel: TicketPurchaseViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            PointChargeScreen(viewModel = viewModel)
+            TicketPurchaseScreen(viewModel = viewModel)
         }
     }
 
     companion object {
-        fun getIntent(context: Context): Intent = Intent(context, PointChargeActivity::class.java)
+        fun getIntent(context: Context): Intent = Intent(context, TicketPurchaseActivity::class.java)
     }
 }
 
 @Composable
-private fun PointChargeScreen(
-    viewModel: PointChargeViewModel,
+private fun TicketPurchaseScreen(
+    viewModel: TicketPurchaseViewModel,
 ) {
     PetudioTheme {
         val activity = LocalContext.current as? ComponentActivity
-        val pointChargeUiState by viewModel.pointChargeUiState.collectAsStateWithLifecycle()
+        val ticketPurchaseUiState by viewModel.ticketPurchaseUiState.collectAsStateWithLifecycle()
 
 
         activity?.onUi {
@@ -98,15 +96,14 @@ private fun PointChargeScreen(
         }
 
         Scaffold(
-            topBar = { PointChargeTopBar { activity?.finish() } },
+            topBar = { TicketPurchaseTopBar { activity?.finish() } },
         ) { padding ->
-            PointChargeContent(
-                modifier =
-                Modifier
+            TicketPurchaseContent(
+                modifier = Modifier
                     .fillMaxSize()
                     .padding(top = padding.calculateTopPadding()),
-                userOwnPoint = pointChargeUiState.point,
-                pointChargeItems = pointChargeItems(),
+                userOwnTicket = ticketPurchaseUiState.ticketCount,
+                ticketPurchaseItems = ticketPurchaseItems(),
             )
         }
     }
@@ -114,7 +111,7 @@ private fun PointChargeScreen(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun PointChargeTopBar(onNavigationClick: () -> Unit = {}) {
+private fun TicketPurchaseTopBar(onNavigationClick: () -> Unit = {}) {
     TopAppBar(
         title = { },
         navigationIcon = {
@@ -131,58 +128,57 @@ private fun PointChargeTopBar(onNavigationClick: () -> Unit = {}) {
 }
 
 @Composable
-private fun PointChargeContent(
+private fun TicketPurchaseContent(
     modifier: Modifier = Modifier,
-    scrollState: ScrollState = rememberScrollState(),
-    userOwnPoint: Int,
-    pointChargeItems: List<PointChargeItem>,
+    userOwnTicket: Int,
+    ticketPurchaseItems: List<Ticket>,
 ) {
     Column(
         modifier = modifier
             .background(Color.White)
             .padding(horizontal = 20.dp)
             .fillMaxSize()
-            .verticalScroll(scrollState),
     ) {
-        PointChargeTitle()
-        UserOwnPoint(userOwnPoint = userOwnPoint)
+        TicketPurchaseTitle()
+        UserOwnTicket(userOwnTicket = userOwnTicket)
         DonationDescription(modifier = Modifier.padding(vertical = 28.dp))
-        PointList(pointChargeItems = pointChargeItems)
+        TicketPurchaseList(tickets = ticketPurchaseItems)
+        Spacer(Modifier.weight(1F))
         PaymentInformationList()
         PolicyButtonList(modifier = Modifier.padding(top = 14.dp))
     }
 }
 
 @Composable
-private fun PointChargeTitle() {
-    BigTitle(titleRes = R.string.point_charge_title)
+private fun TicketPurchaseTitle() {
+    BigTitle(titleRes = R.string.ticket_purchase_title)
 }
 
 @Composable
-private fun UserOwnPoint(userOwnPoint: Int) {
-    PointRow(
+private fun UserOwnTicket(userOwnTicket: Int) {
+    TicketRow(
         modifier = Modifier.padding(top = 20.dp),
-        title = stringResource(id = R.string.my_point),
-        point = userOwnPoint,
+        title = stringResource(id = R.string.my_ticket_count),
+        ticketCount = userOwnTicket,
     )
 }
 
 @Composable
-private fun PointList(
+private fun TicketPurchaseList(
     modifier: Modifier = Modifier,
-    pointChargeItems: List<PointChargeItem>,
+    tickets: List<Ticket>,
 ) {
     Column(modifier = modifier) {
-        pointChargeItems.forEachIndexed { index, pointChargeItem ->
-            PointChargeItem(pointChargeItem = pointChargeItem)
+        tickets.forEachIndexed { index, ticket ->
+            TicketPurchaseItem(ticket = ticket)
         }
     }
 }
 
 @Composable
-private fun PointChargeItem(
+private fun TicketPurchaseItem(
     modifier: Modifier = Modifier,
-    pointChargeItem: PointChargeItem,
+    ticket: Ticket,
     onClick: () -> Unit = {},
 ) {
     Row(
@@ -194,11 +190,11 @@ private fun PointChargeItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Point(
+        Ticket(
             modifier = modifier.padding(vertical = 20.dp),
-            point = pointChargeItem.point,
+            ticketCount = ticket.ticketCount,
         )
-        PurchaseButton(price = pointChargeItem.price)
+        PurchaseButton(price = ticket.price)
     }
 }
 
@@ -225,10 +221,10 @@ private fun PurchaseButton(
 }
 
 @Composable
-private fun PointRow(
+private fun TicketRow(
     modifier: Modifier,
     title: String,
-    point: Int,
+    ticketCount: Int,
 ) {
     Row(
         modifier =
@@ -242,14 +238,14 @@ private fun PointRow(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         SmallTitle(title = title)
-        Point(point = point)
+        Ticket(ticketCount = ticketCount)
     }
 }
 
 @Composable
-private fun Point(
+private fun Ticket(
     modifier: Modifier = Modifier,
-    point: Int = 0,
+    ticketCount: Int = 0,
 ) {
     Row(
         modifier = modifier,
@@ -257,12 +253,12 @@ private fun Point(
     ) {
         Icon(
             modifier = Modifier.size(22.dp),
-            painter = painterResource(id = R.drawable.img_gold_coin),
+            painter = painterResource(id = R.drawable.ic_ticket),
             contentDescription = null,
             tint = Color.Unspecified,
         )
         Text(
-            text = String.format("%,d", point),
+            text = String.format("%,d", ticketCount),
             fontSize = 18.sp,
             color = Color.Black,
             fontWeight = FontWeight.Bold,
