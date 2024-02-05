@@ -11,7 +11,7 @@ data class UserResponse(
     val email: String,
     @SerialName("notificationStatus")
     val notificationStatus: Boolean,
-    @SerialName("ticketCount")
+    @SerialName("ticketAmount")
     val ticketCount: Int,
 ) {
 
