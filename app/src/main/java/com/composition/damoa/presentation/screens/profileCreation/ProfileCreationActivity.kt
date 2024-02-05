@@ -127,11 +127,8 @@ class ProfileCreationActivity : ComponentActivity() {
 
     private fun launchPhotoPicker() {
         photoPicker.launchPhotoPicker(this) photoPicker@{ images ->
+            if (images.isEmpty()) return@photoPicker
             reduceImageSizeAndDetect(images)
-            // images를 용량 줄여서 File로 map (View 로직)
-            // viewModel에서 해당 file을 서버로 보내 동물 사진인지 파악 (ViewModel 로직)
-            // 동물 사진인 images만 viewModel.selectedImages에 추가 저장 (ViewModel 로직)
-            // 해당 작업이 끝나면 PhotoUploadResultScreen으로 이동 (View 로직)
         }
     }
 
