@@ -192,7 +192,7 @@ class ProfileCreationViewModel @Inject constructor(
         val originSelectedImageFileSize = selectedImageUiState.value.selectedImageFiles.size
         val imageSize = images.size + originSelectedImageFileSize
 
-        if (imageSize in 10..12) {
+        if (imageSize in MIN_UPLOAD_PHOTO_SIZE..MAX_UPLOAD_PHOTO_SIZE) {
             return true
         }
 
@@ -251,5 +251,7 @@ class ProfileCreationViewModel @Inject constructor(
 
     companion object {
         const val KEY_CONCEPT_ID = "key_concept_id"
+        private const val MIN_UPLOAD_PHOTO_SIZE = 10
+        private const val MAX_UPLOAD_PHOTO_SIZE = 12
     }
 }
