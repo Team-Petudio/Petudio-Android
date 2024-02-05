@@ -10,7 +10,6 @@ import com.esafirm.imagepicker.features.ImagePickerConfig
 import com.esafirm.imagepicker.features.ImagePickerMode
 import com.esafirm.imagepicker.features.ImagePickerSavePath
 import com.esafirm.imagepicker.features.registerImagePicker
-import com.esafirm.imagepicker.features.toFiles
 import com.esafirm.imagepicker.model.Image
 
 class PhotoPicker(activity: ComponentActivity) {
@@ -21,7 +20,6 @@ class PhotoPicker(activity: ComponentActivity) {
 
     fun launchPhotoPicker(
         context: Context,
-        excludedImages: List<Image> = emptyList(),
         onResult: (List<Image>) -> Unit,
     ) {
         this.onResult = onResult
@@ -36,7 +34,6 @@ class PhotoPicker(activity: ComponentActivity) {
             savePath = ImagePickerSavePath("petudio")
             ImagePickerConfig()
             isIncludeAnimation = true
-            this.excludedImages = excludedImages.toFiles()
         }
         photoPickerLauncher.launch(config)
     }

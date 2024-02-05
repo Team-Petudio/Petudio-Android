@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,15 +19,16 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.data.model.PetType
+import com.composition.damoa.presentation.common.base.BaseUiState.State
 import com.composition.damoa.presentation.common.components.BigTitle
+import com.composition.damoa.presentation.common.components.CircularLoadingBar
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.SmallDescription
 import com.composition.damoa.presentation.common.components.SmallTitle
@@ -34,6 +36,7 @@ import com.composition.damoa.presentation.common.utils.badDogPhotoExamples
 import com.composition.damoa.presentation.common.utils.goodDogPhotoExamples
 import com.composition.damoa.presentation.screens.profileCreation.component.PetPhoto
 import com.composition.damoa.presentation.screens.profileCreation.component.PhotoUploadButton
+import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
 
 data class PetPhoto(
     @DrawableRes val imageRes: Int,
@@ -51,7 +54,8 @@ fun PhotoUploadIntroduceScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     petType: PetType = PetType.DOG,
-    onClickPhotoUpload: () -> Unit = {},
+    selectedImageUiState: SelectedImageUiState,
+    onPhotoUploadClick: () -> Unit = {},
 ) {
     Surface(
         color = Color.White,
@@ -66,7 +70,8 @@ fun PhotoUploadIntroduceScreen(
             badPetPhotos = badDogPhotoExamples(),
             goodPetPhotos = goodDogPhotoExamples(),
         )
-        PhotoUploadButton(onClick = onClickPhotoUpload)
+        PhotoUploadButton(onClick = onPhotoUploadClick)
+        if (selectedImageUiState.state == State.LOADING) LoadingScreen()
     }
 }
 
@@ -163,11 +168,14 @@ private fun PetPhotoList(
     }
 }
 
-@Preview
 @Composable
-private fun PhotoUploadIntroduceScreenPreview() {
-    PhotoUploadIntroduceScreen(
-        navController = rememberNavController(),
-        petType = PetType.DOG,
-    )
+private fun LoadingScreen(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.Transparent),
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularLoadingBar(size = 60.dp)
+    }
 }

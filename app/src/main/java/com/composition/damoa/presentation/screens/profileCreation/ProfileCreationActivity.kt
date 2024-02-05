@@ -1,8 +1,11 @@
 package com.composition.damoa.presentation.screens.profileCreation
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -21,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -30,13 +34,19 @@ import com.composition.damoa.R
 import com.composition.damoa.data.model.Pet
 import com.composition.damoa.data.model.PetColor
 import com.composition.damoa.data.model.ProfileConceptDetail
+import com.composition.damoa.presentation.common.extensions.onDefault
 import com.composition.damoa.presentation.common.extensions.onUi
-import com.composition.damoa.presentation.screens.login.LoginActivity
+import com.composition.damoa.presentation.common.extensions.reduceImageSizeAndCreateFile
+import com.composition.damoa.presentation.common.extensions.showToast
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.Companion.KEY_CONCEPT_ID
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.UiEvent
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
+import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
+import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.collectLatest
 
 
@@ -53,15 +63,87 @@ class ProfileCreationActivity : ComponentActivity() {
                 onPhotoSelect = ::launchPhotoPicker
             )
         }
+
+        val REQUEST_EXTERNAL_STORAGE = 1
+        val PERMISSIONS_STORAGE = arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+        val permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val permission2 = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            Log.d("buna", "1")
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            ) {
+                Log.d("buna", "2")
+                ActivityCompat.requestPermissions(
+                    this,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+                )
+            } else {
+                Log.d("buna", "3")
+                ActivityCompat.requestPermissions(
+                    this,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+                )
+            }
+        }
+
+        if (permission2 != PackageManager.PERMISSION_GRANTED) {
+            Log.d("buna", "4")
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+            ) {
+                Log.d("buna", "5")
+                ActivityCompat.requestPermissions(
+                    this,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+                )
+            } else {
+                Log.d("buna", "6")
+                ActivityCompat.requestPermissions(
+                    this,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+                )
+            }
+        }
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            if (!Environment.isExternalStorageManager()) {
+//                startActivity(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION))
+//            }
+//        }
     }
 
     private fun launchPhotoPicker() {
-        val selectedImages = viewModel.selectedImages.value
-        photoPicker.launchPhotoPicker(this, selectedImages) { images ->
+        photoPicker.launchPhotoPicker(this) photoPicker@{ images ->
+            reduceImageSizeAndDetect(images)
             // images를 용량 줄여서 File로 map (View 로직)
             // viewModel에서 해당 file을 서버로 보내 동물 사진인지 파악 (ViewModel 로직)
-            // 동물 사진인 images만 viewModel.selectedImages에 저장 (ViewModel 로직)
+            // 동물 사진인 images만 viewModel.selectedImages에 추가 저장 (ViewModel 로직)
             // 해당 작업이 끝나면 PhotoUploadResultScreen으로 이동 (View 로직)
+        }
+    }
+
+    private fun reduceImageSizeAndDetect(images: List<Image>) {
+        if (!viewModel.validatePetImageSize(images)) return
+        viewModel.changeToImageSelectLoading()
+
+        onDefault {
+            val resizedImageFiles = images.map { image ->
+                async { reduceImageSizeAndCreateFile(image.uri, image.id.toString()) }
+            }.awaitAll()
+            viewModel.detectPetImages(resizedImageFiles.filterNotNull())
         }
     }
 
@@ -89,15 +171,20 @@ private fun ProfileCreation(
         val conceptDetailUiState by viewModel.conceptDetailUiState.collectAsStateWithLifecycle()
         val petPhotosUiState by viewModel.petPhotosUiState.collectAsStateWithLifecycle()
         val petUiState by viewModel.petInfoUiState.collectAsStateWithLifecycle()
+        val selectedImageUiState by viewModel.selectedImageUiState.collectAsStateWithLifecycle()
 
         activity?.onUi {
             viewModel.uiEvent.collectLatest { event ->
                 when (event) {
                     UiEvent.PAYMENT_SUCCESS -> navController.navigate(ProfileCreationScreen.PAYMENT_RESULT.route)
                     UiEvent.PAYMENT_FAILED_LACK_OF_COIN -> navController.navigate(ProfileCreationScreen.PAYMENT.route)
+                    UiEvent.INVALID_PET_IMAGE_SIZE -> activity.showToast(R.string.pet_photo_size_invalid_message)
+                    UiEvent.PET_DETECT_SUCCESS -> navController.navigate(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route)
+                    UiEvent.NETWORK_ERROR -> activity.showToast(R.string.network_failure_message)
+                    UiEvent.UNKNOWN_ERROR -> activity.showToast(R.string.unknown_error_message)
                     UiEvent.TOKEN_EXPIRED -> {
-                        LoginActivity.startActivity(activity)
-                        activity.finish()
+//                        LoginActivity.startActivity(activity)
+//                        activity.finish()
                     }
                 }
             }
@@ -118,8 +205,9 @@ private fun ProfileCreation(
                 petInfoUiState = petUiState,
                 onPetNameChanged = viewModel::updatePetName,
                 onPetColorSelected = viewModel::updateColor,
-                onPetAddClick = viewModel::addPetWithPayment,
-                onPhotoSelect = onPhotoSelect,
+                onPetUploadClick = viewModel::uploadPetWithPayment,
+                onPhotoUploadClick = onPhotoSelect,
+                selectedImageUiState = selectedImageUiState,
             )
         }
     }
@@ -147,14 +235,15 @@ private fun ProfileCreationTopAppBar(onNavigationClick: () -> Unit = {}) {
 private fun ProfileCreationNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    startDestination: ProfileCreationScreen = ProfileCreationScreen.PHOTO_UPLOAD_INTRODUCE,
     profileConceptDetail: ProfileConceptDetail,
     pets: List<Pet>,
     petInfoUiState: PetInfoUiState,
     onPetNameChanged: (String) -> Unit,
     onPetColorSelected: (PetColor) -> Unit,
-    onPetAddClick: () -> Unit,
-    onPhotoSelect: () -> Unit = {},
-    startDestination: ProfileCreationScreen = ProfileCreationScreen.PROFILE_CREATION_INTRODUCE,
+    onPetUploadClick: () -> Unit,
+    onPhotoUploadClick: () -> Unit = {},
+    selectedImageUiState: SelectedImageUiState,
 ) {
     NavHost(
         modifier = modifier,
@@ -185,16 +274,17 @@ private fun ProfileCreationNavHost(
             )
         }
         composable(ProfileCreationScreen.PHOTO_UPLOAD_INTRODUCE.route) {
-            PhotoUploadIntroduceScreen(navController = navController, onClickPhotoUpload = onPhotoSelect)
+            PhotoUploadIntroduceScreen(
+                navController = navController,
+                onPhotoUploadClick = onPhotoUploadClick,
+                selectedImageUiState = selectedImageUiState,
+            )
         }
         composable(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route) {
             PhotoUploadResultScreen(
                 navController = navController,
                 isShowKeepGoingButton = petInfoUiState.isValidPetPhotoSize(),
-                onPetAddClick = {
-                    // 포인트 부족하면 결제하기 화면
-                    // 포인트 있으면 이미지 전송하고 완료 화면
-                }
+                onPetUploadClick = onPetUploadClick,
             )
         }
         composable(ProfileCreationScreen.PAYMENT.route) {

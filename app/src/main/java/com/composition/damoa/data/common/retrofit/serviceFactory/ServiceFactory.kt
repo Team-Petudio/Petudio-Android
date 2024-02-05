@@ -26,6 +26,6 @@ abstract class ServiceFactory {
     abstract fun <T> create(service: Class<T>, baseUrl: String = BASE_URL): T
 
     companion object {
-        const val BASE_URL = "http://13.125.155.71/"
+        const val BASE_URL = "http://52.79.242.131/"
     }
 }

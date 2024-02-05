@@ -41,7 +41,7 @@ fun PhotoUploadResultScreen(
     navController: NavController,
     petType: PetType = PetType.DOG,
     isShowKeepGoingButton: Boolean,
-    onPetAddClick: () -> Unit,
+    onPetUploadClick: () -> Unit,
 ) {
     Surface(
         color = Color.White,
@@ -63,7 +63,7 @@ fun PhotoUploadResultScreen(
                     // 갤러리
                 }
                 if (isShowKeepGoingButton) {
-                    KeepGoingButton(modifier = Modifier.weight(1F), onClick = onPetAddClick)
+                    KeepGoingButton(modifier = Modifier.weight(1F), onClick = onPetUploadClick)
                 }
             }
         }

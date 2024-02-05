@@ -53,7 +53,7 @@ fun NetworkErrorScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.size(120.dp),
         )
         Text(
-            text = stringResource(id = R.string.network_error_occurred),
+            text = stringResource(id = R.string.network_failure_message),
             color = Color.DarkGray,
             textAlign = TextAlign.Center,
             fontSize = 17.sp,

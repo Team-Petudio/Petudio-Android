@@ -3,18 +3,21 @@ package com.composition.damoa.di.repository
 import com.composition.damoa.data.dataSource.local.interfaces.TokenDataSource
 import com.composition.damoa.data.repository.concretes.DefaultConceptRepository
 import com.composition.damoa.data.repository.concretes.DefaultGoogleRepository
+import com.composition.damoa.data.repository.concretes.DefaultPetDetectRepository
 import com.composition.damoa.data.repository.concretes.DefaultPetRepository
 import com.composition.damoa.data.repository.concretes.DefaultS3ImageUrlRepository
 import com.composition.damoa.data.repository.concretes.DefaultTokenRepository
 import com.composition.damoa.data.repository.concretes.DefaultUserRepository
 import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.repository.interfaces.GoogleRepository
+import com.composition.damoa.data.repository.interfaces.PetDetectRepository
 import com.composition.damoa.data.repository.interfaces.PetRepository
 import com.composition.damoa.data.repository.interfaces.S3ImageUrlRepository
 import com.composition.damoa.data.repository.interfaces.TokenRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.data.service.ConceptService
 import com.composition.damoa.data.service.GoogleService
+import com.composition.damoa.data.service.PetDetectService
 import com.composition.damoa.data.service.PetService
 import com.composition.damoa.data.service.S3ImageUrlService
 import com.composition.damoa.data.service.TokenService
@@ -65,4 +68,10 @@ class RepositoryModule {
     fun provideS3ImageUrlRepository(
         s3ImageUrlService: S3ImageUrlService,
     ): S3ImageUrlRepository = DefaultS3ImageUrlRepository(s3ImageUrlService)
+
+    @Singleton
+    @Provides
+    fun providePetDetectRepository(
+        petDetectService: PetDetectService,
+    ): PetDetectRepository = DefaultPetDetectRepository(petDetectService)
 }
