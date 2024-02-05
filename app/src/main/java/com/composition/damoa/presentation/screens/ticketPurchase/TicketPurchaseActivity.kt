@@ -18,11 +18,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -38,6 +41,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,8 +59,12 @@ import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.common.utils.ticketPurchaseItems
 import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseViewModel.Event
+import com.composition.damoa.presentation.screens.ticketPurchase.state.TicketPurchaseUiState
 import com.composition.damoa.presentation.ui.theme.Gray10
+import com.composition.damoa.presentation.ui.theme.Gray20
+import com.composition.damoa.presentation.ui.theme.Gray40
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
+import com.composition.damoa.presentation.ui.theme.Purple60
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -83,7 +92,6 @@ private fun TicketPurchaseScreen(
         val activity = LocalContext.current as? ComponentActivity
         val ticketPurchaseUiState by viewModel.ticketPurchaseUiState.collectAsStateWithLifecycle()
 
-
         activity?.onUi {
             viewModel.event.collectLatest { event ->
                 when (event) {
@@ -102,7 +110,9 @@ private fun TicketPurchaseScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(top = padding.calculateTopPadding()),
-                userOwnTicket = ticketPurchaseUiState.ticketCount,
+                ticketPurchaseUiState = ticketPurchaseUiState,
+                onCouponSerialChanged = viewModel::updateCouponSerial,
+                onCouponSerialDone = viewModel::getTicketFromCouponSerial,
                 ticketPurchaseItems = ticketPurchaseItems(),
             )
         }
@@ -130,7 +140,9 @@ private fun TicketPurchaseTopBar(onNavigationClick: () -> Unit = {}) {
 @Composable
 private fun TicketPurchaseContent(
     modifier: Modifier = Modifier,
-    userOwnTicket: Int,
+    ticketPurchaseUiState: TicketPurchaseUiState,
+    onCouponSerialChanged: (String) -> Unit,
+    onCouponSerialDone: () -> Unit,
     ticketPurchaseItems: List<Ticket>,
 ) {
     Column(
@@ -140,10 +152,16 @@ private fun TicketPurchaseContent(
             .fillMaxSize()
     ) {
         TicketPurchaseTitle()
-        UserOwnTicket(userOwnTicket = userOwnTicket)
-        DonationDescription(modifier = Modifier.padding(vertical = 28.dp))
+        UserOwnTicket(ticketCount = ticketPurchaseUiState.ticketCount)
+        GiftNumberInput(
+            modifier = Modifier.padding(vertical = 20.dp),
+            couponSerial = ticketPurchaseUiState.couponSerial,
+            couponSerialChanged = onCouponSerialChanged,
+            onCouponSerialDone = onCouponSerialDone,
+        )
+        DonationDescription(modifier = Modifier.padding(top = 12.dp, bottom = 20.dp))
         TicketPurchaseList(tickets = ticketPurchaseItems)
-        Spacer(Modifier.weight(1F))
+        Spacer(modifier = Modifier.weight(1F))
         PaymentInformationList()
         PolicyButtonList(modifier = Modifier.padding(top = 14.dp))
     }
@@ -155,11 +173,70 @@ private fun TicketPurchaseTitle() {
 }
 
 @Composable
-private fun UserOwnTicket(userOwnTicket: Int) {
+private fun UserOwnTicket(ticketCount: Int) {
     TicketRow(
         modifier = Modifier.padding(top = 20.dp),
         title = stringResource(id = R.string.my_ticket_count),
-        ticketCount = userOwnTicket,
+        ticketCount = ticketCount,
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun GiftNumberInput(
+    modifier: Modifier = Modifier,
+    couponSerial: String,
+    couponSerialChanged: (String) -> Unit,
+    onCouponSerialDone: () -> Unit,
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        OutlinedTextField(
+            value = couponSerial,
+            onValueChange = { couponSerial ->
+                if (couponSerial.length <= 32) couponSerialChanged(couponSerial)
+            },
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.weight(1F),
+            placeholder = { GiftNumberHint() },
+            singleLine = true,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(R.drawable.ic_gift),
+                    contentDescription = null,
+                    tint = Color.Unspecified
+                )
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+            ),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Purple60,
+                unfocusedBorderColor = Gray20,
+                cursorColor = Purple60,
+            ),
+        )
+
+        GradientButton(
+            modifier = Modifier
+                .size(90.dp, 52.dp)
+                .padding(start = 12.dp),
+            enabled = couponSerial.length == 32,
+            text = stringResource(id = R.string.confirm),
+            shape = RoundedCornerShape(12.dp),
+            onClick = onCouponSerialDone,
+        )
+    }
+}
+
+@Composable
+private fun GiftNumberHint() {
+    Text(
+        text = stringResource(R.string.gift_number_input),
+        color = Gray40,
     )
 }
 
@@ -169,7 +246,7 @@ private fun TicketPurchaseList(
     tickets: List<Ticket>,
 ) {
     Column(modifier = modifier) {
-        tickets.forEachIndexed { index, ticket ->
+        tickets.forEach { ticket ->
             TicketPurchaseItem(ticket = ticket)
         }
     }
@@ -182,8 +259,7 @@ private fun TicketPurchaseItem(
     onClick: () -> Unit = {},
 ) {
     Row(
-        modifier =
-        modifier
+        modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .fillMaxWidth()
             .clickable(onClick = onClick),
@@ -227,8 +303,7 @@ private fun TicketRow(
     ticketCount: Int,
 ) {
     Row(
-        modifier =
-        modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(72.dp)
             .clip(RoundedCornerShape(12.dp))

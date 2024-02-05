@@ -53,6 +53,14 @@ class TicketPurchaseViewModel @Inject constructor(
         }
     }
 
+    fun updateCouponSerial(number: String) {
+        _ticketPurchaseUiState.value = _ticketPurchaseUiState.value.copy(couponSerial = number)
+    }
+
+    fun getTicketFromCouponSerial() {
+
+    }
+
     enum class Event {
         TOKEN_EXPIRED,
     }

@@ -40,21 +40,15 @@ fun GradientButton(
 ) {
     Button(
         modifier = modifier,
-        colors =
-            ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-            ),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent,
+        ),
         contentPadding = PaddingValues(),
         shape = shape,
         enabled = enabled,
         onClick = onClick,
     ) {
-        val boxModifier =
-            if (enabled) {
-                Modifier.background(gradient)
-            } else {
-                Modifier.background(Gray30)
-            }
+        val boxModifier = if (enabled) Modifier.background(gradient) else Modifier.background(Gray30)
         Box(
             modifier = boxModifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
@@ -74,9 +68,9 @@ fun GradientButton(
 private fun GradientButtonPreview() {
     GradientButton(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .aspectRatio(6 / 1F),
+        Modifier
+            .fillMaxWidth()
+            .aspectRatio(6 / 1F),
         shape = RoundedCornerShape(12.dp),
         text = stringResource(id = R.string.keep_going),
         fontColor = Color.White,
