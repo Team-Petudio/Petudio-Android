@@ -46,12 +46,12 @@
     <string name="pet_photo_upload_bad_example_title">이런 사진은 별로에요</string>
     <string name="dog_photo_upload_bad_example_desc1">사람과 함께 찍은 사진</string>
     <string name="dog_photo_upload_bad_example_desc2">얼굴 또는 몸을 가린 사진</string>
-    <string name="dog_photo_upload_bad_example_desc3">다른 강아지와 함께 찍은 사진</string>
+    <string name="dog_photo_upload_bad_example_desc3">다른 반려동물과 함께 찍은 사진</string>
     <string name="dog_photo_upload_bad_example_desc4">너무 멀리서 찍은 사진</string>
     <string name="pet_photo_upload_good_example_title">이런 사진은 너무 좋아요</string>
     <string name="dog_photo_upload_good_example_desc1">정면이 잘 나온 사진</string>
     <string name="dog_photo_upload_good_example_desc2">전신이 잘 나온 사진</string>
-    <string name="dog_photo_upload_good_example_desc3">동일한 강아지 사진 (한 마리)</string>
+    <string name="dog_photo_upload_good_example_desc3">동일한 반려동물 사진 (한 마리)</string>
     <string name="dog_photo_upload_good_example_desc4">다양한 자세와 각도의 사진</string>
     <string name="pet_photo_add">사진 추가</string>
 
