@@ -32,6 +32,11 @@ fun Context.showToast(@StringRes messageRes: Int) {
     Toast.makeText(this, getString(messageRes), Toast.LENGTH_SHORT).show()
 }
 
+fun Context.navigateToWebsite(url: String) {
+    val myIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    startActivity(myIntent)
+}
+
 fun Context.checkPostNotificationPermission(): Boolean {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true
     return ActivityCompat.checkSelfPermission(

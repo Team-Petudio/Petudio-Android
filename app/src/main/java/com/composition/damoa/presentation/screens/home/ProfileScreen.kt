@@ -1,5 +1,8 @@
 package com.composition.damoa.presentation.screens.home
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -47,6 +50,7 @@ import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.LoginButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.PetudioDialog
+import com.composition.damoa.presentation.common.extensions.navigateToWebsite
 import com.composition.damoa.presentation.screens.home.state.UserUiState
 import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseActivity
 import com.composition.damoa.presentation.ui.theme.AlertIconColor
@@ -223,10 +227,20 @@ private fun SettingList(
     val context = LocalContext.current
     Column(modifier) {
         if (isLogin) TicketPurchase(ticket) { context.startActivity(TicketPurchaseActivity.getIntent(context)) }
-        Question()
-        Ask()
-        TermOfUse()
-        Privacy()
+        Question { context.navigateToWebsite("https://petudio.notion.site/09ab51dbfaae49bfbb3cc9278fdcdb19?pvs=4") }
+        Email { context.sendEmail() }
+        TermOfUse { context.navigateToWebsite("https://petudio.notion.site/Petudio-57118639803f4588b14b84ee6bc5709e?pvs=4") }
+        Privacy { context.navigateToWebsite("https://petudio.notion.site/Petudio-f2ead0982d5a46899274bdde710332c2?pvs=4") }
+    }
+}
+
+private fun Context.sendEmail() {
+    val emailIntent = Intent(Intent.ACTION_SENDTO)
+        .setData(Uri.parse("mailto:official.petudio@gmail.com"))
+        .putExtra(Intent.EXTRA_SUBJECT, "[Petudio] ")
+
+    if (emailIntent.resolveActivity(packageManager) != null) {
+        startActivity(emailIntent)
     }
 }
 
@@ -254,7 +268,9 @@ private fun TicketPurchase(
 }
 
 @Composable
-private fun Question() {
+private fun Question(
+    onClick: () -> Unit,
+) {
     SettingOptionItem(
         item = {
             BigDescription(
@@ -262,11 +278,14 @@ private fun Question() {
                 fontColor = Color.Black,
             )
         },
+        onClick = onClick,
     )
 }
 
 @Composable
-private fun Ask() {
+private fun Email(
+    onClick: () -> Unit,
+) {
     SettingOptionItem(
         item = {
             BigDescription(
@@ -274,11 +293,14 @@ private fun Ask() {
                 fontColor = Color.Black,
             )
         },
+        onClick = onClick,
     )
 }
 
 @Composable
-private fun TermOfUse() {
+private fun TermOfUse(
+    onClick: () -> Unit,
+) {
     SettingOptionItem(
         item = {
             BigDescription(
@@ -286,11 +308,14 @@ private fun TermOfUse() {
                 fontColor = Color.Black,
             )
         },
+        onClick = onClick,
     )
 }
 
 @Composable
-private fun Privacy() {
+private fun Privacy(
+    onClick: () -> Unit,
+) {
     SettingOptionItem(
         item = {
             BigDescription(
@@ -298,6 +323,7 @@ private fun Privacy() {
                 fontColor = Color.Black,
             )
         },
+        onClick = onClick,
     )
 }
 
