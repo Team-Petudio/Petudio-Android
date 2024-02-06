@@ -1,7 +1,6 @@
 package com.composition.damoa.presentation.common.utils
 
 import com.composition.damoa.R
-import com.composition.damoa.data.model.Ticket
 import com.composition.damoa.presentation.screens.profileCreation.PetPhoto
 
 fun goodDogPhotoExamples(): List<PetPhoto> =
@@ -41,13 +40,5 @@ fun badDogPhotoExamples(): List<PetPhoto> =
         PetPhoto(
             imageRes = R.drawable.img_photo_upload_bad_example4,
             descRes = R.string.dog_photo_upload_bad_example_desc4,
-        ),
-    )
-
-fun ticketPurchaseItems(): List<Ticket> =
-    listOf(
-        Ticket(
-            ticketCount = 1,
-            price = 8800,
         ),
     )

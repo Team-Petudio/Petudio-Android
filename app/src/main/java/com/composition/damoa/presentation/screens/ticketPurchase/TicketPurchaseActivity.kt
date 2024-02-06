@@ -3,6 +3,7 @@ package com.composition.damoa.presentation.screens.ticketPurchase
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -47,8 +48,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
 import com.composition.damoa.R
-import com.composition.damoa.data.model.Ticket
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.DonationDescription
 import com.composition.damoa.presentation.common.components.GradientButton
@@ -56,7 +64,7 @@ import com.composition.damoa.presentation.common.components.PaymentInformationLi
 import com.composition.damoa.presentation.common.components.PolicyButtonList
 import com.composition.damoa.presentation.common.components.SmallTitle
 import com.composition.damoa.presentation.common.extensions.onUi
-import com.composition.damoa.presentation.common.utils.ticketPurchaseItems
+import com.composition.damoa.presentation.common.extensions.showToast
 import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseViewModel.Event
 import com.composition.damoa.presentation.screens.ticketPurchase.state.TicketPurchaseUiState
@@ -68,15 +76,90 @@ import com.composition.damoa.presentation.ui.theme.Purple60
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
+
 @AndroidEntryPoint
 class TicketPurchaseActivity : ComponentActivity() {
     private val viewModel: TicketPurchaseViewModel by viewModels()
+    private lateinit var billingClient: BillingClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TicketPurchaseScreen(viewModel = viewModel)
+            TicketPurchaseScreen(
+                viewModel = viewModel,
+                onPurchaseClick = ::launchPurchaseFlow,
+            )
+            initBillingClient()
         }
+    }
+
+    private fun initBillingClient() {
+        val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+                // TODO: 구매 완료시 purchase에 구매 정보가 담겨 있다.
+                // TODO: 필요한 정보를 서버로 전송하기
+            } else if (billingResult.responseCode != BillingClient.BillingResponseCode.USER_CANCELED) {
+                showToast(R.string.unknown_error_message)
+            }
+        }
+
+        billingClient = BillingClient.newBuilder(this)
+            .setListener(purchasesUpdatedListener)
+            .enablePendingPurchases()
+            .build()
+
+        startBillingConnection()
+    }
+
+    fun startBillingConnection(
+        retryCount: Int = 3,
+        tryCount: Int = 0,
+    ) {
+        if (tryCount >= retryCount) return
+
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    showProducts()
+                } else {
+                    Log.e("buna", billingResult.debugMessage)
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                startBillingConnection(retryCount, tryCount + 1)
+            }
+        })
+    }
+
+    private fun showProducts() {
+        val productList = listOf(
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId("com.composition.damoa.ticket")
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build(),
+        )
+
+        val params = QueryProductDetailsParams.newBuilder()
+            .setProductList(productList)
+            .build()
+
+        billingClient.queryProductDetailsAsync(params) { billingResult, prodDetails ->
+            if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) return@queryProductDetailsAsync
+            viewModel.updateProductDetails(prodDetails)
+        }
+    }
+
+    private fun launchPurchaseFlow(productDetails: ProductDetails) {
+        val productDetailsParamsList = listOf(
+            ProductDetailsParams.newBuilder()
+                .setProductDetails(productDetails)
+                .build()
+        )
+        val billingFlowParams = BillingFlowParams.newBuilder()
+            .setProductDetailsParamsList(productDetailsParamsList)
+            .build()
+        val billingResult = billingClient.launchBillingFlow(this, billingFlowParams)
     }
 
     companion object {
@@ -87,6 +170,7 @@ class TicketPurchaseActivity : ComponentActivity() {
 @Composable
 private fun TicketPurchaseScreen(
     viewModel: TicketPurchaseViewModel,
+    onPurchaseClick: (ProductDetails) -> Unit,
 ) {
     PetudioTheme {
         val activity = LocalContext.current as? ComponentActivity
@@ -111,9 +195,9 @@ private fun TicketPurchaseScreen(
                     .fillMaxSize()
                     .padding(top = padding.calculateTopPadding()),
                 ticketPurchaseUiState = ticketPurchaseUiState,
+                onPurchaseClick = onPurchaseClick,
                 onCouponSerialChanged = viewModel::updateCouponSerial,
                 onCouponSerialDone = viewModel::getTicketFromCouponSerial,
-                ticketPurchaseItems = ticketPurchaseItems(),
             )
         }
     }
@@ -141,9 +225,9 @@ private fun TicketPurchaseTopBar(onNavigationClick: () -> Unit = {}) {
 private fun TicketPurchaseContent(
     modifier: Modifier = Modifier,
     ticketPurchaseUiState: TicketPurchaseUiState,
+    onPurchaseClick: (ProductDetails) -> Unit,
     onCouponSerialChanged: (String) -> Unit,
     onCouponSerialDone: () -> Unit,
-    ticketPurchaseItems: List<Ticket>,
 ) {
     Column(
         modifier = modifier
@@ -160,7 +244,10 @@ private fun TicketPurchaseContent(
             onCouponSerialDone = onCouponSerialDone,
         )
         DonationDescription(modifier = Modifier.padding(top = 12.dp, bottom = 20.dp))
-        TicketPurchaseList(tickets = ticketPurchaseItems)
+        TicketPurchaseList(
+            productDetails = ticketPurchaseUiState.productDetails,
+            onPurchaseClick = onPurchaseClick,
+        )
         Spacer(modifier = Modifier.weight(1F))
         PaymentInformationList()
         PolicyButtonList(modifier = Modifier.padding(top = 14.dp))
@@ -243,11 +330,15 @@ private fun GiftNumberHint() {
 @Composable
 private fun TicketPurchaseList(
     modifier: Modifier = Modifier,
-    tickets: List<Ticket>,
+    productDetails: List<ProductDetails>,
+    onPurchaseClick: (ProductDetails) -> Unit,
 ) {
     Column(modifier = modifier) {
-        tickets.forEach { ticket ->
-            TicketPurchaseItem(ticket = ticket)
+        productDetails.forEach { productDetail ->
+            TicketPurchaseItem(
+                productDetail = productDetail,
+                onPurchaseClick = onPurchaseClick,
+            )
         }
     }
 }
@@ -255,34 +346,35 @@ private fun TicketPurchaseList(
 @Composable
 private fun TicketPurchaseItem(
     modifier: Modifier = Modifier,
-    ticket: Ticket,
-    onClick: () -> Unit = {},
+    purchaseItemCount: Int = 1,
+    productDetail: ProductDetails,
+    onPurchaseClick: (ProductDetails) -> Unit,
 ) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .clickable(onClick = { onPurchaseClick(productDetail) }),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Ticket(
             modifier = modifier.padding(vertical = 20.dp),
-            ticketCount = ticket.ticketCount,
+            ticketCount = purchaseItemCount,
         )
-        PurchaseButton(price = ticket.price)
+        PurchaseButton(price = productDetail.oneTimePurchaseOfferDetails?.formattedPrice ?: "ERROR")
     }
 }
 
 @Composable
 private fun PurchaseButton(
     modifier: Modifier = Modifier,
-    price: Int,
+    price: String,
     onClick: () -> Unit = {},
 ) {
     GradientButton(
         modifier = modifier.size(90.dp, 44.dp),
-        text = String.format("%,d", price),
+        text = price,
         shape = RoundedCornerShape(12.dp),
         gradient =
         Brush.verticalGradient(

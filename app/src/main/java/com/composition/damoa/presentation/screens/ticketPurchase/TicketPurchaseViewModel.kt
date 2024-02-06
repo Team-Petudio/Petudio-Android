@@ -2,6 +2,7 @@ package com.composition.damoa.presentation.screens.ticketPurchase
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.billingclient.api.ProductDetails
 import com.composition.damoa.data.common.retrofit.callAdapter.Failure
 import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
@@ -59,6 +60,10 @@ class TicketPurchaseViewModel @Inject constructor(
 
     fun getTicketFromCouponSerial() {
 
+    }
+
+    fun updateProductDetails(productDetails: List<ProductDetails>) {
+        _ticketPurchaseUiState.value = ticketPurchaseUiState.value.copy(productDetails = productDetails)
     }
 
     enum class Event {
