@@ -142,6 +142,9 @@ dependencies {
 
     // Image Compressor
     implementation("id.zelory:compressor:3.0.1")
+
+    // Permission
+    implementation("io.github.ParkSangGwon:tedpermission-normal:3.3.0")
 }
 
 kapt {
