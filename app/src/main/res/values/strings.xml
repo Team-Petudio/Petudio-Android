@@ -109,4 +109,7 @@
     <string name="channel_desc_profile_complete">프로필 생성이 완료되면 푸시 알림을 보내드려요!</string>
 
     <string name="pet_photo_size_invalid_message">사진을 10장에서 12장 선택해 주셔야 합니다!</string>
+    <string name="permission_request_title">권한 요청</string>
+    <string name="read_external_storage_message">파일 권한을 허용해야 사진을 업로드 할 수 있어요!</string>
+    <string name="read_external_storage_permission_denied_message">파일 권한을 허용하지 않으면 이미지를 업로드할 수 없어요 😢</string>
 </resources>

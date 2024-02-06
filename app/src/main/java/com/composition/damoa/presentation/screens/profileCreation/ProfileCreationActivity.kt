@@ -1,11 +1,8 @@
 package com.composition.damoa.presentation.screens.profileCreation
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -24,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -38,6 +34,9 @@ import com.composition.damoa.presentation.common.extensions.onDefault
 import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.common.extensions.reduceImageSizeAndCreateFile
 import com.composition.damoa.presentation.common.extensions.showToast
+import com.composition.damoa.presentation.common.utils.permissionRequester.Permission
+import com.composition.damoa.presentation.common.utils.permissionRequester.PermissionRequester
+import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.Companion.KEY_CONCEPT_ID
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.UiEvent
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
@@ -53,6 +52,7 @@ import kotlinx.coroutines.flow.collectLatest
 @AndroidEntryPoint
 class ProfileCreationActivity : ComponentActivity() {
     private val viewModel: ProfileCreationViewModel by viewModels()
+    private val permissionRequester = PermissionRequester()
     private val photoPicker = PhotoPicker(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,69 +60,19 @@ class ProfileCreationActivity : ComponentActivity() {
         setContent {
             ProfileCreation(
                 viewModel = viewModel,
-                onPhotoSelect = ::launchPhotoPicker
+                onPhotoSelect = ::launchPermissionRequester,
             )
         }
+    }
 
-        val REQUEST_EXTERNAL_STORAGE = 1
-        val PERMISSIONS_STORAGE = arrayOf(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
+    private fun launchPermissionRequester() {
+        permissionRequester.launch(
+            context = this,
+            permission = Permission.READ_EXTERNAL_STORAGE,
+            dialogMessage = getString(R.string.read_external_storage_message),
+            onGranted = ::launchPhotoPicker,
+            onDenied = { showToast(getString(R.string.read_external_storage_permission_denied_message)) },
         )
-        val permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        val permission2 = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            Log.d("buna", "1")
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            ) {
-                Log.d("buna", "2")
-                ActivityCompat.requestPermissions(
-                    this,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-                )
-            } else {
-                Log.d("buna", "3")
-                ActivityCompat.requestPermissions(
-                    this,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-                )
-            }
-        }
-
-        if (permission2 != PackageManager.PERMISSION_GRANTED) {
-            Log.d("buna", "4")
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-            ) {
-                Log.d("buna", "5")
-                ActivityCompat.requestPermissions(
-                    this,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-                )
-            } else {
-                Log.d("buna", "6")
-                ActivityCompat.requestPermissions(
-                    this,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-                )
-            }
-        }
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-//            if (!Environment.isExternalStorageManager()) {
-//                startActivity(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION))
-//            }
-//        }
     }
 
     private fun launchPhotoPicker() {
@@ -183,8 +133,8 @@ private fun ProfileCreation(
                     UiEvent.NETWORK_ERROR -> activity.showToast(R.string.network_failure_message)
                     UiEvent.UNKNOWN_ERROR -> activity.showToast(R.string.unknown_error_message)
                     UiEvent.TOKEN_EXPIRED -> {
-//                        LoginActivity.startActivity(activity)
-//                        activity.finish()
+                        LoginActivity.startActivity(activity)
+                        activity.finish()
                     }
                 }
             }
@@ -235,7 +185,7 @@ private fun ProfileCreationTopAppBar(onNavigationClick: () -> Unit = {}) {
 private fun ProfileCreationNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: ProfileCreationScreen = ProfileCreationScreen.PHOTO_UPLOAD_INTRODUCE,
+    startDestination: ProfileCreationScreen = ProfileCreationScreen.PROFILE_CREATION_INTRODUCE,
     profileConceptDetail: ProfileConceptDetail,
     pets: List<Pet>,
     petInfoUiState: PetInfoUiState,
