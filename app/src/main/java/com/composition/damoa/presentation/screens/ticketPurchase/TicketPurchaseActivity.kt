@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -70,9 +73,12 @@ import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseV
 import com.composition.damoa.presentation.screens.ticketPurchase.state.TicketPurchaseUiState
 import com.composition.damoa.presentation.ui.theme.Gray10
 import com.composition.damoa.presentation.ui.theme.Gray20
+import com.composition.damoa.presentation.ui.theme.Gray30
 import com.composition.damoa.presentation.ui.theme.Gray40
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
+import com.composition.damoa.presentation.ui.theme.Purple50
 import com.composition.damoa.presentation.ui.theme.Purple60
+import com.composition.damoa.presentation.ui.theme.Purples
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -280,6 +286,8 @@ private fun GiftNumberInput(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        val purples by remember { mutableStateOf(Purples.reversed()) }
+
         OutlinedTextField(
             value = couponSerial,
             onValueChange = { couponSerial ->
@@ -311,7 +319,11 @@ private fun GiftNumberInput(
             modifier = Modifier
                 .size(90.dp, 52.dp)
                 .padding(start = 12.dp),
+            fontColor = Color.White,
+            fontSize = 17.sp,
             enabled = couponSerial.length == 32,
+            gradient = Brush.horizontalGradient(purples),
+            disabledColor = Gray30,
             text = stringResource(id = R.string.confirm),
             shape = RoundedCornerShape(12.dp),
             onClick = onCouponSerialDone,
@@ -353,16 +365,21 @@ private fun TicketPurchaseItem(
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
+            .clickable(onClick = { onPurchaseClick(productDetail) })
             .fillMaxWidth()
-            .clickable(onClick = { onPurchaseClick(productDetail) }),
+            .border(2.dp, Purple50, RoundedCornerShape(12.dp))
+            .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Ticket(
-            modifier = modifier.padding(vertical = 20.dp),
+            modifier = Modifier.padding(vertical = 20.dp),
             ticketCount = purchaseItemCount,
         )
-        PurchaseButton(price = productDetail.oneTimePurchaseOfferDetails?.formattedPrice ?: "ERROR")
+        PurchaseButton(
+            price = productDetail.oneTimePurchaseOfferDetails?.formattedPrice ?: "ERROR",
+            onClick = { onPurchaseClick(productDetail) },
+        )
     }
 }
 
@@ -372,16 +389,13 @@ private fun PurchaseButton(
     price: String,
     onClick: () -> Unit = {},
 ) {
+    val purples by remember { mutableStateOf(Purples.reversed()) }
+
     GradientButton(
         modifier = modifier.size(90.dp, 44.dp),
         text = price,
         shape = RoundedCornerShape(12.dp),
-        gradient =
-        Brush.verticalGradient(
-            colors = listOf(Color.Black, Color.Black),
-            startY = Float.POSITIVE_INFINITY,
-            endY = 0F,
-        ),
+        gradient = Brush.horizontalGradient(purples),
         fontSize = 18.sp,
         fontWeight = FontWeight.Bold,
         onClick = onClick,

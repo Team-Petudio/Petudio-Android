@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
+import com.composition.damoa.presentation.ui.theme.Gray20
 import com.composition.damoa.presentation.ui.theme.Gray30
 import com.composition.damoa.presentation.ui.theme.PrimaryColors
 
@@ -35,6 +36,7 @@ fun GradientButton(
     fontSize: TextUnit = TextUnit.Unspecified,
     fontWeight: FontWeight? = null,
     gradient: Brush = Brush.horizontalGradient(PrimaryColors),
+    disabledColor: Color = Gray30,
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
@@ -48,7 +50,7 @@ fun GradientButton(
         enabled = enabled,
         onClick = onClick,
     ) {
-        val boxModifier = if (enabled) Modifier.background(gradient) else Modifier.background(Gray30)
+        val boxModifier = if (enabled) Modifier.background(gradient) else Modifier.background(disabledColor)
         Box(
             modifier = boxModifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
