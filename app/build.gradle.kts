@@ -17,7 +17,7 @@ android {
         applicationId = "com.composition.damoa"
         minSdk = 26
         targetSdk = 33
-        versionCode = 7
+        versionCode = 10
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

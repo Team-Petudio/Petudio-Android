@@ -5,6 +5,10 @@
 -keep class org.xmlpull.** { *; }
 -keepclassmembers class org.xmlpull.** { *; }
 
+# ApiResponse 클래스의 타입 매개변수를 유지하기 위해 추가.
+# 안하면 CallAdapter에서 retrofit2.Call<ApiResponse>를 반환하는 CallAdapter 만들 수 없음.
+-keepnames, allowobfuscation class com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
+
 # Retain generic type information for use by reflection by converters and adapters.
 -keepattributes Signature
 # Retain declared checked exceptions for use by a Proxy instance.
