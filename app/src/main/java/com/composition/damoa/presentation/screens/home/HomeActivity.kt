@@ -1,5 +1,6 @@
 package com.composition.damoa.presentation.screens.home
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -139,7 +140,12 @@ private fun HomeNavHost(
         composable(HomeBottomNavItem.ProfileConcept.route) {
             ProfileConceptScreen(
                 profileConcepts = profileConcepts,
-                onProfileConceptClick = { conceptId -> ProfileCreationActivity.startActivity(context, conceptId) }
+                onProfileConceptClick = { conceptId ->
+                    when {
+                        userUiState.isLogined -> ProfileCreationActivity.startActivity(context, conceptId)
+                        else -> LoginActivity.startActivity(context as Activity)
+                    }
+                }
             )
         }
         composable(HomeBottomNavItem.Gallery.route) {
