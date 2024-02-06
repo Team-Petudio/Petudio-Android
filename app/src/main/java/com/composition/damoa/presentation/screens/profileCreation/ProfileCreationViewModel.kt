@@ -47,7 +47,7 @@ class ProfileCreationViewModel @Inject constructor(
     private val petDetectRepository: PetDetectRepository,
 //    private val paymentRepository: PaymentRepository,
 ) : ViewModel() {
-    //    private val conceptId = requireNotNull(savedStateHandle.get<Long>(KEY_CONCEPT_ID))
+    private val conceptId = requireNotNull(savedStateHandle.get<Long>(KEY_CONCEPT_ID))
     private var profileConcept: ProfileConcept? = null
 
     private val _ticketUiState = MutableStateFlow(TicketUiState())
@@ -92,7 +92,7 @@ class ProfileCreationViewModel @Inject constructor(
         viewModelScope.launch {
             _conceptDetailUiState.value = conceptDetailUiState.value.copy(state = State.LOADING)
 
-            when (val conceptDetail = conceptRepository.getConceptDetail(1)) {
+            when (val conceptDetail = conceptRepository.getConceptDetail(conceptId)) {
                 is Success -> _conceptDetailUiState.value = conceptDetailUiState.value.copy(
                     state = State.SUCCESS,
                     conceptDetail = conceptDetail.data
@@ -198,7 +198,9 @@ class ProfileCreationViewModel @Inject constructor(
     private suspend fun uploadPet(): ApiResponse<Unit> {
         val petInfoUiState = petInfoUiState.value
         val petColor = petInfoUiState.petColor ?: return Unexpected(Error("[ERROR] PetColor가 null입니다."))
-        if (!selectedImageUiState.value.isValidPetPhotoSize()) return Unexpected(Error("[ERROR] PetPhotoUrls 개수가 10개 미만이거나 12개 초과입니다."))
+        if (!selectedImageUiState.value.isValidPetPhotoSize()) {
+            return Unexpected(Error("[ERROR] PetPhotoUrls 개수가 ${MIN_UPLOAD_PHOTO_SIZE}개 미만이거나 ${MAX_UPLOAD_PHOTO_SIZE}개 초과입니다."))
+        }
 
         return petRepository.uploadPet(
             petName = petInfoUiState.petName,
@@ -257,7 +259,7 @@ class ProfileCreationViewModel @Inject constructor(
         val originSelectedImageFiles = selectedImageUiState.value.selectedImageFiles
 
         viewModelScope.launch {
-            val concept = getConcept(1L) ?: return@launch
+            val concept = getConcept(conceptId) ?: return@launch
 
             when (val petDetectResult = petDetectRepository.detectPet(imageFiles, concept.petType)) {
                 is Success -> {
