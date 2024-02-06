@@ -67,7 +67,6 @@ import com.composition.damoa.presentation.common.components.PaymentInformationLi
 import com.composition.damoa.presentation.common.components.PolicyButtonList
 import com.composition.damoa.presentation.common.components.SmallTitle
 import com.composition.damoa.presentation.common.extensions.onUi
-import com.composition.damoa.presentation.common.extensions.showToast
 import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseViewModel.Event
 import com.composition.damoa.presentation.screens.ticketPurchase.state.TicketPurchaseUiState
@@ -105,7 +104,7 @@ class TicketPurchaseActivity : ComponentActivity() {
                 // TODO: 구매 완료시 purchase에 구매 정보가 담겨 있다.
                 // TODO: 필요한 정보를 서버로 전송하기
             } else if (billingResult.responseCode != BillingClient.BillingResponseCode.USER_CANCELED) {
-                showToast(R.string.unknown_error_message)
+                Log.d("buna", "구글 결제 에러 : ${billingResult.responseCode} ${billingResult.debugMessage}")
             }
         }
 
