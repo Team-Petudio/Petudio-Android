@@ -50,6 +50,8 @@ import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.LoginButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.PetudioDialog
+import com.composition.damoa.presentation.common.extensions.navigateToPrivacy
+import com.composition.damoa.presentation.common.extensions.navigateToTermOfUse
 import com.composition.damoa.presentation.common.extensions.navigateToWebsite
 import com.composition.damoa.presentation.screens.home.state.UserUiState
 import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseActivity
@@ -229,8 +231,8 @@ private fun SettingList(
         if (isLogin) TicketPurchase(ticket) { context.startActivity(TicketPurchaseActivity.getIntent(context)) }
         Question { context.navigateToWebsite("https://petudio.notion.site/09ab51dbfaae49bfbb3cc9278fdcdb19?pvs=4") }
         Email { context.sendEmail() }
-        TermOfUse { context.navigateToWebsite("https://petudio.notion.site/Petudio-57118639803f4588b14b84ee6bc5709e?pvs=4") }
-        Privacy { context.navigateToWebsite("https://petudio.notion.site/Petudio-f2ead0982d5a46899274bdde710332c2?pvs=4") }
+        TermOfUse { context.navigateToTermOfUse() }
+        Privacy { context.navigateToPrivacy() }
     }
 }
 
