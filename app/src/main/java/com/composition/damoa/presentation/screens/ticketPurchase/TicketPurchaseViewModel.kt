@@ -8,6 +8,7 @@ import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
 import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
+import com.composition.damoa.data.model.PurchaseItem
 import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.presentation.common.base.BaseUiState.State
 import com.composition.damoa.presentation.screens.ticketPurchase.state.TicketPurchaseUiState
@@ -55,7 +56,7 @@ class TicketPurchaseViewModel @Inject constructor(
     }
 
     fun updateCouponSerial(number: String) {
-        _ticketPurchaseUiState.value = _ticketPurchaseUiState.value.copy(couponSerial = number)
+        _ticketPurchaseUiState.value = _ticketPurchaseUiState.value.copy(enteredGiftCardNumber = number)
     }
 
     fun getTicketFromCouponSerial() {
@@ -63,7 +64,13 @@ class TicketPurchaseViewModel @Inject constructor(
     }
 
     fun updateProductDetails(productDetails: List<ProductDetails>) {
-        _ticketPurchaseUiState.value = ticketPurchaseUiState.value.copy(productDetails = productDetails)
+        val purchaseItems = productDetails.map { productDetail ->
+            PurchaseItem(
+                productDetails = productDetail,
+                category = PurchaseItem.Category.from(productDetail.productId),
+            )
+        }
+        _ticketPurchaseUiState.value = ticketPurchaseUiState.value.copy(purchaseItems = purchaseItems)
     }
 
     enum class Event {

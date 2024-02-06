@@ -2,4 +2,5 @@
 <resources>
     <string name="en_app_name">Petudio</string>
     <string name="new_concept">NEW</string>
+    <string name="gift_number_input_hint">A12DB56YL12JM34NC12BV32DX12SZ23D</string>
 </resources>

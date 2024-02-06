@@ -17,10 +17,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -56,16 +59,17 @@ import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingFlowParams.ProductDetailsParams
 import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.composition.damoa.R
+import com.composition.damoa.data.model.PurchaseItem
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.DonationDescription
 import com.composition.damoa.presentation.common.components.GradientButton
 import com.composition.damoa.presentation.common.components.PaymentInformationList
 import com.composition.damoa.presentation.common.components.PolicyButtonList
 import com.composition.damoa.presentation.common.components.SmallTitle
+import com.composition.damoa.presentation.common.components.TinyTitle
 import com.composition.damoa.presentation.common.extensions.navigateToPrivacy
 import com.composition.damoa.presentation.common.extensions.navigateToTermOfUse
 import com.composition.damoa.presentation.common.extensions.onUi
@@ -145,6 +149,10 @@ class TicketPurchaseActivity : ComponentActivity() {
                 .setProductId("com.composition.damoa.ticket")
                 .setProductType(BillingClient.ProductType.INAPP)
                 .build(),
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId("com.composition.damoa.giftcard")
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build(),
         )
 
         val params = QueryProductDetailsParams.newBuilder()
@@ -157,10 +165,10 @@ class TicketPurchaseActivity : ComponentActivity() {
         }
     }
 
-    private fun launchPurchaseFlow(productDetails: ProductDetails) {
+    private fun launchPurchaseFlow(purchaseItem: PurchaseItem) {
         val productDetailsParamsList = listOf(
             ProductDetailsParams.newBuilder()
-                .setProductDetails(productDetails)
+                .setProductDetails(purchaseItem.productDetails)
                 .build()
         )
         val billingFlowParams = BillingFlowParams.newBuilder()
@@ -177,7 +185,7 @@ class TicketPurchaseActivity : ComponentActivity() {
 @Composable
 private fun TicketPurchaseScreen(
     viewModel: TicketPurchaseViewModel,
-    onPurchaseClick: (ProductDetails) -> Unit,
+    onPurchaseClick: (PurchaseItem) -> Unit,
 ) {
     PetudioTheme {
         val activity = LocalContext.current as? ComponentActivity
@@ -200,6 +208,7 @@ private fun TicketPurchaseScreen(
             TicketPurchaseContent(
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(top = padding.calculateTopPadding()),
                 ticketPurchaseUiState = ticketPurchaseUiState,
                 onPurchaseClick = onPurchaseClick,
@@ -232,7 +241,7 @@ private fun TicketPurchaseTopBar(onNavigationClick: () -> Unit = {}) {
 private fun TicketPurchaseContent(
     modifier: Modifier = Modifier,
     ticketPurchaseUiState: TicketPurchaseUiState,
-    onPurchaseClick: (ProductDetails) -> Unit,
+    onPurchaseClick: (PurchaseItem) -> Unit,
     onCouponSerialChanged: (String) -> Unit,
     onCouponSerialDone: () -> Unit,
 ) {
@@ -246,15 +255,19 @@ private fun TicketPurchaseContent(
     ) {
         TicketPurchaseTitle()
         UserOwnTicket(ticketCount = ticketPurchaseUiState.ticketCount)
+        SmallTitle(
+            modifier = Modifier.padding(top = 20.dp),
+            titleRes = R.string.gift_card_number_title,
+        )
         GiftNumberInput(
-            modifier = Modifier.padding(vertical = 20.dp),
-            couponSerial = ticketPurchaseUiState.couponSerial,
+            modifier = Modifier.padding(top = 12.dp, bottom = 20.dp),
+            couponSerial = ticketPurchaseUiState.enteredGiftCardNumber,
             couponSerialChanged = onCouponSerialChanged,
             onCouponSerialDone = onCouponSerialDone,
         )
         DonationDescription(modifier = Modifier.padding(top = 12.dp, bottom = 20.dp))
-        TicketPurchaseList(
-            productDetails = ticketPurchaseUiState.productDetails,
+        PurchaseItemList(
+            purchaseItems = ticketPurchaseUiState.purchaseItems,
             onPurchaseClick = onPurchaseClick,
         )
         Spacer(modifier = Modifier.weight(1F))
@@ -274,7 +287,7 @@ private fun TicketPurchaseTitle() {
 
 @Composable
 private fun UserOwnTicket(ticketCount: Int) {
-    TicketRow(
+    TicketCount(
         modifier = Modifier.padding(top = 20.dp),
         title = stringResource(id = R.string.my_ticket_count),
         ticketCount = ticketCount,
@@ -282,7 +295,6 @@ private fun UserOwnTicket(ticketCount: Int) {
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun GiftNumberInput(
     modifier: Modifier = Modifier,
     couponSerial: String,
@@ -301,7 +313,9 @@ private fun GiftNumberInput(
                 if (couponSerial.length <= 32) couponSerialChanged(couponSerial)
             },
             shape = RoundedCornerShape(12.dp),
-            modifier = Modifier.weight(1F),
+            modifier = Modifier
+                .weight(1F)
+                .heightIn(max = 52.dp),
             placeholder = { GiftNumberHint() },
             singleLine = true,
             leadingIcon = {
@@ -341,21 +355,24 @@ private fun GiftNumberInput(
 @Composable
 private fun GiftNumberHint() {
     Text(
-        text = stringResource(R.string.gift_number_input),
+        text = stringResource(R.string.gift_number_input_hint),
         color = Gray40,
     )
 }
 
 @Composable
-private fun TicketPurchaseList(
+private fun PurchaseItemList(
     modifier: Modifier = Modifier,
-    productDetails: List<ProductDetails>,
-    onPurchaseClick: (ProductDetails) -> Unit,
+    purchaseItems: List<PurchaseItem>,
+    onPurchaseClick: (PurchaseItem) -> Unit,
 ) {
-    Column(modifier = modifier) {
-        productDetails.forEach { productDetail ->
-            TicketPurchaseItem(
-                productDetail = productDetail,
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        purchaseItems.forEach { productDetail ->
+            PurchaseItem(
+                purchaseItems = productDetail,
                 onPurchaseClick = onPurchaseClick,
             )
         }
@@ -363,29 +380,29 @@ private fun TicketPurchaseList(
 }
 
 @Composable
-private fun TicketPurchaseItem(
+private fun PurchaseItem(
     modifier: Modifier = Modifier,
-    purchaseItemCount: Int = 1,
-    productDetail: ProductDetails,
-    onPurchaseClick: (ProductDetails) -> Unit,
+    purchaseItems: PurchaseItem,
+    onPurchaseClick: (PurchaseItem) -> Unit,
 ) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .clickable(onClick = { onPurchaseClick(productDetail) })
+            .clickable(onClick = { onPurchaseClick(purchaseItems) })
             .fillMaxWidth()
             .border(2.dp, Purple50, RoundedCornerShape(12.dp))
             .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Ticket(
-            modifier = Modifier.padding(vertical = 20.dp),
-            ticketCount = purchaseItemCount,
-        )
+        when (purchaseItems.category) {
+            PurchaseItem.Category.TICKET -> Ticket(modifier.weight(1F))
+            PurchaseItem.Category.GIFT_CARD -> GiftCard(modifier.weight(1F))
+        }
+
         PurchaseButton(
-            price = productDetail.oneTimePurchaseOfferDetails?.formattedPrice ?: "ERROR",
-            onClick = { onPurchaseClick(productDetail) },
+            price = purchaseItems.productDetails.oneTimePurchaseOfferDetails?.formattedPrice ?: "ERROR",
+            onClick = { onPurchaseClick(purchaseItems) },
         )
     }
 }
@@ -410,7 +427,7 @@ private fun PurchaseButton(
 }
 
 @Composable
-private fun TicketRow(
+private fun TicketCount(
     modifier: Modifier,
     title: String,
     ticketCount: Int,
@@ -426,32 +443,57 @@ private fun TicketRow(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         SmallTitle(title = title)
-        Ticket(ticketCount = ticketCount)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                modifier = Modifier.size(22.dp),
+                painter = painterResource(id = R.drawable.ic_ticket),
+                contentDescription = null,
+                tint = Color.Unspecified,
+            )
+            Text(
+                text = String.format("%,d", ticketCount),
+                fontSize = 18.sp,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 4.dp),
+                textAlign = TextAlign.Start,
+            )
+        }
     }
 }
 
 @Composable
-private fun Ticket(
-    modifier: Modifier = Modifier,
-    ticketCount: Int = 0,
-) {
+private fun GiftCard(modifier: Modifier) {
     Row(
-        modifier = modifier,
+        modifier.padding(vertical = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            modifier = Modifier.size(22.dp),
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(26.dp),
+            painter = painterResource(id = R.drawable.ic_giftcard),
+            contentDescription = null,
+            tint = Color.Unspecified,
+        )
+        TinyTitle(titleRes = R.string.item_giftcard)
+    }
+}
+
+@Composable
+private fun Ticket(modifier: Modifier) {
+    Row(
+        modifier.padding(vertical = 20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(26.dp),
             painter = painterResource(id = R.drawable.ic_ticket),
             contentDescription = null,
             tint = Color.Unspecified,
         )
-        Text(
-            text = String.format("%,d", ticketCount),
-            fontSize = 18.sp,
-            color = Color.Black,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 4.dp),
-            textAlign = TextAlign.Start,
-        )
+        TinyTitle(titleRes = R.string.item_ai_profile_ticket)
     }
 }

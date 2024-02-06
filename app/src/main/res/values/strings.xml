@@ -98,7 +98,10 @@
 
     <string name="ticket_purchase_title">티켓 구매</string>
     <string name="my_ticket_count">보유 티켓</string>
-    <string name="gift_number_input">기프트 카드 번호를 입력해주세요.</string>
+    <string name="gift_card_number_title">기프트 카드 번호</string>
+    <string name="item_ai_profile_ticket">AI 프로필 생성 티켓</string>
+    <string name="item_giftcard">기프트 카드</string>
+
 
     <string name="login_with_google">Google로 로그인</string>
     <string name="login_with_kakao">Kakao로 로그인</string>
