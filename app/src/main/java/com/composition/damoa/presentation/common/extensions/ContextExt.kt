@@ -37,6 +37,14 @@ fun Context.navigateToWebsite(url: String) {
     startActivity(myIntent)
 }
 
+fun Context.navigateToTermOfUse() {
+    navigateToWebsite("https://petudio.notion.site/Petudio-57118639803f4588b14b84ee6bc5709e?pvs=4")
+}
+
+fun Context.navigateToPrivacy() {
+    navigateToWebsite("https://petudio.notion.site/Petudio-f2ead0982d5a46899274bdde710332c2?pvs=4")
+}
+
 fun Context.checkPostNotificationPermission(): Boolean {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true
     return ActivityCompat.checkSelfPermission(

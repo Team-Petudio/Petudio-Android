@@ -66,6 +66,8 @@ import com.composition.damoa.presentation.common.components.GradientButton
 import com.composition.damoa.presentation.common.components.PaymentInformationList
 import com.composition.damoa.presentation.common.components.PolicyButtonList
 import com.composition.damoa.presentation.common.components.SmallTitle
+import com.composition.damoa.presentation.common.extensions.navigateToPrivacy
+import com.composition.damoa.presentation.common.extensions.navigateToTermOfUse
 import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseViewModel.Event
@@ -234,6 +236,8 @@ private fun TicketPurchaseContent(
     onCouponSerialChanged: (String) -> Unit,
     onCouponSerialDone: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = modifier
             .background(Color.White)
@@ -255,7 +259,11 @@ private fun TicketPurchaseContent(
         )
         Spacer(modifier = Modifier.weight(1F))
         PaymentInformationList()
-        PolicyButtonList(modifier = Modifier.padding(top = 14.dp))
+        PolicyButtonList(
+            modifier = Modifier.padding(top = 14.dp),
+            onTermOfUseClick = { context.navigateToTermOfUse() },
+            onPrivacyClick = { context.navigateToPrivacy() },
+        )
     }
 }
 

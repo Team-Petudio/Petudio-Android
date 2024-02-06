@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +30,8 @@ import com.composition.damoa.presentation.common.components.GradientButton
 import com.composition.damoa.presentation.common.components.PaymentInformationList
 import com.composition.damoa.presentation.common.components.PaymentItem
 import com.composition.damoa.presentation.common.components.PolicyButtonList
+import com.composition.damoa.presentation.common.extensions.navigateToPrivacy
+import com.composition.damoa.presentation.common.extensions.navigateToTermOfUse
 import com.composition.damoa.presentation.ui.theme.PrimaryColors
 
 @Composable
@@ -57,6 +60,8 @@ fun PaymentScreen(
 
 @Composable
 private fun PaymentContent(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+
     Column(modifier) {
         BigTitle(titleRes = R.string.payment)
         PaymentItem(
@@ -69,7 +74,11 @@ private fun PaymentContent(modifier: Modifier = Modifier) {
         )
         DonationDescription(modifier = Modifier.padding(vertical = 28.dp))
         PaymentInformationList()
-        PolicyButtonList(modifier = Modifier.padding(top = 14.dp))
+        PolicyButtonList(
+            modifier = Modifier.padding(top = 14.dp),
+            onTermOfUseClick = { context.navigateToTermOfUse() },
+            onPrivacyClick = { context.navigateToPrivacy() },
+        )
     }
 }
 

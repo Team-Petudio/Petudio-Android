@@ -14,10 +14,14 @@ import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.Gray40
 
 @Composable
-fun PolicyButtonList(modifier: Modifier = Modifier) {
+fun PolicyButtonList(
+    modifier: Modifier = Modifier,
+    onTermOfUseClick: () -> Unit,
+    onPrivacyClick: () -> Unit,
+) {
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-        TermOfUse(onClick = {})
-        Privacy(onClick = {})
+        TermOfUse(onClick = onTermOfUseClick)
+        Privacy(onClick = onPrivacyClick)
     }
 }
 
