@@ -55,14 +55,6 @@ class TicketPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun updateCouponSerial(number: String) {
-        _ticketPurchaseUiState.value = _ticketPurchaseUiState.value.copy(enteredGiftCardNumber = number)
-    }
-
-    fun getTicketFromCouponSerial() {
-
-    }
-
     fun updateProductDetails(productDetails: List<ProductDetails>) {
         val purchaseItems = productDetails.map { productDetail ->
             PurchaseItem(

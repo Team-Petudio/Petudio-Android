@@ -21,4 +21,6 @@ data class GiftCardResponse(
     val expiredAt: LocalDateTime,
 //    @SerialName("isExpired")
 //    val isExpired: Boolean,
+//    @SerialName("isUsed")
+//    val isUsed: Boolean,
 )

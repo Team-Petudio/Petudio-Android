@@ -10,4 +10,5 @@ private fun GiftCardResponse.toDomain(): GiftCard = GiftCard(
     giftCode = giftCode,
     expiredAt = expiredAt,
     isExpired = false,
+    isUsed = false,
 )

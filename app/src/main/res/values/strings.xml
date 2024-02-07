@@ -100,7 +100,13 @@
     <string name="my_ticket_count">보유 티켓</string>
     <string name="gift_card_number_title">기프트 카드 번호</string>
     <string name="item_ai_profile_ticket">AI 프로필 생성 티켓</string>
+
     <string name="item_giftcard">기프트 카드</string>
+    <string name="expired_date">만료기한</string>
+    <string name="expired_message">마감</string>
+    <string name="used_message">사용완료</string>
+    <string name="unused_giftcard_title">사용 가능한 카드</string>
+    <string name="unusable_giftcard_title">사용 불가</string>
 
 
     <string name="login_with_google">Google로 로그인</string>
@@ -115,4 +121,5 @@
     <string name="permission_request_title">권한 요청</string>
     <string name="read_external_storage_message">파일 권한을 허용해야 사진을 업로드 할 수 있어요!</string>
     <string name="read_external_storage_permission_denied_message">파일 권한을 허용하지 않으면 이미지를 업로드할 수 없어요 😢</string>
+    <string name="giftcard_item_title">AI 프로필 제작권</string>
 </resources>

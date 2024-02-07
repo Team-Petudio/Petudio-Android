@@ -17,20 +17,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -48,8 +44,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -77,12 +71,8 @@ import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseViewModel.Event
 import com.composition.damoa.presentation.screens.ticketPurchase.state.TicketPurchaseUiState
 import com.composition.damoa.presentation.ui.theme.Gray10
-import com.composition.damoa.presentation.ui.theme.Gray20
-import com.composition.damoa.presentation.ui.theme.Gray30
-import com.composition.damoa.presentation.ui.theme.Gray40
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.composition.damoa.presentation.ui.theme.Purple50
-import com.composition.damoa.presentation.ui.theme.Purple60
 import com.composition.damoa.presentation.ui.theme.Purples
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -214,8 +204,6 @@ private fun TicketPurchaseScreen(
                     .padding(top = padding.calculateTopPadding()),
                 ticketPurchaseUiState = ticketPurchaseUiState,
                 onPurchaseClick = onPurchaseClick,
-                onCouponSerialChanged = viewModel::updateCouponSerial,
-                onCouponSerialDone = viewModel::getTicketFromCouponSerial,
             )
         }
     }
@@ -244,8 +232,6 @@ private fun TicketPurchaseContent(
     modifier: Modifier = Modifier,
     ticketPurchaseUiState: TicketPurchaseUiState,
     onPurchaseClick: (PurchaseItem) -> Unit,
-    onCouponSerialChanged: (String) -> Unit,
-    onCouponSerialDone: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -257,16 +243,6 @@ private fun TicketPurchaseContent(
     ) {
         TicketPurchaseTitle()
         UserOwnTicket(ticketCount = ticketPurchaseUiState.ticketCount)
-        SmallTitle(
-            modifier = Modifier.padding(top = 20.dp),
-            titleRes = R.string.gift_card_number_title,
-        )
-        GiftNumberInput(
-            modifier = Modifier.padding(top = 12.dp, bottom = 20.dp),
-            couponSerial = ticketPurchaseUiState.enteredGiftCardNumber,
-            couponSerialChanged = onCouponSerialChanged,
-            onCouponSerialDone = onCouponSerialDone,
-        )
         DonationDescription(modifier = Modifier.padding(top = 12.dp, bottom = 20.dp))
         PurchaseItemList(
             purchaseItems = ticketPurchaseUiState.purchaseItems,
@@ -293,72 +269,6 @@ private fun UserOwnTicket(ticketCount: Int) {
         modifier = Modifier.padding(top = 20.dp),
         title = stringResource(id = R.string.my_ticket_count),
         ticketCount = ticketCount,
-    )
-}
-
-@Composable
-private fun GiftNumberInput(
-    modifier: Modifier = Modifier,
-    couponSerial: String,
-    couponSerialChanged: (String) -> Unit,
-    onCouponSerialDone: () -> Unit,
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        val purples by remember { mutableStateOf(Purples.reversed()) }
-
-        OutlinedTextField(
-            value = couponSerial,
-            onValueChange = { couponSerial ->
-                if (couponSerial.length <= 32) couponSerialChanged(couponSerial)
-            },
-            shape = RoundedCornerShape(12.dp),
-            modifier = Modifier
-                .weight(1F)
-                .heightIn(max = 52.dp),
-            placeholder = { GiftNumberHint() },
-            singleLine = true,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_gift),
-                    contentDescription = null,
-                    tint = Color.Unspecified
-                )
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next,
-            ),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Purple60,
-                unfocusedBorderColor = Gray20,
-                cursorColor = Purple60,
-            ),
-        )
-
-        GradientButton(
-            modifier = Modifier
-                .size(90.dp, 52.dp)
-                .padding(start = 12.dp),
-            fontColor = Color.White,
-            fontSize = 17.sp,
-            enabled = couponSerial.length == 32,
-            gradient = Brush.horizontalGradient(purples),
-            disabledColor = Gray30,
-            text = stringResource(id = R.string.confirm),
-            shape = RoundedCornerShape(12.dp),
-            onClick = onCouponSerialDone,
-        )
-    }
-}
-
-@Composable
-private fun GiftNumberHint() {
-    Text(
-        text = stringResource(R.string.gift_number_input_hint),
-        color = Gray40,
     )
 }
 

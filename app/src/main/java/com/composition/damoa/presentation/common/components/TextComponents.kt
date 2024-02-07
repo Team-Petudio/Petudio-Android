@@ -249,7 +249,7 @@ fun SmallDescription(
         text = description,
         fontSize = 12.sp,
         fontWeight = FontWeight.Normal,
-        color = Gray60,
+        color = fontColor,
         modifier = modifier,
         overflow = TextOverflow.Ellipsis,
     )
