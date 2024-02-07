@@ -178,7 +178,9 @@ class TicketPurchaseActivity : ComponentActivity() {
     }
 
     companion object {
-        fun getIntent(context: Context): Intent = Intent(context, TicketPurchaseActivity::class.java)
+        fun startActivity(context: Context) {
+            context.startActivity(Intent(context, TicketPurchaseActivity::class.java))
+        }
     }
 }
 

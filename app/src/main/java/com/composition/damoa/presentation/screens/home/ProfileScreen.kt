@@ -53,6 +53,7 @@ import com.composition.damoa.presentation.common.components.PetudioDialog
 import com.composition.damoa.presentation.common.extensions.navigateToPrivacy
 import com.composition.damoa.presentation.common.extensions.navigateToTermOfUse
 import com.composition.damoa.presentation.common.extensions.navigateToWebsite
+import com.composition.damoa.presentation.screens.giftcard.GiftCardActivity
 import com.composition.damoa.presentation.screens.home.state.UserUiState
 import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseActivity
 import com.composition.damoa.presentation.ui.theme.AlertIconColor
@@ -228,7 +229,10 @@ private fun SettingList(
 ) {
     val context = LocalContext.current
     Column(modifier) {
-        if (isLogin) TicketPurchase(ticket) { context.startActivity(TicketPurchaseActivity.getIntent(context)) }
+        if (isLogin) {
+            TicketPurchase(ticket) { TicketPurchaseActivity.startActivity(context) }
+            GiftCard { GiftCardActivity.startActivity(context) }
+        }
         Question { context.navigateToWebsite("https://petudio.notion.site/09ab51dbfaae49bfbb3cc9278fdcdb19?pvs=4") }
         Email { context.sendEmail() }
         TermOfUse { context.navigateToTermOfUse() }
@@ -263,6 +267,35 @@ private fun TicketPurchase(
                     fontColor = Color.Black,
                 )
                 Ticket(value = ticketCount)
+            }
+        },
+        onClick = onClick,
+    )
+}
+
+@Composable
+private fun GiftCard(
+    onClick: () -> Unit,
+) {
+    SettingOptionItem(
+        item = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                BigDescription(
+                    descriptionRes = R.string.item_giftcard,
+                    fontColor = Color.Black,
+                )
+                Icon(
+                    modifier = Modifier
+                        .padding(end = 4.dp)
+                        .size(24.dp),
+                    painter = painterResource(id = R.drawable.ic_giftcard),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                )
             }
         },
         onClick = onClick,

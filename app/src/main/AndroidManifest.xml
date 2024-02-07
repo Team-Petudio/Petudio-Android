@@ -41,6 +41,9 @@
             android:name=".presentation.screens.login.LoginActivity"
             android:exported="false" />
         <activity
+            android:name=".presentation.screens.giftcard.GiftCardActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.screens.ticketPurchase.TicketPurchaseActivity"
             android:exported="false" />
         <activity
