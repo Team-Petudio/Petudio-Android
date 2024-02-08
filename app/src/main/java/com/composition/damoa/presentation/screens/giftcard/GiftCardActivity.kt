@@ -96,6 +96,7 @@ import com.composition.damoa.presentation.common.extensions.showToast
 import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiEvent.NETWORK_ERROR
 import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiEvent.TOKEN_EXPIRED
 import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiEvent.UNKNOWN_ERROR
+import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiEvent.USED_GIFT_CARD_ERROR
 import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiState
 import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.ui.theme.Gray20
@@ -149,6 +150,7 @@ private fun GiftCardScreen(
                     UNKNOWN_ERROR -> activity.showToast(R.string.unknown_error_message)
                     NETWORK_ERROR -> activity.showToast(R.string.network_failure_message)
                     TOKEN_EXPIRED -> LoginActivity.startActivity(activity)
+                    USED_GIFT_CARD_ERROR -> activity.showToast(R.string.unusable_gift_card_error_message)
                 }
             }
         }

@@ -4,4 +4,5 @@ enum class GiftCardUiEvent {
     NETWORK_ERROR,
     TOKEN_EXPIRED,
     UNKNOWN_ERROR,
+    USED_GIFT_CARD_ERROR,
 }

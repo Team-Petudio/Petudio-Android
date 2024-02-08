@@ -5,4 +5,5 @@ import com.composition.damoa.data.model.GiftCard
 
 interface GiftCardRepository {
     suspend fun getGiftCards(): ApiResponse<List<GiftCard>>
+    suspend fun useGiftCard(giftCode: String): ApiResponse<Unit>
 }

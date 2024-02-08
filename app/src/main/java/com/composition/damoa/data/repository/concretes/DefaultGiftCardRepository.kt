@@ -13,4 +13,6 @@ class DefaultGiftCardRepository(
     override suspend fun getGiftCards(): ApiResponse<List<GiftCard>> = service
         .getGiftCards()
         .map { it.data.toDomain() }
+
+    override suspend fun useGiftCard(giftCode: String): ApiResponse<Unit> = service.useGiftCard(giftCode)
 }

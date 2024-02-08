@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,7 +27,7 @@ class GiftCardViewModel @Inject constructor(
     private val _giftCardUiState = MutableStateFlow(
         GiftCardUiState(
             onGiftCardNumberChanged = ::updateGiftCardNumber,
-            onGiftCardEnteringDone = ::getTicketFromCouponSerial,
+            onGiftCardEnteringDone = ::useGiftCard,
             onGiftCardDetailShow = ::updateSelectedGiftCard,
             onGiftCardDetailDismiss = { updateSelectedGiftCard(null) },
         )
@@ -44,8 +45,21 @@ class GiftCardViewModel @Inject constructor(
         _giftCardUiState.tryEmit(giftCardUiState.value.copy(enteredGiftCardNumber = number))
     }
 
-    private fun getTicketFromCouponSerial() {
+    private fun useGiftCard() {
+        viewModelScope.launch {
+            val selectedGiftCard = giftCardUiState.value.selectedGiftCard ?: return@launch
+            when (giftCardRepository.useGiftCard(selectedGiftCard.giftCode)) {
+                is Success -> {
+                    _giftCardUiState.emit(giftCardUiState.value.copy(enteredGiftCardNumber = ""))
+                    fetchGiftCards()
+                }
 
+                is Failure -> _uiEvent.emit(GiftCardUiEvent.USED_GIFT_CARD_ERROR)
+                is Unexpected -> _uiEvent.emit(GiftCardUiEvent.UNKNOWN_ERROR)
+                TokenExpired -> _uiEvent.emit(GiftCardUiEvent.TOKEN_EXPIRED)
+                NetworkError -> _uiEvent.emit(GiftCardUiEvent.NETWORK_ERROR)
+            }
+        }
     }
 
     private fun fetchGiftCards() {
