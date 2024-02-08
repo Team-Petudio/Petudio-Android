@@ -1,11 +1,21 @@
 package com.composition.damoa.presentation.screens.giftcard
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.view.View
+import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +25,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -28,11 +39,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -49,16 +63,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.core.view.drawToBitmap
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.composition.damoa.R
 import com.composition.damoa.data.model.GiftCard
 import com.composition.damoa.presentation.common.components.BigTitle
@@ -67,6 +90,7 @@ import com.composition.damoa.presentation.common.components.MediumTitle
 import com.composition.damoa.presentation.common.components.SmallDescription
 import com.composition.damoa.presentation.common.components.SmallTitle
 import com.composition.damoa.presentation.common.components.TinyTitle
+import com.composition.damoa.presentation.common.extensions.insertCharBetween
 import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.common.extensions.showToast
 import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiEvent.NETWORK_ERROR
@@ -78,10 +102,17 @@ import com.composition.damoa.presentation.ui.theme.Gray20
 import com.composition.damoa.presentation.ui.theme.Gray30
 import com.composition.damoa.presentation.ui.theme.Gray40
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
+import com.composition.damoa.presentation.ui.theme.Purple20
 import com.composition.damoa.presentation.ui.theme.Purple60
+import com.composition.damoa.presentation.ui.theme.Purple80
 import com.composition.damoa.presentation.ui.theme.Purples
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -130,8 +161,21 @@ private fun GiftCardScreen(
                     .fillMaxSize()
                     .padding(top = padding.calculateTopPadding()),
                 giftCardUiState = giftCardUiState,
+                onGiftCardDetailClick = { giftCard -> giftCardUiState.onGiftCardDetailShow(giftCard) },
             )
+
+            GiftCardDetailDialog(giftCardUiState)
         }
+    }
+}
+
+@Composable
+private fun GiftCardDetailDialog(giftCardUiState: GiftCardUiState) {
+    if (giftCardUiState.selectedGiftCard != null) {
+        GiftCardDetailDialog(
+            giftCard = giftCardUiState.selectedGiftCard,
+            onDismissClick = { giftCardUiState.onGiftCardDetailDismiss() },
+        )
     }
 }
 
@@ -157,6 +201,7 @@ private fun TicketPurchaseTopBar(onNavigationClick: () -> Unit = {}) {
 private fun GiftCardContent(
     modifier: Modifier = Modifier,
     giftCardUiState: GiftCardUiState,
+    onGiftCardDetailClick: (giftCard: GiftCard) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier
@@ -170,6 +215,7 @@ private fun GiftCardContent(
             GiftCards(
                 modifier = Modifier.padding(top = 20.dp),
                 giftCards = giftCardUiState.giftCards,
+                onGiftCardDetailClick = onGiftCardDetailClick,
             )
         }
     }
@@ -264,6 +310,7 @@ private fun GiftNumberHint() {
 private fun GiftCards(
     modifier: Modifier = Modifier,
     giftCards: List<GiftCard>,
+    onGiftCardDetailClick: (giftCard: GiftCard) -> Unit,
 ) {
     val usableGiftCards by remember { mutableStateOf(giftCards.filter { !it.isUsed and !it.isExpired }) }
     val unUsableGiftCards by remember { mutableStateOf(giftCards.filter { it.isUsed or it.isExpired }) }
@@ -274,7 +321,9 @@ private fun GiftCards(
         contentPadding = PaddingValues(bottom = 30.dp),
     ) {
         item { UnUsedGiftCardTitle() }
-        items(usableGiftCards) { giftCard -> GiftCardItem(giftCard = giftCard) }
+        items(usableGiftCards) { giftCard ->
+            GiftCardItem(giftCard = giftCard, onGiftCardDetailClick = { onGiftCardDetailClick(giftCard) })
+        }
         item { UnusableGiftCardTitle(modifier = Modifier.padding(top = 30.dp)) }
         items(unUsableGiftCards) { giftCard -> GiftCardItem(giftCard = giftCard) }
     }
@@ -294,6 +343,7 @@ private fun UnusableGiftCardTitle(modifier: Modifier = Modifier) {
 private fun GiftCardItem(
     modifier: Modifier = Modifier,
     giftCard: GiftCard,
+    onGiftCardDetailClick: () -> Unit = {},
 ) {
     Card(
         modifier = modifier
@@ -305,18 +355,23 @@ private fun GiftCardItem(
     ) {
         Box {
             GiftCardBackground(isUsable = !giftCard.isExpired and !giftCard.isUsed)
-            GiftCardForeground(giftCard)
+            GiftCardForeground(giftCard = giftCard, onGiftCardDetailClick = onGiftCardDetailClick)
         }
     }
 
 }
 
 @Composable
-private fun GiftCardForeground(giftCard: GiftCard) {
+private fun GiftCardForeground(
+    modifier: Modifier = Modifier,
+    giftCard: GiftCard,
+    onGiftCardDetailClick: () -> Unit,
+) {
     val expiredFormatter = DateTimeFormatter.ofPattern("~ yyyy.MM.dd HH:mm")
     val isUsable = !giftCard.isExpired and !giftCard.isUsed
+
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -337,7 +392,7 @@ private fun GiftCardForeground(giftCard: GiftCard) {
                 giftCard.isUsed -> UsedMessage()
             }
         }
-        if (isUsable) GiftCardDetailButton()
+        if (isUsable) GiftCardDetailButton(onClick = onGiftCardDetailClick)
     }
 }
 
@@ -421,5 +476,226 @@ private fun GiftCardDetailButton(
             contentDescription = null,
             tint = Purple60,
         )
+    }
+}
+
+@Composable
+private fun GiftCardDetailDialog(
+    giftCard: GiftCard,
+    onDismissClick: () -> Unit,
+) {
+    val context = LocalContext.current
+    val coroutineScope = (context as ComponentActivity).lifecycleScope
+    val giftCardDetailView = remember { mutableStateOf<View?>(null) }
+
+    Dialog(
+        onDismissRequest = onDismissClick,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(0.95F),
+            verticalArrangement = Arrangement.Center,
+        ) {
+            IconButton(onClick = onDismissClick) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    tint = Color.White,
+                    contentDescription = null,
+                )
+            }
+            AndroidView(
+                factory = { FrameLayout(context).also { giftCardDetailView.value = it } },
+                update = { view ->
+                    ComposeView(context).apply {
+                        setContent { GiftCardDetailContent(giftCard = giftCard) }
+                        view.addView(this)
+                    }
+                }
+            )
+            GiftCardButtons(
+                onCopyClick = { copyGiftCardNumber(context = context, number = giftCard.giftCode) },
+                onSaveClick = {
+                    val notNullGiftCardDetailView = giftCardDetailView.value ?: return@GiftCardButtons
+                    saveViewAsImageInGallery(view = notNullGiftCardDetailView, coroutineScope = coroutineScope)
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun GiftCardDetailContent(
+    modifier: Modifier = Modifier,
+    giftCard: GiftCard,
+) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        GiftCardDetailBackground()
+        GiftCardDetailForeground(giftCard = giftCard)
+    }
+}
+
+@Composable
+private fun GiftCardDetailBackground(modifier: Modifier = Modifier) {
+    Image(
+        modifier = modifier.fillMaxWidth(),
+        contentScale = ContentScale.FillWidth,
+        painter = painterResource(R.drawable.bg_download_gift_card),
+        contentDescription = null,
+    )
+}
+
+@Composable
+private fun GiftCardDetailForeground(
+    modifier: Modifier = Modifier,
+    giftCard: GiftCard,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth(0.7F)
+            .fillMaxHeight(0.75F),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(
+            modifier = Modifier.fillMaxWidth(),
+            painter = painterResource(id = R.drawable.ic_gift_box),
+            contentDescription = null
+        )
+        SmallDescription(descriptionRes = R.string.app_name)
+        Text(
+            modifier = Modifier.padding(top = 2.dp),
+            text = stringResource(R.string.giftcard_item_title),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+        )
+
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth(0.5F)
+                .padding(top = 4.dp),
+            thickness = (4).dp,
+            color = Purple80,
+        )
+
+        val expiredFormatter = DateTimeFormatter.ofPattern("~ yyyy.MM.dd HH:mm")
+        Text(
+            text = expiredFormatter.format(giftCard.expiredAt),
+            modifier = Modifier.padding(top = 8.dp),
+            color = Color.Black,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+        )
+        Text(
+            modifier = Modifier.padding(top = 20.dp),
+            text = stringResource(R.string.gift_card_number_title),
+            fontSize = 14.sp,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.Black,
+        )
+
+        val formattedGiftCode = giftCard.giftCode
+            .chunked(giftCard.giftCode.length / 2)
+            .joinToString("\n") { halfGiftCode -> halfGiftCode.insertCharBetween() }
+
+        Card(
+            modifier = Modifier.padding(top = 8.dp),
+            shape = CutCornerShape(8.dp),
+            border = BorderStroke(3.dp, Purple20),
+            colors = CardDefaults.elevatedCardColors(containerColor = Purple60),
+        ) {
+            Text(
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                text = formattedGiftCode,
+                fontSize = 13.sp,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White,
+            )
+        }
+    }
+}
+
+@Composable
+private fun GiftCardButtons(
+    modifier: Modifier = Modifier,
+    onCopyClick: () -> Unit,
+    onSaveClick: () -> Unit,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.White),
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        TextButton(onClick = onCopyClick) {
+            Text(
+                text = stringResource(R.string.copy),
+                color = Color.Black,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+
+        TextButton(onClick = onSaveClick) {
+            Text(
+                text = stringResource(R.string.save),
+                color = Color.Black,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+    }
+}
+
+private fun copyGiftCardNumber(
+    context: Context,
+    number: String,
+) {
+    val clipBoardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clipData = ClipData.newPlainText("giftCardNumber", number)
+
+    clipBoardManager.setPrimaryClip(clipData)
+    context.showToast(R.string.copy_success_message)
+}
+
+private fun saveViewAsImageInGallery(
+    view: View,
+    coroutineScope: CoroutineScope,
+    fileName: String = "petudio_${System.currentTimeMillis()}",
+    description: String = "petudio giftcard",
+) {
+    val context = view.context
+    val exceptionHandler = CoroutineExceptionHandler { _, _ ->
+        coroutineScope.launch {
+            context.showToast(R.string.unknown_error_message)
+        }
+    }
+
+    coroutineScope.launch(Dispatchers.IO + exceptionHandler) {
+        val bitmap = view.drawToBitmap().asImageBitmap().asAndroidBitmap()
+
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                put(MediaStore.Images.Media.DESCRIPTION, description)
+            }
+        }
+
+        val imageUri = context.contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        )
+
+        val imageOutStream = context.contentResolver.openOutputStream(imageUri!!)!!
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, imageOutStream)
+
+        imageOutStream.flush()
+        imageOutStream.close()
+
+        withContext(Dispatchers.Main) {
+            context.showToast(R.string.image_save_success_message)
+        }
     }
 }

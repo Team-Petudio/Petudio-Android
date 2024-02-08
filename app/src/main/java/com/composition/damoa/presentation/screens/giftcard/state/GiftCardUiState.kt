@@ -7,6 +7,9 @@ data class GiftCardUiState(
     override val state: State = State.NONE,
     val giftCards: List<GiftCard> = emptyList(),
     val enteredGiftCardNumber: String = "",
+    val selectedGiftCard: GiftCard? = null,
     val onGiftCardNumberChanged: (String) -> Unit,
     val onGiftCardEnteringDone: () -> Unit,
+    val onGiftCardDetailShow: (GiftCard) -> Unit,
+    val onGiftCardDetailDismiss: () -> Unit,
 ) : BaseUiState()
