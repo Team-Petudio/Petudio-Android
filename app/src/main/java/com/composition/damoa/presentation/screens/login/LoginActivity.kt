@@ -10,7 +10,9 @@ import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +40,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -213,39 +216,42 @@ private fun LoginTopBar(onNavigationClick: () -> Unit = {}) {
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LoginContent(
     modifier: Modifier = Modifier,
     onLogin: (SocialType) -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxWidth(0.7F),
-        )
+    CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxWidth(0.7F),
+            )
 
-        val offsetModifier = Modifier.offset(y = (-40).dp)
-        GradientPetudioTitle(modifier = offsetModifier, fontSize = 60.sp)
-        GradientPetudioSubTitle(modifier = offsetModifier, fontSize = 22.sp)
-        GoogleLoginButton(
-            modifier = offsetModifier
-                .padding(top = 40.dp)
-                .padding(horizontal = 20.dp),
-            onClick = onLogin,
-        )
-        KakaoLoginButton(
-            modifier = offsetModifier
-                .padding(top = 12.dp)
-                .padding(horizontal = 20.dp),
-            onClick = onLogin,
-        )
+            val offsetModifier = Modifier.offset(y = (-40).dp)
+            GradientPetudioTitle(modifier = offsetModifier, fontSize = 60.sp)
+            GradientPetudioSubTitle(modifier = offsetModifier, fontSize = 22.sp)
+            GoogleLoginButton(
+                modifier = offsetModifier
+                    .padding(top = 40.dp)
+                    .padding(horizontal = 20.dp),
+                onClick = onLogin,
+            )
+            KakaoLoginButton(
+                modifier = offsetModifier
+                    .padding(top = 12.dp)
+                    .padding(horizontal = 20.dp),
+                onClick = onLogin,
+            )
+        }
     }
 }
 
