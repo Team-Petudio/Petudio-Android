@@ -165,7 +165,8 @@ private fun ContentScreen(
     ) { page ->
         when (page) {
             ALBUM_PAGE -> AlbumScreen(
-                albumUiState = albumUiState,
+                albums = albumUiState.albums,
+                isLogined = true,
                 onAiProfileClick = { navigateToProfileConceptScreen(navController = navController) },
                 onLoginClick = onLoginClick,
             )
@@ -203,15 +204,14 @@ private fun LoginRequireScreen(
 @Composable
 private fun AlbumScreen(
     modifier: Modifier = Modifier,
-    albumUiState: AlbumUiState,
+    albums: List<Album>,
+    isLogined: Boolean,
     onAiProfileClick: () -> Unit,
     onLoginClick: () -> Unit,
 ) {
-    val albums = albumUiState.albums
-
     Surface(modifier = modifier.padding(horizontal = 20.dp)) {
         when {
-            !albumUiState.isLogined -> LoginRequireScreen(onLoginClick = onLoginClick)
+            !isLogined -> LoginRequireScreen(onLoginClick = onLoginClick)
             albums.isEmpty() -> EmptyAlbumScreen(modifier, onAiProfileClick)
             else -> AlbumListScreen(modifier, albums)
         }
@@ -236,7 +236,7 @@ private fun EmptyAlbumScreen(
         )
         GradientButton(
             modifier =
-            Modifier.aspectRatio(5 / 1F),
+            Modifier.aspectRatio(6 / 1F),
             text = stringResource(id = R.string.create_ai_profile_button_content),
             gradient = Brush.linearGradient(PrimaryColors),
             fontSize = 18.sp,
