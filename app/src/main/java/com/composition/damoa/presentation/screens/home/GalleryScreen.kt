@@ -24,7 +24,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
-import androidx.compose.material.IconToggleButton
+import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Surface
@@ -46,7 +46,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -174,6 +173,7 @@ private fun ContentScreen(
             PET_FEED_PAGE -> PetFeedScreen(
                 petFeeds = petFeedUiState.petFeeds,
                 navController = navController,
+                onLikeClick = { petFeed -> petFeedUiState.onLikeClick(petFeed) },
             )
         }
     }
@@ -354,6 +354,7 @@ private fun PetFeedScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     petFeeds: List<PetFeed> = emptyList(),
+    onLikeClick: (PetFeed) -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -363,14 +364,21 @@ private fun PetFeedScreen(
         verticalArrangement = Arrangement.spacedBy(28.dp),
         contentPadding = PaddingValues(vertical = 20.dp),
     ) {
-        items(petFeeds) { petFeed ->
-            PetFeedItem(petFeed = petFeed) {
-                navigateToProfileCreation(context = context, conceptId = petFeed.id)
-                scope.launch {
-                    delay(500L)
-                    navigateToProfileConceptScreen(navController)
-                }
-            }
+        items(
+            items = petFeeds,
+            key = { petFeed -> petFeed.id },
+        ) { petFeed ->
+            PetFeedItem(
+                petFeed = petFeed,
+                onLikeClick = { onLikeClick(petFeed) },
+                onProfileCreationClick = {
+                    navigateToProfileCreation(context = context, conceptId = petFeed.id)
+                    scope.launch {
+                        delay(500L)
+                        navigateToProfileConceptScreen(navController)
+                    }
+                },
+            )
         }
     }
 }
@@ -379,12 +387,13 @@ private fun PetFeedScreen(
 private fun PetFeedItem(
     modifier: Modifier = Modifier,
     petFeed: PetFeed,
-    onClick: () -> Unit = {},
+    onLikeClick: () -> Unit,
+    onProfileCreationClick: () -> Unit = {},
 ) {
     Column(modifier) {
         PetThumbnailImage(thumbnailUrl = petFeed.thumbnailUrl)
-        FeedBody(petFeed = petFeed)
-        ConceptButton(modifier = Modifier.padding(top = 20.dp), onClick = onClick)
+        FeedBody(petFeed = petFeed, onLikeClick = onLikeClick)
+        ConceptButton(modifier = Modifier.padding(top = 20.dp), onClick = onProfileCreationClick)
     }
 }
 
@@ -412,6 +421,7 @@ private fun PetThumbnailImage(
 private fun FeedBody(
     modifier: Modifier = Modifier,
     petFeed: PetFeed,
+    onLikeClick: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -422,7 +432,7 @@ private fun FeedBody(
             .fillMaxWidth(),
     ) {
         FeedTitle(petFeed)
-        LikeButton(petFeed = petFeed)
+        LikeButton(petFeed = petFeed, onLikeClick = onLikeClick)
     }
 }
 
@@ -440,12 +450,9 @@ private fun FeedTitle(petFeed: PetFeed) {
 @Composable
 private fun LikeButton(
     petFeed: PetFeed,
-    onLikeChanged: (Boolean) -> Unit = {},
+    onLikeClick: () -> Unit = {},
 ) {
-    IconToggleButton(
-        checked = petFeed.isLike,
-        onCheckedChange = onLikeChanged,
-    ) {
+    IconButton(onClick = onLikeClick) {
         val likeCount = formatLikeCount(petFeed.likeCount)
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -502,41 +509,4 @@ private fun navigateToProfileCreation(
     conceptId: Long,
 ) {
     ProfileCreationActivity.startActivity(context, conceptId)
-}
-
-@Preview
-@Composable
-private fun AlbumItemPreview() {
-    AlbumItem(
-        album =
-        Album(
-            id = 0,
-            title = "코코",
-            concept = "트렌디 룩북 컨셉",
-            thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-            photoUrls =
-            listOf(
-                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-            ),
-            date = LocalDateTime.now(),
-        ),
-    )
-}
-
-@Preview
-@Composable
-private fun PetFeedItemPreview() {
-    PetFeedItem(
-        petFeed =
-        PetFeed(
-            id = 0,
-            title = "코코",
-            concept = "트렌디 룩북 컨셉",
-            isLike = false,
-            thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-            likeCount = 0,
-        ),
-    )
 }

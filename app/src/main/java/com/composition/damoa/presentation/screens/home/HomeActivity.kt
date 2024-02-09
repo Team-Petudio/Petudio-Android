@@ -43,6 +43,7 @@ import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.LOGOU
 import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.LOGOUT_SUCCESS
 import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.SIGN_OUT_FAILURE
 import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.SIGN_OUT_SUCCESS
+import com.composition.damoa.presentation.screens.home.HomeViewModel.Event.TOKEN_EXPIRED
 import com.composition.damoa.presentation.screens.home.state.AlbumUiState
 import com.composition.damoa.presentation.screens.home.state.PetFeedUiState
 import com.composition.damoa.presentation.screens.home.state.UserUiState
@@ -90,6 +91,7 @@ private fun HomeScreen(
                 when (event) {
                     LOGOUT_SUCCESS, SIGN_OUT_SUCCESS -> HomeActivity.startActivity(activity)
                     LOGOUT_FAILURE, SIGN_OUT_FAILURE -> activity.showToast(R.string.network_failure_message)
+                    TOKEN_EXPIRED -> LoginActivity.startActivity(activity)
                 }
             }
         }

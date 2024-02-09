@@ -15,4 +15,8 @@ class DefaultPetFeedRepository(
     ): ApiResponse<List<PetFeed>> = service
         .getPetFeeds(userId)
         .map { it.data.toDomain() }
+
+    override suspend fun toggleLike(
+        petFeedId: Long,
+    ): ApiResponse<Unit> = service.toggleLike(petFeedId)
 }

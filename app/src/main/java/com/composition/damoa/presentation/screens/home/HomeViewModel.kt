@@ -7,6 +7,7 @@ import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
 import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
+import com.composition.damoa.data.model.PetFeed
 import com.composition.damoa.data.model.User
 import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.repository.interfaces.PetFeedRepository
@@ -40,7 +41,9 @@ class HomeViewModel @Inject constructor(
     private val _albumUiState = MutableStateFlow(AlbumUiState.dummy)
     val albumUiState = _albumUiState.asStateFlow()
 
-    private val _petFeedUiState = MutableStateFlow(PetFeedUiState())
+    private val _petFeedUiState = MutableStateFlow(
+        PetFeedUiState(onLikeClick = ::toggleFeedLike)
+    )
     val petFeedUiState = _petFeedUiState.asStateFlow()
 
     private val _event = MutableSharedFlow<Event>()
@@ -123,10 +126,38 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun toggleFeedLike(toggledPetFeed: PetFeed) {
+        viewModelScope.launch {
+            if (!petFeedUiState.value.isLogined) {
+                _event.emit(Event.TOKEN_EXPIRED)
+                return@launch
+            }
+
+            when (petFeedRepository.toggleLike(toggledPetFeed.id)) {
+                is Success -> {
+                    val updatedFeeds = petFeedUiState.value.petFeeds.map { petFeed ->
+                        if (petFeed.id == toggledPetFeed.id) updatedFeedLike(petFeed) else petFeed
+                    }
+                    _petFeedUiState.value = petFeedUiState.value.copy(petFeeds = updatedFeeds)
+                }
+
+                NetworkError, TokenExpired -> _petFeedUiState.emit(petFeedUiState.value.copy(state = State.NETWORK_ERROR))
+                is Failure, is Unexpected -> _petFeedUiState.value = petFeedUiState.value.copy(state = State.NONE)
+            }
+        }
+    }
+
+    private fun updatedFeedLike(petFeed: PetFeed) = petFeed.copy(
+        isLike = !petFeed.isLike,
+        likeCount = if (petFeed.isLike) petFeed.likeCount - 1 else petFeed.likeCount + 1
+    )
+
+
     enum class Event {
         LOGOUT_SUCCESS,
         LOGOUT_FAILURE,
         SIGN_OUT_SUCCESS,
         SIGN_OUT_FAILURE,
+        TOKEN_EXPIRED,
     }
 }

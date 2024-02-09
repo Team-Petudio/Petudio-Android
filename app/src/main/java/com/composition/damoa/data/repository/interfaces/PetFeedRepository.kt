@@ -7,4 +7,8 @@ interface PetFeedRepository {
     suspend fun getPetFeeds(
         userId: Long,
     ): ApiResponse<List<PetFeed>>
+
+    suspend fun toggleLike(
+        petFeedId: Long,
+    ): ApiResponse<Unit>
 }
