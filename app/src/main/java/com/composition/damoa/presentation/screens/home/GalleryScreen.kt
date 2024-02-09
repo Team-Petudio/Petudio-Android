@@ -24,7 +24,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Surface
@@ -59,6 +58,7 @@ import com.composition.damoa.presentation.common.components.GradientButton
 import com.composition.damoa.presentation.common.components.LoginButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
+import com.composition.damoa.presentation.common.components.ThrottledIconButton
 import com.composition.damoa.presentation.screens.album.AlbumActivity
 import com.composition.damoa.presentation.screens.home.state.AlbumUiState
 import com.composition.damoa.presentation.screens.home.state.PetFeedUiState
@@ -452,7 +452,10 @@ private fun LikeButton(
     petFeed: PetFeed,
     onLikeClick: () -> Unit = {},
 ) {
-    IconButton(onClick = onLikeClick) {
+    ThrottledIconButton(
+        modifier = Modifier.padding(top = 4.dp),
+        onClick = onLikeClick,
+    ) {
         val likeCount = formatLikeCount(petFeed.likeCount)
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
