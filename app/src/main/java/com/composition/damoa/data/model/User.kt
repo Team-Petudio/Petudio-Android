@@ -3,6 +3,7 @@ package com.composition.damoa.data.model
 import kotlinx.serialization.SerialName
 
 data class User(
+    val id: Long,
     val email: String,
     val socialType: SocialType,
     val ticket: Int,

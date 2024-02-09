@@ -1,7 +1,7 @@
 package com.composition.damoa.data.model
 
 data class PetFeed(
-    val id: Int,
+    val id: Long,
     val title: String,
     val concept: String,
     val likeCount: Int,

@@ -4,6 +4,7 @@ import com.composition.damoa.data.dto.response.UserResponse
 import com.composition.damoa.data.model.User
 
 fun UserResponse.toDomain(token: User.Token): User = User(
+    id = id,
     email = email,
     socialType = socialType.toDomain(),
     ticket = ticketCount,

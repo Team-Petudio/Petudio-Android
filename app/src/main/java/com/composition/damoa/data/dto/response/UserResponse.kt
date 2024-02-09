@@ -5,6 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserResponse(
+    @SerialName("userId")
+    val id: Long,
     @SerialName("socialType")
     val socialType: SocialType,
     @SerialName("email")

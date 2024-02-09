@@ -5,6 +5,7 @@ import com.composition.damoa.data.repository.concretes.DefaultConceptRepository
 import com.composition.damoa.data.repository.concretes.DefaultGiftCardRepository
 import com.composition.damoa.data.repository.concretes.DefaultGoogleRepository
 import com.composition.damoa.data.repository.concretes.DefaultPetDetectRepository
+import com.composition.damoa.data.repository.concretes.DefaultPetFeedRepository
 import com.composition.damoa.data.repository.concretes.DefaultPetRepository
 import com.composition.damoa.data.repository.concretes.DefaultS3ImageRepository
 import com.composition.damoa.data.repository.concretes.DefaultS3ImageUrlRepository
@@ -14,6 +15,7 @@ import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.repository.interfaces.GiftCardRepository
 import com.composition.damoa.data.repository.interfaces.GoogleRepository
 import com.composition.damoa.data.repository.interfaces.PetDetectRepository
+import com.composition.damoa.data.repository.interfaces.PetFeedRepository
 import com.composition.damoa.data.repository.interfaces.PetRepository
 import com.composition.damoa.data.repository.interfaces.S3ImageRepository
 import com.composition.damoa.data.repository.interfaces.S3ImageUrlRepository
@@ -23,6 +25,7 @@ import com.composition.damoa.data.service.ConceptService
 import com.composition.damoa.data.service.GiftCardService
 import com.composition.damoa.data.service.GoogleService
 import com.composition.damoa.data.service.PetDetectService
+import com.composition.damoa.data.service.PetFeedService
 import com.composition.damoa.data.service.PetService
 import com.composition.damoa.data.service.S3ImageService
 import com.composition.damoa.data.service.S3ImageUrlService
@@ -92,4 +95,10 @@ class RepositoryModule {
     fun provideGiftCardRepository(
         giftCardService: GiftCardService,
     ): GiftCardRepository = DefaultGiftCardRepository(giftCardService)
+
+    @Singleton
+    @Provides
+    fun providePetFeedRepository(
+        petFeedService: PetFeedService,
+    ): PetFeedRepository = DefaultPetFeedRepository(petFeedService)
 }

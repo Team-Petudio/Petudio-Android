@@ -5,6 +5,7 @@ import com.composition.damoa.data.service.ConceptService
 import com.composition.damoa.data.service.GiftCardService
 import com.composition.damoa.data.service.GoogleService
 import com.composition.damoa.data.service.PetDetectService
+import com.composition.damoa.data.service.PetFeedService
 import com.composition.damoa.data.service.PetService
 import com.composition.damoa.data.service.S3ImageService
 import com.composition.damoa.data.service.S3ImageUrlService
@@ -83,4 +84,10 @@ class ServiceModule {
     fun provideGiftCardService(
         @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
     ): GiftCardService = serviceFactory.create(GiftCardService::class.java)
+
+    @Provides
+    @Singleton
+    fun providePetFeedService(
+        @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
+    ): PetFeedService = serviceFactory.create(PetFeedService::class.java)
 }
