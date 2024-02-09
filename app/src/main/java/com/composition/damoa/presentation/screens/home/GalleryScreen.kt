@@ -159,7 +159,6 @@ private fun ContentScreen(
     petFeedUiState: PetFeedUiState,
     onLoginClick: () -> Unit,
 ) {
-
     HorizontalPager(
         modifier = modifier.fillMaxSize(),
         state = pagerState,
@@ -358,6 +357,7 @@ private fun PetFeedScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+
     LazyColumn(
         modifier = modifier.padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(28.dp),
@@ -365,7 +365,7 @@ private fun PetFeedScreen(
     ) {
         items(petFeeds) { petFeed ->
             PetFeedItem(petFeed = petFeed) {
-                navigateToProfileCreation(context)
+                navigateToProfileCreation(context = context, conceptId = petFeed.id)
                 scope.launch {
                     delay(500L)
                     navigateToProfileConceptScreen(navController)
@@ -497,8 +497,11 @@ private fun navigateToProfileConceptScreen(navController: NavController) {
     }
 }
 
-private fun navigateToProfileCreation(context: Context) {
-    context.startActivity(Intent(context, ProfileCreationActivity::class.java))
+private fun navigateToProfileCreation(
+    context: Context,
+    conceptId: Long,
+) {
+    ProfileCreationActivity.startActivity(context, conceptId)
 }
 
 @Preview
