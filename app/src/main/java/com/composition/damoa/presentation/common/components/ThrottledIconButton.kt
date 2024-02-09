@@ -8,7 +8,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
@@ -23,7 +23,7 @@ fun ThrottledIconButton(
 
     LaunchedEffect(clickFlow) {
         clickFlow
-            .debounce(1000) // 1초 동안 추가 클릭 무시
+            .sample(1000) // 1초 동안 추가 클릭 무시
             .collect { onClick() }
     }
 
