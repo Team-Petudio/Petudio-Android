@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -47,9 +46,10 @@ class GiftCardViewModel @Inject constructor(
 
     private fun useGiftCard() {
         viewModelScope.launch {
-            val selectedGiftCard = giftCardUiState.value.selectedGiftCard ?: return@launch
-            when (giftCardRepository.useGiftCard(selectedGiftCard.giftCode)) {
+            val giftCode = giftCardUiState.value.enteredGiftCardNumber
+            when (giftCardRepository.useGiftCard(giftCode)) {
                 is Success -> {
+                    _uiEvent.emit(GiftCardUiEvent.GIFT_CARD_USE_SUCCESS)
                     _giftCardUiState.emit(giftCardUiState.value.copy(enteredGiftCardNumber = ""))
                     fetchGiftCards()
                 }

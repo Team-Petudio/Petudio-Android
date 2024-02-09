@@ -19,8 +19,8 @@ data class GiftCardResponse(
     @SerialName("expiredAt")
     @Serializable(with = LocalDateTimeSerializer::class)
     val expiredAt: LocalDateTime,
-//    @SerialName("isExpired")
-//    val isExpired: Boolean,
-//    @SerialName("isUsed")
-//    val isUsed: Boolean,
+    @SerialName("isExpired")
+    val isExpired: Boolean,
+    @SerialName("isUsed")
+    val isUsed: Boolean,
 )

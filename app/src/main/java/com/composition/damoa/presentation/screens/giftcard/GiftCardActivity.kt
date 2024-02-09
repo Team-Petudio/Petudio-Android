@@ -93,6 +93,7 @@ import com.composition.damoa.presentation.common.components.TinyTitle
 import com.composition.damoa.presentation.common.extensions.insertCharBetween
 import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.common.extensions.showToast
+import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiEvent.GIFT_CARD_USE_SUCCESS
 import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiEvent.NETWORK_ERROR
 import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiEvent.TOKEN_EXPIRED
 import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiEvent.UNKNOWN_ERROR
@@ -151,6 +152,7 @@ private fun GiftCardScreen(
                     NETWORK_ERROR -> activity.showToast(R.string.network_failure_message)
                     TOKEN_EXPIRED -> LoginActivity.startActivity(activity)
                     USED_GIFT_CARD_ERROR -> activity.showToast(R.string.unusable_gift_card_error_message)
+                    GIFT_CARD_USE_SUCCESS -> activity.showToast(R.string.gift_card_use_success_message)
                 }
             }
         }
@@ -314,8 +316,8 @@ private fun GiftCards(
     giftCards: List<GiftCard>,
     onGiftCardDetailClick: (giftCard: GiftCard) -> Unit,
 ) {
-    val usableGiftCards by remember { mutableStateOf(giftCards.filter { !it.isUsed and !it.isExpired }) }
-    val unUsableGiftCards by remember { mutableStateOf(giftCards.filter { it.isUsed or it.isExpired }) }
+    val usableGiftCards = giftCards.filter { !it.isUsed and !it.isExpired }
+    val unUsableGiftCards = giftCards.filter { it.isUsed or it.isExpired }
 
     LazyColumn(
         modifier = modifier.heightIn(max = 10000.dp),
@@ -323,11 +325,16 @@ private fun GiftCards(
         contentPadding = PaddingValues(bottom = 30.dp),
     ) {
         item { UnUsedGiftCardTitle() }
-        items(usableGiftCards) { giftCard ->
-            GiftCardItem(giftCard = giftCard, onGiftCardDetailClick = { onGiftCardDetailClick(giftCard) })
-        }
+        items(
+            items = usableGiftCards,
+            key = { it.giftCode }
+        ) { giftCard -> GiftCardItem(giftCard = giftCard, onGiftCardDetailClick = { onGiftCardDetailClick(giftCard) }) }
+        
         item { UnusableGiftCardTitle(modifier = Modifier.padding(top = 30.dp)) }
-        items(unUsableGiftCards) { giftCard -> GiftCardItem(giftCard = giftCard) }
+        items(
+            items = unUsableGiftCards,
+            key = { it.giftCode }
+        ) { giftCard -> GiftCardItem(giftCard = giftCard) }
     }
 }
 
