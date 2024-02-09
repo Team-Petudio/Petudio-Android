@@ -93,6 +93,8 @@ import com.composition.damoa.presentation.common.components.TinyTitle
 import com.composition.damoa.presentation.common.extensions.insertCharBetween
 import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.common.extensions.showToast
+import com.composition.damoa.presentation.common.utils.permissionRequester.Permission
+import com.composition.damoa.presentation.common.utils.permissionRequester.PermissionRequester
 import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiEvent.GIFT_CARD_USE_SUCCESS
 import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiEvent.NETWORK_ERROR
 import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiEvent.TOKEN_EXPIRED
@@ -329,7 +331,7 @@ private fun GiftCards(
             items = usableGiftCards,
             key = { it.giftCode }
         ) { giftCard -> GiftCardItem(giftCard = giftCard, onGiftCardDetailClick = { onGiftCardDetailClick(giftCard) }) }
-        
+
         item { UnusableGiftCardTitle(modifier = Modifier.padding(top = 30.dp)) }
         items(
             items = unUsableGiftCards,
@@ -525,7 +527,12 @@ private fun GiftCardDetailDialog(
                 onCopyClick = { copyGiftCardNumber(context = context, number = giftCard.giftCode) },
                 onSaveClick = {
                     val notNullGiftCardDetailView = giftCardDetailView.value ?: return@GiftCardButtons
-                    saveViewAsImageInGallery(view = notNullGiftCardDetailView, coroutineScope = coroutineScope)
+                    requestSaveImagePermission(
+                        context = context,
+                        onGranted = {
+                            saveViewAsImageInGallery(view = notNullGiftCardDetailView, coroutineScope = coroutineScope)
+                        },
+                    )
                 },
             )
         }
@@ -665,6 +672,24 @@ private fun copyGiftCardNumber(
 
     clipBoardManager.setPrimaryClip(clipData)
     context.showToast(R.string.copy_success_message)
+}
+
+private fun requestSaveImagePermission(
+    context: Context,
+    onGranted: () -> Unit,
+) {
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+        onGranted()
+        return
+    }
+
+    PermissionRequester().launch(
+        context = context,
+        permission = Permission.WRITE_EXTERNAL_STORAGE,
+        dialogMessage = context.getString(R.string.giftcard_save_permission_message),
+        onGranted = onGranted,
+        onDenied = { context.showToast(R.string.giftcard_save_permission_denied_message) },
+    )
 }
 
 private fun saveViewAsImageInGallery(

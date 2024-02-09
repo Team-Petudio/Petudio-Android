@@ -115,6 +115,8 @@
     <string name="giftcard_number">기프트 카드 번호</string>
     <string name="unusable_gift_card_error_message">사용할 수 없는 기프트 카드입니다!</string>
     <string name="gift_card_use_success_message">기프트 카드가 성공적으로 사용되었습니다!</string>
+    <string name="giftcard_save_permission_message">권한을 허용해야 기프트 카드를 저장할 수 있어요!</string>
+    <string name="giftcard_save_permission_denied_message">파일 권한을 허용하지 않으면 이미지를 업로드할 수 없어요 😢</string>
 
     <string name="login_with_google">Google로 로그인</string>
     <string name="login_with_kakao">Kakao로 로그인</string>
