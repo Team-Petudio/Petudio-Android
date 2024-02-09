@@ -128,7 +128,7 @@ class HomeViewModel @Inject constructor(
 
     private fun toggleFeedLike(toggledPetFeed: PetFeed) {
         viewModelScope.launch {
-            if (!petFeedUiState.value.isLogined) {
+            if (!userUiState.value.isLogined) {
                 _event.emit(Event.TOKEN_EXPIRED)
                 return@launch
             }
