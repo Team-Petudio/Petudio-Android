@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,13 +28,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -44,48 +46,39 @@ import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.SmallTitle
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.composition.damoa.presentation.ui.theme.Purple60
-import java.time.LocalDateTime
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AlbumActivity : ComponentActivity() {
+    private val viewModel: AlbumViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AlbumScreen()
+            AlbumScreen(viewModel = viewModel)
         }
     }
 }
 
 @Composable
-private fun AlbumScreen() {
+private fun AlbumScreen(viewModel: AlbumViewModel) {
     PetudioTheme {
         val activity = LocalContext.current as? Activity
+        val albumUiState by viewModel.albumUiState.collectAsStateWithLifecycle()
 
         Scaffold(
-            topBar = { AlbumTopAppBar(onNavigationClick = { activity?.finish() }) },
+            topBar = {
+                AlbumTopAppBar(
+                    onNavigationClick = { activity?.finish() },
+                    onSaveClick = albumUiState.onSavePhotosClick,
+                )
+            },
         ) { padding ->
             AlbumContent(
                 modifier = Modifier
                     .padding(top = padding.calculateTopPadding())
                     .padding(horizontal = 20.dp),
-                album = Album(
-                    id = 0,
-                    title = "코코",
-                    concept = "트렌디 룩북 컨셉",
-                    thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                    photoUrls =
-                    listOf(
-                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                        "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-                    ),
-                    date = LocalDateTime.now(),
-                ),
+                album = albumUiState.album,
             )
         }
     }
@@ -94,8 +87,8 @@ private fun AlbumScreen() {
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun AlbumTopAppBar(
-    onNavigationClick: () -> Unit = {},
-    onSaveClick: () -> Unit = {},
+    onNavigationClick: () -> Unit,
+    onSaveClick: () -> Unit,
 ) {
     TopAppBar(
         title = { },
@@ -109,11 +102,7 @@ private fun AlbumTopAppBar(
                 )
             }
         },
-        actions = {
-            TextButton(onClick = onSaveClick) {
-                SmallTitle(titleRes = R.string.save_all, fontColor = Purple60)
-            }
-        },
+        actions = { SaveAllButton(onSaveClick) },
     )
 }
 
@@ -123,8 +112,7 @@ private fun AlbumContent(
     album: Album,
 ) {
     LazyVerticalGrid(
-        modifier =
-        modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color.White),
         columns = GridCells.Fixed(2),
@@ -167,8 +155,9 @@ private fun PhotoItem(
     }
 }
 
-@Preview
 @Composable
-private fun AlbumPreview() {
-    AlbumScreen()
+private fun SaveAllButton(onSaveClick: () -> Unit) {
+    TextButton(onClick = onSaveClick) {
+        SmallTitle(titleRes = R.string.save_all, fontColor = Purple60)
+    }
 }
