@@ -1,12 +1,14 @@
 package com.composition.damoa.presentation.screens.album
 
-import android.app.Activity
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -28,7 +30,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -41,12 +47,27 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.composition.damoa.R
 import com.composition.damoa.data.model.Album
+import com.composition.damoa.presentation.common.base.BaseUiState.State
 import com.composition.damoa.presentation.common.components.BigTitle
+import com.composition.damoa.presentation.common.components.CircularLoadingBar
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.SmallTitle
+import com.composition.damoa.presentation.common.extensions.onUi
+import com.composition.damoa.presentation.common.extensions.showToast
+import com.composition.damoa.presentation.common.utils.permissionRequester.Permission
+import com.composition.damoa.presentation.common.utils.permissionRequester.PermissionRequester
+import com.composition.damoa.presentation.screens.album.state.AlbumUiEvent.SAVE_PHOTOS_FAILURE
+import com.composition.damoa.presentation.screens.album.state.AlbumUiEvent.SAVE_PHOTOS_SUCCESS
+import com.composition.damoa.presentation.screens.album.state.AlbumUiState
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.composition.damoa.presentation.ui.theme.Purple60
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.sample
+import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class AlbumActivity : ComponentActivity() {
@@ -63,14 +84,24 @@ class AlbumActivity : ComponentActivity() {
 @Composable
 private fun AlbumScreen(viewModel: AlbumViewModel) {
     PetudioTheme {
-        val activity = LocalContext.current as? Activity
+        val context = LocalContext.current
+        val activity = context as? ComponentActivity
         val albumUiState by viewModel.albumUiState.collectAsStateWithLifecycle()
+
+        activity?.onUi {
+            viewModel.event.collectLatest { event ->
+                when (event) {
+                    SAVE_PHOTOS_SUCCESS -> context.showToast(R.string.photos_save_success_message)
+                    SAVE_PHOTOS_FAILURE -> context.showToast(R.string.photos_save_failure_message)
+                }
+            }
+        }
 
         Scaffold(
             topBar = {
                 AlbumTopAppBar(
                     onNavigationClick = { activity?.finish() },
-                    onSaveClick = albumUiState.onSavePhotosClick,
+                    onSaveClick = { context.saveAllPhotos(albumUiState) },
                 )
             },
         ) { padding ->
@@ -80,8 +111,36 @@ private fun AlbumScreen(viewModel: AlbumViewModel) {
                     .padding(horizontal = 20.dp),
                 album = albumUiState.album,
             )
+            if (albumUiState.state == State.LOADING) LoadingScreen()
         }
     }
+}
+
+private fun Context.saveAllPhotos(
+    albumUiState: AlbumUiState,
+) {
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+        albumUiState.onSavePhotosClick()
+        return
+    }
+
+    requestWriteExternalStoragePermission(
+        onGranted = { albumUiState.onSavePhotosClick() },
+        onDenied = { showToast(R.string.photos_save_permission_denied_message) },
+    )
+}
+
+private fun Context.requestWriteExternalStoragePermission(
+    onGranted: () -> Unit,
+    onDenied: () -> Unit,
+) {
+    PermissionRequester().launch(
+        context = this,
+        permission = Permission.WRITE_EXTERNAL_STORAGE,
+        dialogMessage = getString(R.string.permission_request_photos_save_permission_message),
+        onGranted = onGranted,
+        onDenied = onDenied,
+    )
 }
 
 @Composable
@@ -121,7 +180,10 @@ private fun AlbumContent(
         contentPadding = PaddingValues(bottom = 20.dp),
     ) {
         item(span = { GridItemSpan(2) }) { AlbumHeader(album) }
-        items(album.photoUrls) { photoUrl ->
+        items(
+            items = album.photoUrls,
+            key = { photoUrl -> photoUrl },
+        ) { photoUrl ->
             PhotoItem(photoUrl = photoUrl)
         }
     }
@@ -155,9 +217,31 @@ private fun PhotoItem(
     }
 }
 
+@OptIn(FlowPreview::class)
 @Composable
 private fun SaveAllButton(onSaveClick: () -> Unit) {
-    TextButton(onClick = onSaveClick) {
+    val scope = rememberCoroutineScope()
+    val clickFlow = remember { MutableSharedFlow<Unit>() }
+
+    LaunchedEffect(clickFlow) {
+        clickFlow
+            .sample(1000)
+            .collect { onSaveClick() }
+    }
+
+    TextButton(onClick = { scope.launch { clickFlow.emit(Unit) } }) {
         SmallTitle(titleRes = R.string.save_all, fontColor = Purple60)
+    }
+}
+
+@Composable
+private fun LoadingScreen(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.Transparent),
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularLoadingBar(size = 70.dp)
     }
 }

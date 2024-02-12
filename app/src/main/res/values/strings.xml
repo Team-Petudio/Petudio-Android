@@ -85,6 +85,10 @@
     <string name="create_ai_profile_button_content">AI 프로필 제작하기</string>
     <string name="create_profile_as_concept">이 컨셉으로 AI 프로필 생성하기</string>
     <string name="save_all">모두 저장</string>
+    <string name="permission_request_photos_save_permission_message">권한을 허용해야 이미지를 저장할 수 있어요!</string>
+    <string name="photos_save_permission_denied_message">파일 권한을 허용하지 않으면 이미지를 저장할 수 없어요 😢</string>
+    <string name="photos_save_success_message">갤러리에 성공적으로 저장되었습니다!</string>
+    <string name="photos_save_failure_message">갤러리에 저장하는데 실패했어요 😢\n인터넷이 정상적으로 연결되어 있나요?</string>
 
     <string name="profile_title">내 정보</string>
     <string name="profile_option_ticket">티켓 구매하기</string>
