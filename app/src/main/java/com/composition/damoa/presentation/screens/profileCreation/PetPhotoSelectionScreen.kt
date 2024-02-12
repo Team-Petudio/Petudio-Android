@@ -63,6 +63,7 @@ fun PetPhotoSelectionScreen(
     ) {
         PetPhotoSelectContent(
             pets = petPhotoSelectionUiState.pets,
+            selectedPetId = petPhotoSelectionUiState.selectedPetId,
             onPetSelected = { petId -> petPhotoSelectionUiState.onPetSelected(petId) },
             onNewPhotoUploadClick = { navController.navigate(ProfileCreationScreen.PET_NAME.route) }
         )
@@ -76,11 +77,13 @@ fun PetPhotoSelectionScreen(
 @Composable
 private fun PetPhotoSelectContent(
     pets: List<Pet>,
+    selectedPetId: Long? = null,
     onPetSelected: (petId: Long) -> Unit,
     onNewPhotoUploadClick: () -> Unit,
 ) {
     PetList(
         pets = pets,
+        selectedPetId = selectedPetId,
         onPetSelected = onPetSelected,
         onNewPhotoUploadClick = onNewPhotoUploadClick,
     )
@@ -138,6 +141,7 @@ private fun NewPhotoUploadButton(
 private fun PetList(
     modifier: Modifier = Modifier,
     pets: List<Pet>,
+    selectedPetId: Long? = null,
     onPetSelected: (petId: Long) -> Unit,
     onNewPhotoUploadClick: () -> Unit,
 ) {
@@ -154,10 +158,11 @@ private fun PetList(
         items(
             items = pets,
             key = { pet -> pet.id },
-        ) { uploadedPhoto ->
+        ) { pet ->
             PetItem(
-                photo = uploadedPhoto,
-                onClick = { onPetSelected(uploadedPhoto.id) },
+                pet = pet,
+                onClick = { onPetSelected(pet.id) },
+                selected = pet.id == selectedPetId,
             )
         }
     }
@@ -166,11 +171,11 @@ private fun PetList(
 @Composable
 private fun PetItem(
     modifier: Modifier = Modifier,
-    photo: Pet,
+    pet: Pet,
     onClick: () -> Unit = {},
     selected: Boolean = false,
 ) {
-    val borderWidth = if (selected) 2.dp else 1.5.dp
+    val borderWidth = if (selected) 3.dp else 1.5.dp
     val borderColor = if (selected) Purple60 else Gray20
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -189,7 +194,8 @@ private fun PetItem(
             .padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        UploadedPhotoThumbnail(thumbnailUrl = photo.thumbnailUrl)
+        UploadedPhotoThumbnail(thumbnailUrl = pet.thumbnailUrl)
+        PetInformation(pet = pet)
     }
 }
 
@@ -202,8 +208,7 @@ private fun UploadedPhotoThumbnail(
     Card(
         shape = RoundedCornerShape(12.dp),
         elevation = 0.dp,
-        modifier =
-        modifier
+        modifier = modifier
             .fillMaxHeight()
             .aspectRatio(1F),
     ) {
@@ -214,4 +219,18 @@ private fun UploadedPhotoThumbnail(
             contentScale = ContentScale.Crop,
         )
     }
+}
+
+@Composable
+private fun PetInformation(
+    modifier: Modifier = Modifier,
+    pet: Pet,
+) {
+    Text(
+        modifier = modifier,
+        text = pet.petName,
+        color = Color.Black,
+        fontSize = 17.sp,
+        fontWeight = FontWeight.Bold,
+    )
 }
