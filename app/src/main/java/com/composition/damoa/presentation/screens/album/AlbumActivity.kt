@@ -1,6 +1,7 @@
 package com.composition.damoa.presentation.screens.album
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -56,6 +57,7 @@ import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.common.extensions.showToast
 import com.composition.damoa.presentation.common.utils.permissionRequester.Permission
 import com.composition.damoa.presentation.common.utils.permissionRequester.PermissionRequester
+import com.composition.damoa.presentation.screens.album.state.AlbumUiEvent.NETWORK_ERROR
 import com.composition.damoa.presentation.screens.album.state.AlbumUiEvent.SAVE_PHOTOS_FAILURE
 import com.composition.damoa.presentation.screens.album.state.AlbumUiEvent.SAVE_PHOTOS_SUCCESS
 import com.composition.damoa.presentation.screens.album.state.AlbumUiState
@@ -79,169 +81,181 @@ class AlbumActivity : ComponentActivity() {
             AlbumScreen(viewModel = viewModel)
         }
     }
-}
 
-@Composable
-private fun AlbumScreen(viewModel: AlbumViewModel) {
-    PetudioTheme {
-        val context = LocalContext.current
-        val activity = context as? ComponentActivity
-        val albumUiState by viewModel.albumUiState.collectAsStateWithLifecycle()
+    companion object {
+        fun startActivity(
+            context: Context,
+            albumId: Long,
+        ) {
+            val intent = Intent(context, AlbumActivity::class.java)
+                .putExtra(AlbumViewModel.KEY_ALBUM_ID, albumId)
+            context.startActivity(intent)
+        }
+    }
 
-        activity?.onUi {
-            viewModel.event.collectLatest { event ->
-                when (event) {
-                    SAVE_PHOTOS_SUCCESS -> context.showToast(R.string.photos_save_success_message)
-                    SAVE_PHOTOS_FAILURE -> context.showToast(R.string.photos_save_failure_message)
+    @Composable
+    private fun AlbumScreen(viewModel: AlbumViewModel) {
+        PetudioTheme {
+            val context = LocalContext.current
+            val activity = context as? ComponentActivity
+            val albumUiState by viewModel.albumUiState.collectAsStateWithLifecycle()
+
+            activity?.onUi {
+                viewModel.event.collectLatest { event ->
+                    when (event) {
+                        SAVE_PHOTOS_SUCCESS -> context.showToast(R.string.photos_save_success_message)
+                        SAVE_PHOTOS_FAILURE -> context.showToast(R.string.photos_save_failure_message)
+                        NETWORK_ERROR -> context.showToast(R.string.network_failure_message)
+                    }
                 }
             }
-        }
 
-        Scaffold(
-            topBar = {
-                AlbumTopAppBar(
-                    onNavigationClick = { activity?.finish() },
-                    onSaveClick = { context.saveAllPhotos(albumUiState) },
+            Scaffold(
+                topBar = {
+                    AlbumTopAppBar(
+                        onNavigationClick = { activity?.finish() },
+                        onSaveClick = { context.saveAllPhotos(albumUiState) },
+                    )
+                },
+            ) { padding ->
+                AlbumContent(
+                    modifier = Modifier
+                        .padding(top = padding.calculateTopPadding())
+                        .padding(horizontal = 20.dp),
+                    album = albumUiState.album,
                 )
-            },
-        ) { padding ->
-            AlbumContent(
-                modifier = Modifier
-                    .padding(top = padding.calculateTopPadding())
-                    .padding(horizontal = 20.dp),
-                album = albumUiState.album,
-            )
-            if (albumUiState.state == State.LOADING) LoadingScreen()
-        }
-    }
-}
-
-private fun Context.saveAllPhotos(
-    albumUiState: AlbumUiState,
-) {
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-        albumUiState.onSavePhotosClick()
-        return
-    }
-
-    requestWriteExternalStoragePermission(
-        onGranted = { albumUiState.onSavePhotosClick() },
-        onDenied = { showToast(R.string.photos_save_permission_denied_message) },
-    )
-}
-
-private fun Context.requestWriteExternalStoragePermission(
-    onGranted: () -> Unit,
-    onDenied: () -> Unit,
-) {
-    PermissionRequester().launch(
-        context = this,
-        permission = Permission.WRITE_EXTERNAL_STORAGE,
-        dialogMessage = getString(R.string.permission_request_photos_save_permission_message),
-        onGranted = onGranted,
-        onDenied = onDenied,
-    )
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun AlbumTopAppBar(
-    onNavigationClick: () -> Unit,
-    onSaveClick: () -> Unit,
-) {
-    TopAppBar(
-        title = { },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
-        navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = stringResource(id = R.string.navigate_back),
-                    tint = Color.Black,
-                )
+                if (albumUiState.state == State.LOADING) LoadingScreen()
             }
-        },
-        actions = { SaveAllButton(onSaveClick) },
-    )
-}
-
-@Composable
-private fun AlbumContent(
-    modifier: Modifier = Modifier,
-    album: Album,
-) {
-    LazyVerticalGrid(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.White),
-        columns = GridCells.Fixed(2),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(bottom = 20.dp),
-    ) {
-        item(span = { GridItemSpan(2) }) { AlbumHeader(album) }
-        items(
-            items = album.photoUrls,
-            key = { photoUrl -> photoUrl },
-        ) { photoUrl ->
-            PhotoItem(photoUrl = photoUrl)
         }
     }
-}
 
-@Composable
-private fun AlbumHeader(album: Album) {
-    Column {
-        BigTitle(title = album.title, modifier = Modifier.padding(top = 20.dp))
-        MediumDescription(description = album.concept, modifier = Modifier.padding(top = 12.dp))
-    }
-}
-
-@Composable
-@OptIn(ExperimentalGlideComposeApi::class)
-private fun PhotoItem(
-    modifier: Modifier = Modifier,
-    photoUrl: String,
-) {
-    Card(
-        shape = RoundedCornerShape(12.dp),
-        elevation = 0.dp,
-        modifier = modifier.aspectRatio(1F),
+    private fun Context.saveAllPhotos(
+        albumUiState: AlbumUiState,
     ) {
-        GlideImage(
-            model = photoUrl,
-            contentDescription = null,
-            transition = CrossFade,
-            contentScale = ContentScale.Crop,
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            albumUiState.onSavePhotosClick()
+            return
+        }
+
+        requestWriteExternalStoragePermission(
+            onGranted = { albumUiState.onSavePhotosClick() },
+            onDenied = { showToast(R.string.photos_save_permission_denied_message) },
         )
     }
-}
 
-@OptIn(FlowPreview::class)
-@Composable
-private fun SaveAllButton(onSaveClick: () -> Unit) {
-    val scope = rememberCoroutineScope()
-    val clickFlow = remember { MutableSharedFlow<Unit>() }
-
-    LaunchedEffect(clickFlow) {
-        clickFlow
-            .sample(1000)
-            .collect { onSaveClick() }
-    }
-
-    TextButton(onClick = { scope.launch { clickFlow.emit(Unit) } }) {
-        SmallTitle(titleRes = R.string.save_all, fontColor = Purple60)
-    }
-}
-
-@Composable
-private fun LoadingScreen(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.Transparent),
-        contentAlignment = Alignment.Center,
+    private fun Context.requestWriteExternalStoragePermission(
+        onGranted: () -> Unit,
+        onDenied: () -> Unit,
     ) {
-        CircularLoadingBar(size = 70.dp)
+        PermissionRequester().launch(
+            context = this,
+            permission = Permission.WRITE_EXTERNAL_STORAGE,
+            dialogMessage = getString(R.string.permission_request_photos_save_permission_message),
+            onGranted = onGranted,
+            onDenied = onDenied,
+        )
+    }
+
+    @Composable
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun AlbumTopAppBar(
+        onNavigationClick: () -> Unit,
+        onSaveClick: () -> Unit,
+    ) {
+        TopAppBar(
+            title = { },
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
+            navigationIcon = {
+                IconButton(onClick = onNavigationClick) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(id = R.string.navigate_back),
+                        tint = Color.Black,
+                    )
+                }
+            },
+            actions = { SaveAllButton(onSaveClick) },
+        )
+    }
+
+    @Composable
+    private fun AlbumContent(
+        modifier: Modifier = Modifier,
+        album: Album,
+    ) {
+        LazyVerticalGrid(
+            modifier = modifier
+                .fillMaxSize()
+                .background(Color.White),
+            columns = GridCells.Fixed(2),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(bottom = 20.dp),
+        ) {
+            item(span = { GridItemSpan(2) }) { AlbumHeader(album) }
+            items(
+                items = album.photoUrls,
+                key = { photoUrl -> photoUrl },
+            ) { photoUrl ->
+                PhotoItem(photoUrl = photoUrl)
+            }
+        }
+    }
+
+    @Composable
+    private fun AlbumHeader(album: Album) {
+        Column {
+            BigTitle(title = album.title, modifier = Modifier.padding(top = 20.dp))
+            MediumDescription(description = album.concept, modifier = Modifier.padding(top = 12.dp))
+        }
+    }
+
+    @Composable
+    @OptIn(ExperimentalGlideComposeApi::class)
+    private fun PhotoItem(
+        modifier: Modifier = Modifier,
+        photoUrl: String,
+    ) {
+        Card(
+            shape = RoundedCornerShape(12.dp),
+            elevation = 0.dp,
+            modifier = modifier.aspectRatio(1F),
+        ) {
+            GlideImage(
+                model = photoUrl,
+                contentDescription = null,
+                transition = CrossFade,
+                contentScale = ContentScale.Crop,
+            )
+        }
+    }
+
+    @OptIn(FlowPreview::class)
+    @Composable
+    private fun SaveAllButton(onSaveClick: () -> Unit) {
+        val scope = rememberCoroutineScope()
+        val clickFlow = remember { MutableSharedFlow<Unit>() }
+
+        LaunchedEffect(clickFlow) {
+            clickFlow
+                .sample(1000)
+                .collect { onSaveClick() }
+        }
+
+        TextButton(onClick = { scope.launch { clickFlow.emit(Unit) } }) {
+            SmallTitle(titleRes = R.string.save_all, fontColor = Purple60)
+        }
+    }
+
+    @Composable
+    private fun LoadingScreen(modifier: Modifier = Modifier) {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(Color.Transparent),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularLoadingBar(size = 70.dp)
+        }
     }
 }

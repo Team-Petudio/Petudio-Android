@@ -9,6 +9,7 @@ import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.model.PetFeed
 import com.composition.damoa.data.model.User
+import com.composition.damoa.data.repository.interfaces.AlbumRepository
 import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.repository.interfaces.PetFeedRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
@@ -31,6 +32,7 @@ class HomeViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val conceptRepository: ConceptRepository,
     private val petFeedRepository: PetFeedRepository,
+    private val albumRepository: AlbumRepository,
 ) : ViewModel() {
     private val _profileUiState = MutableStateFlow(ProfileUiState())
     val profileUiState = _profileUiState.asStateFlow()
@@ -38,7 +40,7 @@ class HomeViewModel @Inject constructor(
     private val _userUiState = MutableStateFlow(UserUiState())
     val userUiState = _userUiState.asStateFlow()
 
-    private val _albumUiState = MutableStateFlow(AlbumUiState.dummy)
+    private val _albumUiState = MutableStateFlow(AlbumUiState())
     val albumUiState = _albumUiState.asStateFlow()
 
     private val _petFeedUiState = MutableStateFlow(
@@ -51,6 +53,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         fetchProfileConcepts()
+        fetchAlbum()
         fetchUser { user -> fetchFeeds(user?.id ?: INVALID_USER_ID) }
     }
 
@@ -70,6 +73,16 @@ class HomeViewModel @Inject constructor(
                 is Failure, is Unexpected -> _profileUiState.value = profileUiState.value.copy(
                     state = State.NONE
                 )
+            }
+        }
+    }
+
+    private fun fetchAlbum() {
+        viewModelScope.launch {
+            when (val album = albumRepository.getAlbums()) {
+                is Success -> _albumUiState.emit(albumUiState.value.copy(state = State.SUCCESS, albums = album.data))
+                NetworkError, TokenExpired -> _albumUiState.emit(albumUiState.value.copy(state = State.NETWORK_ERROR))
+                is Failure, is Unexpected -> _albumUiState.emit(albumUiState.value.copy(state = State.NONE))
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.composition.damoa.presentation.screens.home
 
 import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -158,6 +157,8 @@ private fun ContentScreen(
     petFeedUiState: PetFeedUiState,
     onLoginClick: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     HorizontalPager(
         modifier = modifier.fillMaxSize(),
         state = pagerState,
@@ -165,9 +166,10 @@ private fun ContentScreen(
         when (page) {
             ALBUM_PAGE -> AlbumScreen(
                 albums = albumUiState.albums,
-                isLogined = true,
+                isLogined = albumUiState.isLogined,
                 onAiProfileClick = { navigateToProfileConceptScreen(navController = navController) },
                 onLoginClick = onLoginClick,
+                onAlbumClick = { albumId -> AlbumActivity.startActivity(context, albumId) },
             )
 
             PET_FEED_PAGE -> PetFeedScreen(
@@ -208,12 +210,13 @@ private fun AlbumScreen(
     isLogined: Boolean,
     onAiProfileClick: () -> Unit,
     onLoginClick: () -> Unit,
+    onAlbumClick: (albumId: Long) -> Unit,
 ) {
     Surface(modifier = modifier.padding(horizontal = 20.dp)) {
         when {
             !isLogined -> LoginRequireScreen(onLoginClick = onLoginClick)
-            albums.isEmpty() -> EmptyAlbumScreen(modifier, onAiProfileClick)
-            else -> AlbumListScreen(modifier, albums)
+            albums.isEmpty() -> EmptyAlbumScreen(modifier = modifier, onAiProfileClick = onAiProfileClick)
+            else -> AlbumListScreen(modifier = modifier, albums = albums, onAlbumClick = onAlbumClick)
         }
     }
 }
@@ -250,18 +253,15 @@ private fun EmptyAlbumScreen(
 private fun AlbumListScreen(
     modifier: Modifier = Modifier,
     albums: List<Album>,
+    onAlbumClick: (albumId: Long) -> Unit,
 ) {
-    val context = LocalContext.current
-
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(28.dp),
         contentPadding = PaddingValues(vertical = 20.dp),
     ) {
         items(albums) { album ->
-            AlbumItem(album = album) {
-                context.startActivity(Intent(context, AlbumActivity::class.java))
-            }
+            AlbumItem(album = album, onClick = onAlbumClick)
         }
     }
 }
@@ -270,14 +270,14 @@ private fun AlbumListScreen(
 private fun AlbumItem(
     modifier: Modifier = Modifier,
     album: Album,
-    onClick: () -> Unit = {},
+    onClick: (albumId: Long) -> Unit,
 ) {
     Column(
         modifier =
         modifier
             .border(BorderStroke(3.dp, Brush.verticalGradient(PrimaryColors)), RoundedCornerShape(12.dp))
             .clip(RoundedCornerShape(12.dp))
-            .clickable { onClick() },
+            .clickable { onClick(album.id) },
     ) {
         AlbumThumbnailImage(thumbnailUrl = album.thumbnailUrl)
         AlbumBody(modifier = Modifier.padding(bottom = 12.dp), album = album)

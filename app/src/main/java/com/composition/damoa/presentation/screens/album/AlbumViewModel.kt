@@ -1,7 +1,14 @@
 package com.composition.damoa.presentation.screens.album
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.composition.damoa.data.common.retrofit.callAdapter.Failure
+import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
+import com.composition.damoa.data.common.retrofit.callAdapter.Success
+import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
+import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
+import com.composition.damoa.data.repository.interfaces.AlbumRepository
 import com.composition.damoa.presentation.common.base.BaseUiState.State
 import com.composition.damoa.presentation.common.utils.imageSaver.ImageSaver
 import com.composition.damoa.presentation.screens.album.state.AlbumUiEvent
@@ -18,7 +25,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AlbumViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val imageSaver: ImageSaver,
+    private val albumRepository: AlbumRepository,
 ) : ViewModel() {
     private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
         viewModelScope.launch {
@@ -39,6 +48,26 @@ class AlbumViewModel @Inject constructor(
     val event = _event.asSharedFlow()
 
 
+    init {
+        val albumId = savedStateHandle.get<Long>(KEY_ALBUM_ID) ?: INVALID_ALBUM_ID
+        fetchAlbum(albumId)
+    }
+
+    private fun fetchAlbum(id: Long) {
+        viewModelScope.launch {
+            _albumUiState.emit(albumUiState.value.copy(state = State.LOADING))
+
+            when (val result = albumRepository.getAlbum(id)) {
+                is Success -> _albumUiState.emit(albumUiState.value.copy(album = result.data, state = State.SUCCESS))
+                is Failure, is Unexpected -> _albumUiState.emit(albumUiState.value.copy(state = State.NONE))
+                NetworkError, TokenExpired -> {
+                    _albumUiState.emit(albumUiState.value.copy(state = State.NETWORK_ERROR))
+                    _event.emit(AlbumUiEvent.NETWORK_ERROR)
+                }
+            }
+        }
+    }
+
     private fun saveAllPhotos() {
         val photoUrls = albumUiState.value.album.photoUrls
 
@@ -52,5 +81,10 @@ class AlbumViewModel @Inject constructor(
             _albumUiState.emit(albumUiState.value.copy(state = State.NONE))
             _event.emit(AlbumUiEvent.SAVE_PHOTOS_SUCCESS)
         }
+    }
+
+    companion object {
+        const val KEY_ALBUM_ID = "albumId"
+        private const val INVALID_ALBUM_ID = -1L
     }
 }

@@ -11,6 +11,8 @@ import com.composition.damoa.data.repository.concretes.DefaultS3ImageRepository
 import com.composition.damoa.data.repository.concretes.DefaultS3ImageUrlRepository
 import com.composition.damoa.data.repository.concretes.DefaultTokenRepository
 import com.composition.damoa.data.repository.concretes.DefaultUserRepository
+import com.composition.damoa.data.repository.concretes.FakeAlbumRepository
+import com.composition.damoa.data.repository.interfaces.AlbumRepository
 import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.repository.interfaces.GiftCardRepository
 import com.composition.damoa.data.repository.interfaces.GoogleRepository
@@ -101,4 +103,10 @@ class RepositoryModule {
     fun providePetFeedRepository(
         petFeedService: PetFeedService,
     ): PetFeedRepository = DefaultPetFeedRepository(petFeedService)
+
+    @Singleton
+    @Provides
+    fun provideAlbumRepository(
+        // TODO : AlbumService 종속 항목 추가
+    ): AlbumRepository = FakeAlbumRepository()
 }
