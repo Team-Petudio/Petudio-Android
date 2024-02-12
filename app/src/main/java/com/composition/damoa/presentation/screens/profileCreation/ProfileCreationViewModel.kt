@@ -21,7 +21,7 @@ import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.presentation.common.base.BaseUiState.State
 import com.composition.damoa.presentation.screens.profileCreation.state.ConceptDetailUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
-import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoUiState
+import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoSelectionUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.TicketUiState
 import com.esafirm.imagepicker.model.Image
@@ -55,8 +55,8 @@ class ProfileCreationViewModel @Inject constructor(
     private val _conceptDetailUiState = MutableStateFlow(ConceptDetailUiState())
     val conceptDetailUiState = _conceptDetailUiState.asStateFlow()
 
-    private val _petPhotosUiState = MutableStateFlow(PetPhotoUiState())
-    val petPhotosUiState = _petPhotosUiState.asStateFlow()
+    private val _petPhotoSelectionUiState = MutableStateFlow(PetPhotoSelectionUiState(onPetSelected = ::selectPet))
+    val petPhotoSelectionUiState = _petPhotoSelectionUiState.asStateFlow()
 
     private val _selectedImageUiState = MutableStateFlow(SelectedImageUiState())
     val selectedImageUiState = _selectedImageUiState.asStateFlow()
@@ -112,20 +112,26 @@ class ProfileCreationViewModel @Inject constructor(
 
     private fun fetchPets() {
         viewModelScope.launch {
-            _petPhotosUiState.value = petPhotosUiState.value.copy(state = State.LOADING)
+            _petPhotoSelectionUiState.value = petPhotoSelectionUiState.value.copy(state = State.LOADING)
             when (val conceptDetail = petRepository.getPets()) {
-                is Success -> _petPhotosUiState.value = petPhotosUiState.value.copy(
+                is Success -> _petPhotoSelectionUiState.value = petPhotoSelectionUiState.value.copy(
                     state = State.SUCCESS,
                     pets = conceptDetail.data
                 )
 
-                NetworkError -> _petPhotosUiState.value = petPhotosUiState.value.copy(state = State.NETWORK_ERROR)
+                NetworkError -> _petPhotoSelectionUiState.value =
+                    petPhotoSelectionUiState.value.copy(state = State.NETWORK_ERROR)
+
                 TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
-                is Failure, is Unexpected -> _petPhotosUiState.value = petPhotosUiState.value.copy(
+                is Failure, is Unexpected -> _petPhotoSelectionUiState.value = petPhotoSelectionUiState.value.copy(
                     state = State.NONE
                 )
             }
         }
+    }
+
+    private fun selectPet(petId: Long) {
+        _petPhotoSelectionUiState.value = petPhotoSelectionUiState.value.copy(selectedPetId = petId)
     }
 
     fun updatePetName(name: String) {

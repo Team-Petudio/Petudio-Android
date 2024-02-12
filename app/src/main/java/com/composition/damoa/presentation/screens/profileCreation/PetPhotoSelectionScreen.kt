@@ -44,40 +44,44 @@ import com.composition.damoa.data.model.Pet
 import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
+import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoSelectionUiState
 import com.composition.damoa.presentation.ui.theme.Gray20
 import com.composition.damoa.presentation.ui.theme.Purple60
 
 @Composable
-fun PetPhotoSelectScreen(
+fun PetPhotoSelectionScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    pets: List<Pet>,
+    petPhotoSelectionUiState: PetPhotoSelectionUiState,
 ) {
     Surface(
         color = Color.White,
-        modifier =
-        modifier
+        modifier = modifier
             .background(Color.White)
             .fillMaxSize()
             .padding(horizontal = 20.dp),
     ) {
         PetPhotoSelectContent(
-            pets = pets,
+            pets = petPhotoSelectionUiState.pets,
+            onPetSelected = { petId -> petPhotoSelectionUiState.onPetSelected(petId) },
             onNewPhotoUploadClick = { navController.navigate(ProfileCreationScreen.PET_NAME.route) }
         )
-        KeepGoingButton(onClick = {
-            // 결제하기 화면 이동
-        })
+        KeepGoingButton(
+            enabled = petPhotoSelectionUiState.selectedPetId != null,
+            onClick = { navController.navigate(ProfileCreationScreen.PAYMENT.route) }
+        )
     }
 }
 
 @Composable
 private fun PetPhotoSelectContent(
     pets: List<Pet>,
+    onPetSelected: (petId: Long) -> Unit,
     onNewPhotoUploadClick: () -> Unit,
 ) {
     PetList(
         pets = pets,
+        onPetSelected = onPetSelected,
         onNewPhotoUploadClick = onNewPhotoUploadClick,
     )
 }
@@ -134,6 +138,7 @@ private fun NewPhotoUploadButton(
 private fun PetList(
     modifier: Modifier = Modifier,
     pets: List<Pet>,
+    onPetSelected: (petId: Long) -> Unit,
     onNewPhotoUploadClick: () -> Unit,
 ) {
     LazyColumn(
@@ -146,8 +151,14 @@ private fun PetList(
             PetPhotoSelectDescription()
             NewPhotoUploadButton(onClick = onNewPhotoUploadClick)
         }
-        items(pets) { uploadedPhoto ->
-            PetItem(photo = uploadedPhoto)
+        items(
+            items = pets,
+            key = { pet -> pet.id },
+        ) { uploadedPhoto ->
+            PetItem(
+                photo = uploadedPhoto,
+                onClick = { onPetSelected(uploadedPhoto.id) },
+            )
         }
     }
 }

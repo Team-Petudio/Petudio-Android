@@ -27,7 +27,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
-import com.composition.damoa.data.model.Pet
 import com.composition.damoa.data.model.PetColor
 import com.composition.damoa.data.model.ProfileConceptDetail
 import com.composition.damoa.presentation.common.extensions.onDefault
@@ -40,6 +39,7 @@ import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.Companion.KEY_CONCEPT_ID
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.UiEvent
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
+import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoSelectionUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.esafirm.imagepicker.model.Image
@@ -119,7 +119,7 @@ private fun ProfileCreation(
         val activity = LocalContext.current as? ComponentActivity
         val navController = rememberNavController()
         val conceptDetailUiState by viewModel.conceptDetailUiState.collectAsStateWithLifecycle()
-        val petPhotosUiState by viewModel.petPhotosUiState.collectAsStateWithLifecycle()
+        val petPhotoSelectionUiState by viewModel.petPhotoSelectionUiState.collectAsStateWithLifecycle()
         val petUiState by viewModel.petInfoUiState.collectAsStateWithLifecycle()
         val selectedImageUiState by viewModel.selectedImageUiState.collectAsStateWithLifecycle()
 
@@ -151,7 +151,7 @@ private fun ProfileCreation(
                 modifier = Modifier.padding(top = padding.calculateTopPadding()),
                 navController = navController,
                 profileConceptDetail = conceptDetailUiState.conceptDetail,
-                pets = petPhotosUiState.pets,
+                petPhotoSelectionUiState = petPhotoSelectionUiState,
                 petInfoUiState = petUiState,
                 onPetNameChanged = viewModel::updatePetName,
                 onPetColorSelected = viewModel::updateColor,
@@ -187,7 +187,7 @@ private fun ProfileCreationNavHost(
     navController: NavHostController = rememberNavController(),
     startDestination: ProfileCreationScreen = ProfileCreationScreen.PROFILE_CREATION_INTRODUCE,
     profileConceptDetail: ProfileConceptDetail,
-    pets: List<Pet>,
+    petPhotoSelectionUiState: PetPhotoSelectionUiState,
     petInfoUiState: PetInfoUiState,
     onPetNameChanged: (String) -> Unit,
     onPetColorSelected: (PetColor) -> Unit,
@@ -204,11 +204,14 @@ private fun ProfileCreationNavHost(
             ProfileCreationIntroduceScreen(
                 navController = navController,
                 profileConceptDetail = profileConceptDetail,
-                hasAlreadyPet = pets.isNotEmpty(),
+                hasAlreadyPet = petPhotoSelectionUiState.pets.isNotEmpty(),
             )
         }
         composable(ProfileCreationScreen.PET_PHOTO_SELECT.route) {
-            PetPhotoSelectScreen(pets = pets, navController = navController)
+            PetPhotoSelectionScreen(
+                petPhotoSelectionUiState = petPhotoSelectionUiState,
+                navController = navController
+            )
         }
         composable(ProfileCreationScreen.PET_NAME.route) {
             PetNameScreen(
