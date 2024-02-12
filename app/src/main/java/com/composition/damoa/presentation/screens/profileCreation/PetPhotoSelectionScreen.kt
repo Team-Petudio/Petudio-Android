@@ -1,5 +1,7 @@
 package com.composition.damoa.presentation.screens.profileCreation
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +27,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -175,8 +178,14 @@ private fun PetItem(
     onClick: () -> Unit = {},
     selected: Boolean = false,
 ) {
-    val borderWidth = if (selected) 3.dp else 1.5.dp
-    val borderColor = if (selected) Purple60 else Gray20
+    val borderWidth by animateDpAsState(
+        targetValue = if (selected) 3.dp else 1.5.dp,
+        label = "pet item border width",
+    )
+    val borderColor by animateColorAsState(
+        targetValue = if (selected) Purple60 else Gray20,
+        label = "pet item border color",
+    )
     val interactionSource = remember { MutableInteractionSource() }
 
     Row(
