@@ -38,6 +38,7 @@ fun ProfileCreationIntroduceScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     profileConceptDetail: ProfileConceptDetail,
+    hasAlreadyPet: Boolean,
 ) {
     Surface(
         color = Color.White,
@@ -48,7 +49,11 @@ fun ProfileCreationIntroduceScreen(
     ) {
         ProfileCreationIntroduceContent(profileConceptDetail = profileConceptDetail)
         KeepGoingButton(onClick = {
-            navController.navigate(ProfileCreationScreen.PET_PHOTO_SELECT.route)
+            if (hasAlreadyPet) {
+                navController.navigate(ProfileCreationScreen.PET_PHOTO_SELECT.route)
+            } else {
+                navController.navigate(ProfileCreationScreen.PET_NAME.route)
+            }
         })
     }
 }

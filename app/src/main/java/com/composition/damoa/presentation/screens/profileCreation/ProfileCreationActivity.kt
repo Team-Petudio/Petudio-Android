@@ -203,7 +203,8 @@ private fun ProfileCreationNavHost(
         composable(ProfileCreationScreen.PROFILE_CREATION_INTRODUCE.route) {
             ProfileCreationIntroduceScreen(
                 navController = navController,
-                profileConceptDetail = profileConceptDetail
+                profileConceptDetail = profileConceptDetail,
+                hasAlreadyPet = pets.isNotEmpty(),
             )
         }
         composable(ProfileCreationScreen.PET_PHOTO_SELECT.route) {
