@@ -68,9 +68,7 @@ private fun PaymentContent(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(top = 32.dp),
             titleRes = R.string.payment_standard_title,
             descriptionRes = R.string.payment_standard_desc,
-            isDiscounted = true,
-            originalPrice = 1500,
-            discountedPrice = 880,
+            ticketCount = 1,
         )
         DonationDescription(modifier = Modifier.padding(vertical = 28.dp))
         PaymentInformationList()
