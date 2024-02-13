@@ -77,6 +77,9 @@
 
     <string name="payment_complete">결제완료</string>
     <string name="payment_complete_desc">펫튜디오가 사진을 만들기 시작했어요! 사진이 완성되면 푸시 알림으로 알려드릴게요.</string>
+    <string name="profile_completion_push_permission_request_message">프로필 생성이 완료되면 푸시 알림을 보내드려요!</string>
+    <string name="profile_completion_push_permission_granted_message">사진이 완성되면 푸시 알림으로 알려드릴게요!</string>
+    <string name="profile_completion_push_permission_denied_message">권한을 허용하지 않으면 알림을 보내드릴 수 없어요 😢</string>
 
     <string name="album">앨범</string>
     <string name="pet_feed">펫 피드</string>
@@ -88,7 +91,7 @@
     <string name="permission_request_photos_save_permission_message">권한을 허용해야 이미지를 저장할 수 있어요!</string>
     <string name="photos_save_permission_denied_message">파일 권한을 허용하지 않으면 이미지를 저장할 수 없어요 😢</string>
     <string name="photos_save_success_message">갤러리에 성공적으로 저장되었습니다!</string>
-    <string name="photos_save_failure_message">갤러리에 저장하는데 실패했어요 😢\n인터넷이 정상적으로 연결되어 있나요?</string>
+    <string name="photos_save_failure_message">갤러리에 저장하는데 실패했어요 😢\n잠시 후 다시 시도해주세요</string>
 
     <string name="profile_title">내 정보</string>
     <string name="profile_option_ticket">티켓 구매하기</string>

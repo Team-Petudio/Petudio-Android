@@ -1,5 +1,6 @@
 package com.composition.damoa.presentation.screens.profileCreation
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -13,10 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -25,17 +25,20 @@ import com.composition.damoa.R
 import com.composition.damoa.data.model.PetType
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.MediumDescription
+import com.composition.damoa.presentation.common.extensions.showToast
+import com.composition.damoa.presentation.common.utils.permissionRequester.Permission
+import com.composition.damoa.presentation.common.utils.permissionRequester.PermissionRequester
 
 @Composable
 fun PaymentResultScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
     petType: PetType = PetType.DOG,
 ) {
+    launchNotificationPermissionRequester(context = LocalContext.current)
+
     Surface(
         color = Color.White,
-        modifier =
-        modifier
+        modifier = modifier
             .background(Color.White)
             .padding(horizontal = 20.dp)
             .fillMaxSize(),
@@ -45,6 +48,16 @@ fun PaymentResultScreen(
             petType = petType,
         )
     }
+}
+
+private fun launchNotificationPermissionRequester(context: Context) {
+    PermissionRequester().launch(
+        context = context,
+        permission = Permission.POST_NOTIFICATION,
+        dialogMessage = context.getString(R.string.profile_completion_push_permission_request_message),
+        onGranted = { context.showToast(R.string.profile_completion_push_permission_granted_message) },
+        onDenied = { context.showToast(R.string.profile_completion_push_permission_denied_message) },
+    )
 }
 
 @Composable
@@ -70,11 +83,10 @@ private fun PetAnimation(
     modifier: Modifier = Modifier,
     petType: PetType,
 ) {
-    val petRawRes =
-        when (petType) {
-            PetType.DOG -> R.raw.anim_dog
-            PetType.CAT -> R.raw.anim_cat
-        }
+    val petRawRes = when (petType) {
+        PetType.DOG -> R.raw.anim_dog
+        PetType.CAT -> R.raw.anim_cat
+    }
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(petRawRes))
     LottieAnimation(
         composition = composition,
@@ -90,7 +102,6 @@ private fun PetAnimation(
 @Composable
 private fun PaymentResultDogModeScreenPreview() {
     PaymentResultScreen(
-        navController = rememberNavController(),
         petType = PetType.DOG,
     )
 }
@@ -99,7 +110,6 @@ private fun PaymentResultDogModeScreenPreview() {
 @Composable
 private fun PaymentResultCatModeScreenPreview() {
     PaymentResultScreen(
-        navController = rememberNavController(),
         petType = PetType.CAT,
     )
 }

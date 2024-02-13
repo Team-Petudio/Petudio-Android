@@ -39,10 +39,10 @@ import com.composition.damoa.presentation.ui.theme.Purple60
 @Composable
 fun PetColorScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
     petType: PetType = PetType.DOG,
     selectedPetColor: PetColor? = null,
     onPetColorSelected: (PetColor) -> Unit,
+    onKeepGoingClick: () -> Unit,
 ) {
     Surface(
         color = Color.White,
@@ -56,9 +56,7 @@ fun PetColorScreen(
             selectedPetColor = selectedPetColor,
             onPetColorSelected = onPetColorSelected,
         )
-        KeepGoingButton {
-            navController.navigate(ProfileCreationScreen.PHOTO_UPLOAD_INTRODUCE.route)
-        }
+        KeepGoingButton(onClick = onKeepGoingClick)
     }
 }
 

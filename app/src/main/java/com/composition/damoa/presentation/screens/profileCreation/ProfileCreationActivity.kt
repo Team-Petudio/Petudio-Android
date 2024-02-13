@@ -232,14 +232,13 @@ private fun ProfileCreationNavHost(
         }
         composable(ProfileCreationScreen.PET_COLOR.route) {
             PetColorScreen(
-                navController = navController,
                 selectedPetColor = petInfoUiState.petColor,
                 onPetColorSelected = onPetColorSelected,
+                onKeepGoingClick = { navController.navigate(ProfileCreationScreen.PHOTO_UPLOAD_INTRODUCE.route) }
             )
         }
         composable(ProfileCreationScreen.PHOTO_UPLOAD_INTRODUCE.route) {
             PhotoUploadIntroduceScreen(
-                navController = navController,
                 onPhotoUploadClick = onPhotoUploadClick,
                 selectedImageUiState = selectedImageUiState,
             )
@@ -252,13 +251,10 @@ private fun ProfileCreationNavHost(
             )
         }
         composable(ProfileCreationScreen.PAYMENT.route) {
-            PaymentScreen(
-                navController = navController,
-                paymentUiState = paymentUiState,
-            )
+            PaymentScreen(paymentUiState = paymentUiState)
         }
         composable(ProfileCreationScreen.PAYMENT_RESULT.route) {
-            PaymentResultScreen(navController = navController)
+            PaymentResultScreen()
         }
     }
 }

@@ -36,7 +36,6 @@ import com.composition.damoa.presentation.ui.theme.PrimaryColors
 @Composable
 fun PaymentScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
     paymentUiState: PaymentUiState,
 ) {
     Surface(

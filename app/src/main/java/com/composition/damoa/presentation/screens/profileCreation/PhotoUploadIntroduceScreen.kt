@@ -52,7 +52,6 @@ data class PetPhoto(
 @Composable
 fun PhotoUploadIntroduceScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
     petType: PetType = PetType.DOG,
     selectedImageUiState: SelectedImageUiState,
     onPhotoUploadClick: () -> Unit = {},
