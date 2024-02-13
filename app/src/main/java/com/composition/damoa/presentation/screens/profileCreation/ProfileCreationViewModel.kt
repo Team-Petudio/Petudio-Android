@@ -145,7 +145,7 @@ class ProfileCreationViewModel @Inject constructor(
     }
 
     fun uploadPetWithPayment() {
-        _petInfoUiState.value = _petInfoUiState.value.copy(state = State.LOADING)
+        _petInfoUiState.value = petInfoUiState.value.copy(state = State.LOADING)
         viewModelScope.launch {
             uploadPetImagesToS3()
         }
@@ -173,9 +173,16 @@ class ProfileCreationViewModel @Inject constructor(
                         _uiEvent.emit(UiEvent.UPLOAD_PET_SUCCESS)
                     }
 
-                    NetworkError -> _petInfoUiState.value = petInfoUiState.value.copy(state = State.NETWORK_ERROR)
+                    NetworkError -> {
+                        _petInfoUiState.value = petInfoUiState.value.copy(state = State.NETWORK_ERROR)
+                        _uiEvent.emit(UiEvent.NETWORK_ERROR)
+                    }
+
                     TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
-                    is Failure, is Unexpected -> _petInfoUiState.value = petInfoUiState.value.copy(state = State.NONE)
+                    is Failure, is Unexpected -> {
+                        _petInfoUiState.value = petInfoUiState.value.copy(state = State.NONE)
+                        _uiEvent.emit(UiEvent.UNKNOWN_ERROR)
+                    }
                 }
             }
 
