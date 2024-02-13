@@ -145,7 +145,6 @@ private fun PetPhotoList(
         PetPhoto(
             petPhoto = petPhoto,
             photoType = photoType,
-            isDeletable = true,
             onDelete = onDelete,
         )
         SmallDescription(

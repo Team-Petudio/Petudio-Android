@@ -58,7 +58,7 @@
     <string name="pet_photo_add">사진 추가</string>
 
     <string name="pet_photo_upload_result_desc">10 ~ 12장의 사진을 선택해주세요.</string>
-    <string name="pet_photo_upload_bad_result_title">사용이 불가능한 사진입니다. 다른 사진으로 선택해 주세요.</string>
+    <string name="pet_photo_upload_bad_result_title">사용이 불가능한 사진입니다.\n다른 사진으로 선택해 주세요.</string>
     <string name="pet_photo_upload_good_result_title">사용이 가능한 사진입니다.</string>
 
     <string name="payment">결제하기</string>

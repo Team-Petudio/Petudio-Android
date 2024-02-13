@@ -37,18 +37,21 @@ fun PetPhoto(
     modifier: Modifier = Modifier,
     petPhoto: PetPhoto,
     photoType: PetPhoto.PhotoType,
-    isDeletable: Boolean = false,
     onDelete: () -> Unit = {},
 ) {
-    Box(modifier) {
+    Box(modifier = modifier.padding(6.dp)) {
         PetPhoto(petPhoto = petPhoto)
         ExampleIcon(
-            modifier = Modifier.padding(6.dp).size(28.dp),
+            modifier = Modifier
+                .padding(6.dp)
+                .size(28.dp),
             photoType = photoType,
         )
-        if (isDeletable) {
+        if (photoType == PetPhoto.PhotoType.GOOD_EXAMPLE) {
             DeleteButton(
-                modifier = Modifier.align(Alignment.TopEnd),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(6.dp),
                 onClick = onDelete,
             )
         }
@@ -65,9 +68,9 @@ private fun PetPhoto(
         shape = RoundedCornerShape(12.dp),
         elevation = 0.dp,
         modifier =
-            modifier
-                .fillMaxHeight()
-                .aspectRatio(1F),
+        modifier
+            .fillMaxHeight()
+            .aspectRatio(1F),
     ) {
         GlideImage(
             model = petPhoto.imageRes,
@@ -113,9 +116,9 @@ private fun DeleteButton(
         color = Gray40,
         shape = RoundedCornerShape(8.dp),
         modifier =
-            modifier
-                .size(24.dp)
-                .clickable { onClick() },
+        modifier
+            .size(24.dp)
+            .clickable { onClick() },
     ) {
         Icon(
             modifier = Modifier.padding(4.dp),
@@ -150,6 +153,5 @@ private fun DeletablePetPhotoPreview() {
     PetPhoto(
         petPhoto = goodDogPhotoExamples().first(),
         photoType = PetPhoto.PhotoType.GOOD_EXAMPLE,
-        isDeletable = true,
     )
 }
