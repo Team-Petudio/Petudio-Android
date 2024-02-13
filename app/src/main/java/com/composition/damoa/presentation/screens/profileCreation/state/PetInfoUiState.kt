@@ -7,5 +7,5 @@ data class PetInfoUiState(
     override val state: State = State.NONE,
     val petName: String = "",
     val petColor: PetColor? = null,
-    val petPhotoUrls: List<String> = emptyList(),
+    val uploadedPetPhotoUrls: List<String> = emptyList(),
 ) : BaseUiState()

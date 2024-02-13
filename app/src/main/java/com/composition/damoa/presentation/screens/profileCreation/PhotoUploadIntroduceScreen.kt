@@ -160,7 +160,7 @@ private fun PetPhotoList(
     photoType: PetPhoto.PhotoType,
 ) {
     Column(modifier) {
-        PetPhoto(petPhoto = petPhoto, photoType = photoType)
+        PetPhoto(petPhoto = petPhoto.imageRes, photoType = photoType)
         SmallDescription(
             descriptionRes = petPhoto.descRes,
             modifier = Modifier.padding(top = 8.dp),

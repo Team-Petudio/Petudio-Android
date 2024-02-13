@@ -22,44 +22,40 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.composition.damoa.R
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
-import com.composition.damoa.presentation.common.components.SmallDescription
 import com.composition.damoa.presentation.common.components.TinyTitle
-import com.composition.damoa.presentation.common.utils.badDogPhotoExamples
-import com.composition.damoa.presentation.common.utils.goodDogPhotoExamples
 import com.composition.damoa.presentation.screens.profileCreation.component.PetPhoto
 import com.composition.damoa.presentation.screens.profileCreation.component.PhotoUploadButton
+import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
+import java.io.File
 
 @Composable
 fun PhotoUploadResultScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
-    isShowKeepGoingButton: Boolean,
+    selectedImageUiState: SelectedImageUiState,
     onPetUploadClick: () -> Unit,
+    onPhotoUploadClick: () -> Unit,
 ) {
     Surface(
         color = Color.White,
-        modifier =
-        modifier
+        modifier = modifier
             .background(Color.White)
             .fillMaxSize()
             .padding(horizontal = 20.dp),
     ) {
         PhotoUploadIntroduceContent(
-            badPetPhotos = badDogPhotoExamples(),
-            goodPetPhotos = goodDogPhotoExamples(),
+            badPetPhotos = selectedImageUiState.badImageFiles,
+            goodPetPhotos = selectedImageUiState.selectedImageFiles,
+            onUnselectImage = selectedImageUiState.onUnselectImage,
         )
         Column(Modifier.padding(bottom = 20.dp)) {
             Spacer(modifier = Modifier.weight(1F))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                PhotoUploadButton(modifier = Modifier.weight(1F)) {
-                    // 갤러리
-                }
-                if (isShowKeepGoingButton) {
+                PhotoUploadButton(modifier = Modifier.weight(1F), onClick = onPhotoUploadClick)
+                if (selectedImageUiState.isValidPetPhotoSize()) {
                     KeepGoingButton(modifier = Modifier.weight(1F), onClick = onPetUploadClick)
                 }
             }
@@ -70,8 +66,9 @@ fun PhotoUploadResultScreen(
 @Composable
 private fun PhotoUploadIntroduceContent(
     modifier: Modifier = Modifier,
-    badPetPhotos: List<PetPhoto>,
-    goodPetPhotos: List<PetPhoto>,
+    badPetPhotos: List<File>,
+    goodPetPhotos: List<File>,
+    onUnselectImage: (File) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier,
@@ -103,6 +100,7 @@ private fun PhotoUploadIntroduceContent(
                 petPhotos = goodPetPhotos,
                 titleRes = R.string.pet_photo_upload_good_result_title,
                 photoType = PetPhoto.PhotoType.GOOD_EXAMPLE,
+                onUnselectImage = onUnselectImage,
             )
         }
     }
@@ -111,9 +109,10 @@ private fun PhotoUploadIntroduceContent(
 @Composable
 private fun PetPhotoUploadResult(
     modifier: Modifier = Modifier,
-    petPhotos: List<PetPhoto>,
+    petPhotos: List<File>,
     @StringRes titleRes: Int,
     photoType: PetPhoto.PhotoType,
+    onUnselectImage: (File) -> Unit = {},
 ) {
     LazyVerticalGrid(
         modifier = modifier
@@ -129,7 +128,7 @@ private fun PetPhotoUploadResult(
             TinyTitle(titleRes = titleRes)
         }
         items(petPhotos) { photo ->
-            PetPhotoList(petPhoto = photo, photoType = photoType, onDelete = {})
+            PetPhotoList(petPhoto = photo, photoType = photoType, onUnselectImage = { onUnselectImage(photo) })
         }
     }
 }
@@ -137,19 +136,15 @@ private fun PetPhotoUploadResult(
 @Composable
 private fun PetPhotoList(
     modifier: Modifier = Modifier,
-    petPhoto: PetPhoto,
+    petPhoto: File,
     photoType: PetPhoto.PhotoType,
-    onDelete: () -> Unit,
+    onUnselectImage: () -> Unit,
 ) {
     Column(modifier) {
         PetPhoto(
             petPhoto = petPhoto,
             photoType = photoType,
-            onDelete = onDelete,
-        )
-        SmallDescription(
-            descriptionRes = petPhoto.descRes,
-            modifier = Modifier.padding(top = 8.dp),
+            onDelete = onUnselectImage,
         )
     }
 }

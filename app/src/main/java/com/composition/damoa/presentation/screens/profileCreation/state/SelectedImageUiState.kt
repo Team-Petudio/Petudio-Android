@@ -7,6 +7,7 @@ data class SelectedImageUiState(
     override val state: State = State.NONE,
     val selectedImageFiles: List<File> = emptyList(),
     val badImageFiles: List<File> = emptyList(),
+    val onUnselectImage: (File) -> Unit,
 ) : BaseUiState() {
     val canMoreSelectPhotoSize = 12 - selectedImageFiles.size
 

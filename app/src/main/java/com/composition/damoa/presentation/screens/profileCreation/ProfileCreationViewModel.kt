@@ -51,16 +51,25 @@ class ProfileCreationViewModel @Inject constructor(
     private val conceptId = requireNotNull(savedStateHandle.get<Long>(KEY_CONCEPT_ID))
     private var profileConcept: ProfileConcept? = null
 
-    private val _paymentUiState = MutableStateFlow(PaymentUiState(onPaymentClick = ::payment))
+    private val _paymentUiState = MutableStateFlow(
+        PaymentUiState(onPaymentClick = ::payment)
+    )
     val paymentUiState = _paymentUiState.asStateFlow()
 
     private val _conceptDetailUiState = MutableStateFlow(ConceptDetailUiState())
     val conceptDetailUiState = _conceptDetailUiState.asStateFlow()
 
-    private val _petPhotoSelectionUiState = MutableStateFlow(PetPhotoSelectionUiState(onPetSelected = ::selectPet))
+    private val _petPhotoSelectionUiState = MutableStateFlow(
+        PetPhotoSelectionUiState(
+            pets = Pet.dummy,
+            onPetSelected = ::selectPet
+        )
+    )
     val petPhotoSelectionUiState = _petPhotoSelectionUiState.asStateFlow()
 
-    private val _selectedImageUiState = MutableStateFlow(SelectedImageUiState())
+    private val _selectedImageUiState = MutableStateFlow(
+        SelectedImageUiState(onUnselectImage = ::unselectPetImage)
+    )
     val selectedImageUiState = _selectedImageUiState.asStateFlow()
 
     private val _petInfoUiState = MutableStateFlow(PetInfoUiState())
@@ -144,27 +153,26 @@ class ProfileCreationViewModel @Inject constructor(
         _petInfoUiState.value = _petInfoUiState.value.copy(petColor = color)
     }
 
-    fun uploadPetWithPayment() {
+    fun uploadPetImages() {
         _petInfoUiState.value = petInfoUiState.value.copy(state = State.LOADING)
-        viewModelScope.launch {
-            uploadPetImagesToS3()
-        }
+        viewModelScope.launch { uploadPetImagesToS3() }
     }
 
     private suspend fun uploadPetImagesToS3() {
-        val selectImageFiles = selectedImageUiState.value.selectedImageFiles
-        when (val preSignedUrlsResult = s3ImageUrlRepository.getPreSignedUrls(selectImageFiles.size)) {
+        val selectedImageFiles = selectedImageUiState.value.selectedImageFiles
+
+        when (val preSignedUrlsResult = s3ImageUrlRepository.getPreSignedUrls(selectedImageFiles.size)) {
             is Success -> {
                 s3ImageUrls = preSignedUrlsResult.data
 
-                if (!uploadPetImagesToS3(selectImageFiles)) {
+                if (!uploadPetImagesToS3(selectedImageFiles)) {
                     _uiEvent.emit(UiEvent.UNKNOWN_ERROR)
                     s3ImageUrlRepository.deleteS3ImageDirectory(s3ImageUrls.s3DirectoryPath)
                     return
                 }
 
                 _petInfoUiState.value = petInfoUiState.value.copy(
-                    petPhotoUrls = s3ImageUrls.preSignedImageUrls.map { it.storedImageUrl }
+                    uploadedPetPhotoUrls = s3ImageUrls.preSignedImageUrls.map { it.storedImageUrl }
                 )
 
                 when (uploadPet()) {
@@ -220,7 +228,7 @@ class ProfileCreationViewModel @Inject constructor(
         return petRepository.uploadPet(
             petName = petInfoUiState.petName,
             petColor = petColor,
-            petPhotoUrls = petInfoUiState.petPhotoUrls,
+            petPhotoUrls = petInfoUiState.uploadedPetPhotoUrls,
         )
     }
 
@@ -281,7 +289,7 @@ class ProfileCreationViewModel @Inject constructor(
             when (val petDetectResult = petDetectRepository.detectPet(imageFiles, concept.petType)) {
                 is Success -> {
                     val (goodImageFiles, badImageFiles) = classifyPetImages(imageFiles, petDetectResult.data)
-                    val newSelectedImageUiState = SelectedImageUiState(
+                    val newSelectedImageUiState = selectedImageUiState.value.copy(
                         selectedImageFiles = originSelectedImageFiles + goodImageFiles,
                         badImageFiles = badImageFiles
                     )
@@ -309,6 +317,11 @@ class ProfileCreationViewModel @Inject constructor(
             else badImageFiles.add(imageFiles[index])
         }
         return Pair(goodImageFiles, badImageFiles)
+    }
+
+    private fun unselectPetImage(imageFile: File) {
+        val unselectedImageFiles = selectedImageUiState.value.selectedImageFiles - imageFile
+        _selectedImageUiState.value = selectedImageUiState.value.copy(selectedImageFiles = unselectedImageFiles)
     }
 
     enum class UiEvent {

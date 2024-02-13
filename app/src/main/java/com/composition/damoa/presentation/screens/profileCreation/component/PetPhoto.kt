@@ -1,5 +1,6 @@
 package com.composition.damoa.presentation.screens.profileCreation.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -31,11 +32,38 @@ import com.composition.damoa.presentation.screens.profileCreation.PetPhoto
 import com.composition.damoa.presentation.ui.theme.AlertIconColor
 import com.composition.damoa.presentation.ui.theme.GoodIconColor
 import com.composition.damoa.presentation.ui.theme.Gray40
+import java.io.File
 
 @Composable
 fun PetPhoto(
     modifier: Modifier = Modifier,
-    petPhoto: PetPhoto,
+    petPhoto: File,
+    photoType: PetPhoto.PhotoType,
+    onDelete: () -> Unit = {},
+) {
+    Box(modifier = modifier.padding(6.dp)) {
+        PetPhoto(petPhoto = petPhoto)
+        ExampleIcon(
+            modifier = Modifier
+                .padding(6.dp)
+                .size(28.dp),
+            photoType = photoType,
+        )
+        if (photoType == PetPhoto.PhotoType.GOOD_EXAMPLE) {
+            DeleteButton(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(6.dp),
+                onClick = onDelete,
+            )
+        }
+    }
+}
+
+@Composable
+fun PetPhoto(
+    modifier: Modifier = Modifier,
+    @DrawableRes petPhoto: Int,
     photoType: PetPhoto.PhotoType,
     onDelete: () -> Unit = {},
 ) {
@@ -62,18 +90,17 @@ fun PetPhoto(
 @OptIn(ExperimentalGlideComposeApi::class)
 private fun PetPhoto(
     modifier: Modifier = Modifier,
-    petPhoto: PetPhoto,
+    petPhoto: Any,
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
         elevation = 0.dp,
-        modifier =
-        modifier
+        modifier = modifier
             .fillMaxHeight()
             .aspectRatio(1F),
     ) {
         GlideImage(
-            model = petPhoto.imageRes,
+            model = petPhoto,
             contentDescription = null,
             transition = CrossFade,
             contentScale = ContentScale.Crop,
@@ -133,7 +160,7 @@ private fun DeleteButton(
 @Composable
 private fun JustPetPhotoPreview() {
     PetPhoto(
-        petPhoto = goodDogPhotoExamples().first(),
+        petPhoto = goodDogPhotoExamples().first().imageRes,
         photoType = PetPhoto.PhotoType.NONE,
     )
 }
@@ -142,7 +169,7 @@ private fun JustPetPhotoPreview() {
 @Composable
 private fun BadPetPhotoPreview() {
     PetPhoto(
-        petPhoto = badDogPhotoExamples().first(),
+        petPhoto = badDogPhotoExamples().first().imageRes,
         photoType = PetPhoto.PhotoType.BAD_EXAMPLE,
     )
 }
@@ -151,7 +178,7 @@ private fun BadPetPhotoPreview() {
 @Composable
 private fun DeletablePetPhotoPreview() {
     PetPhoto(
-        petPhoto = goodDogPhotoExamples().first(),
+        petPhoto = goodDogPhotoExamples().first().imageRes,
         photoType = PetPhoto.PhotoType.GOOD_EXAMPLE,
     )
 }

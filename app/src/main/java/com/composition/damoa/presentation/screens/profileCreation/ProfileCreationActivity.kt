@@ -62,12 +62,12 @@ class ProfileCreationActivity : ComponentActivity() {
         setContent {
             ProfileCreation(
                 viewModel = viewModel,
-                onPhotoSelect = ::launchPermissionRequester,
+                onPhotoUploadClick = ::launchStoragePermissionRequester,
             )
         }
     }
 
-    private fun launchPermissionRequester() {
+    private fun launchStoragePermissionRequester() {
         permissionRequester.launch(
             context = this,
             permission = Permission.READ_EXTERNAL_STORAGE,
@@ -115,7 +115,7 @@ class ProfileCreationActivity : ComponentActivity() {
 @Composable
 private fun ProfileCreation(
     viewModel: ProfileCreationViewModel,
-    onPhotoSelect: () -> Unit = {},
+    onPhotoUploadClick: () -> Unit = {},
 ) {
     PetudioTheme {
         val activity = LocalContext.current as? ComponentActivity
@@ -163,8 +163,8 @@ private fun ProfileCreation(
                 petInfoUiState = petUiState,
                 onPetNameChanged = viewModel::updatePetName,
                 onPetColorSelected = viewModel::updateColor,
-                onPetUploadClick = viewModel::uploadPetWithPayment,
-                onPhotoUploadClick = onPhotoSelect,
+                onPetUploadClick = viewModel::uploadPetImages,
+                onPhotoUploadClick = onPhotoUploadClick,
                 selectedImageUiState = selectedImageUiState,
                 paymentUiState = ticketUiState,
             )
@@ -201,7 +201,7 @@ private fun ProfileCreationNavHost(
     onPetNameChanged: (String) -> Unit,
     onPetColorSelected: (PetColor) -> Unit,
     onPetUploadClick: () -> Unit,
-    onPhotoUploadClick: () -> Unit = {},
+    onPhotoUploadClick: () -> Unit,
     selectedImageUiState: SelectedImageUiState,
     paymentUiState: PaymentUiState,
 ) {
@@ -246,9 +246,9 @@ private fun ProfileCreationNavHost(
         }
         composable(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route) {
             PhotoUploadResultScreen(
-                navController = navController,
-                isShowKeepGoingButton = selectedImageUiState.isValidPetPhotoSize(),
                 onPetUploadClick = onPetUploadClick,
+                selectedImageUiState = selectedImageUiState,
+                onPhotoUploadClick = onPhotoUploadClick,
             )
         }
         composable(ProfileCreationScreen.PAYMENT.route) {
