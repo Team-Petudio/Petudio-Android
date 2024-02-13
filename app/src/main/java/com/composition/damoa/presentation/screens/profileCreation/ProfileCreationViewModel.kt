@@ -9,6 +9,7 @@ import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
 import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
+import com.composition.damoa.data.model.Pet
 import com.composition.damoa.data.model.PetColor
 import com.composition.damoa.data.model.ProfileConcept
 import com.composition.damoa.data.model.S3ImageUrls
@@ -20,10 +21,10 @@ import com.composition.damoa.data.repository.interfaces.S3ImageUrlRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.presentation.common.base.BaseUiState.State
 import com.composition.damoa.presentation.screens.profileCreation.state.ConceptDetailUiState
+import com.composition.damoa.presentation.screens.profileCreation.state.PaymentUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoSelectionUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
-import com.composition.damoa.presentation.screens.profileCreation.state.TicketUiState
 import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -50,7 +51,8 @@ class ProfileCreationViewModel @Inject constructor(
     private val conceptId = requireNotNull(savedStateHandle.get<Long>(KEY_CONCEPT_ID))
     private var profileConcept: ProfileConcept? = null
 
-    private val _ticketUiState = MutableStateFlow(TicketUiState())
+    private val _paymentUiState = MutableStateFlow(PaymentUiState(onPaymentClick = ::payment))
+    val paymentUiState = _paymentUiState.asStateFlow()
 
     private val _conceptDetailUiState = MutableStateFlow(ConceptDetailUiState())
     val conceptDetailUiState = _conceptDetailUiState.asStateFlow()
@@ -78,10 +80,10 @@ class ProfileCreationViewModel @Inject constructor(
     private fun fetchTicket() {
         viewModelScope.launch {
             when (val user = userRepository.getUser()) {
-                is Success -> _ticketUiState.value = TicketUiState(ticketCount = user.data.ticket)
-                NetworkError -> _ticketUiState.value = _ticketUiState.value.copy(state = State.NETWORK_ERROR)
+                is Success -> _paymentUiState.value = _paymentUiState.value.copy(ticketCount = user.data.ticket)
+                NetworkError -> _paymentUiState.value = _paymentUiState.value.copy(state = State.NETWORK_ERROR)
                 TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
-                is Failure, is Unexpected -> _ticketUiState.value = _ticketUiState.value.copy(
+                is Failure, is Unexpected -> _paymentUiState.value = _paymentUiState.value.copy(
                     state = State.NONE
                 )
             }
@@ -168,7 +170,7 @@ class ProfileCreationViewModel @Inject constructor(
                 when (uploadPet()) {
                     is Success -> {
                         _petInfoUiState.value = petInfoUiState.value.copy(state = State.SUCCESS)
-                        payment()
+                        _uiEvent.emit(UiEvent.UPLOAD_PET_SUCCESS)
                     }
 
                     NetworkError -> _petInfoUiState.value = petInfoUiState.value.copy(state = State.NETWORK_ERROR)
@@ -215,20 +217,22 @@ class ProfileCreationViewModel @Inject constructor(
         )
     }
 
-    private suspend fun payment() {
-        if (!hasTicket()) {
-            _uiEvent.emit(UiEvent.PAYMENT_FAILED_LACK_OF_TICKET)
-            return
-        }
+    private fun payment() {
+        viewModelScope.launch {
+            if (!hasTicket()) {
+                _uiEvent.emit(UiEvent.PAYMENT_FAILED_LACK_OF_TICKET)
+                return@launch
+            }
 
-        /*
-        * 결제 로직 구현 요망
-        * */
-        // TODO(결제 완료 후, PAYMENT_SUCCESS 이벤트를 emit 해주세요.)
+            /*
+            * 결제 로직 구현 요망
+            * */
+            // TODO(결제 완료 후, PAYMENT_SUCCESS 이벤트를 emit 해주세요.)
+        }
     }
 
     private fun hasTicket(): Boolean {
-        return _ticketUiState.value.ticketCount >= 1
+        return _paymentUiState.value.ticketCount >= 1
     }
 
     private suspend fun getConcept(conceptId: Long): ProfileConcept? {
@@ -305,6 +309,7 @@ class ProfileCreationViewModel @Inject constructor(
         PAYMENT_FAILED_LACK_OF_TICKET,
         INVALID_PET_IMAGE_SIZE,
         PET_DETECT_SUCCESS,
+        UPLOAD_PET_SUCCESS,
         TOKEN_EXPIRED,
         NETWORK_ERROR,
         UNKNOWN_ERROR,

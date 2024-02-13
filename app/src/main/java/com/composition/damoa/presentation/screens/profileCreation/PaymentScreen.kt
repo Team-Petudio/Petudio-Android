@@ -18,11 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.DonationDescription
@@ -32,12 +30,14 @@ import com.composition.damoa.presentation.common.components.PaymentItem
 import com.composition.damoa.presentation.common.components.PolicyButtonList
 import com.composition.damoa.presentation.common.extensions.navigateToPrivacy
 import com.composition.damoa.presentation.common.extensions.navigateToTermOfUse
+import com.composition.damoa.presentation.screens.profileCreation.state.PaymentUiState
 import com.composition.damoa.presentation.ui.theme.PrimaryColors
 
 @Composable
 fun PaymentScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    paymentUiState: PaymentUiState,
 ) {
     Surface(
         color = Color.White,
@@ -53,7 +53,7 @@ fun PaymentScreen(
         )
         PaymentButton(
             modifier = Modifier.padding(bottom = 20.dp),
-            onClick = {},
+            onClick = { paymentUiState.onPaymentClick() },
         )
     }
 }
@@ -102,10 +102,4 @@ private fun PaymentButton(
             onClick = onClick,
         )
     }
-}
-
-@Preview
-@Composable
-private fun PaymentScreenPreview() {
-    PaymentScreen(navController = rememberNavController())
 }

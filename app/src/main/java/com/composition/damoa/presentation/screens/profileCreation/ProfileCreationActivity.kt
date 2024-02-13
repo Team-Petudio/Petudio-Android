@@ -38,9 +38,11 @@ import com.composition.damoa.presentation.common.utils.permissionRequester.Permi
 import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.Companion.KEY_CONCEPT_ID
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.UiEvent
+import com.composition.damoa.presentation.screens.profileCreation.state.PaymentUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoSelectionUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
+import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseActivity
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.AndroidEntryPoint
@@ -122,16 +124,22 @@ private fun ProfileCreation(
         val petPhotoSelectionUiState by viewModel.petPhotoSelectionUiState.collectAsStateWithLifecycle()
         val petUiState by viewModel.petInfoUiState.collectAsStateWithLifecycle()
         val selectedImageUiState by viewModel.selectedImageUiState.collectAsStateWithLifecycle()
+        val ticketUiState by viewModel.paymentUiState.collectAsStateWithLifecycle()
 
         activity?.onUi {
             viewModel.uiEvent.collectLatest { event ->
                 when (event) {
                     UiEvent.PAYMENT_SUCCESS -> navController.navigate(ProfileCreationScreen.PAYMENT_RESULT.route)
-                    UiEvent.PAYMENT_FAILED_LACK_OF_TICKET -> navController.navigate(ProfileCreationScreen.PAYMENT.route)
                     UiEvent.INVALID_PET_IMAGE_SIZE -> activity.showToast(R.string.pet_photo_size_invalid_message)
                     UiEvent.PET_DETECT_SUCCESS -> navController.navigate(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route)
+                    UiEvent.UPLOAD_PET_SUCCESS -> navController.navigate(ProfileCreationScreen.PAYMENT.route)
                     UiEvent.NETWORK_ERROR -> activity.showToast(R.string.network_failure_message)
                     UiEvent.UNKNOWN_ERROR -> activity.showToast(R.string.unknown_error_message)
+                    UiEvent.PAYMENT_FAILED_LACK_OF_TICKET -> {
+                        TicketPurchaseActivity.startActivity(activity)
+                        activity.finish()
+                    }
+
                     UiEvent.TOKEN_EXPIRED -> {
                         LoginActivity.startActivity(activity)
                         activity.finish()
@@ -158,6 +166,7 @@ private fun ProfileCreation(
                 onPetUploadClick = viewModel::uploadPetWithPayment,
                 onPhotoUploadClick = onPhotoSelect,
                 selectedImageUiState = selectedImageUiState,
+                paymentUiState = ticketUiState,
             )
         }
     }
@@ -194,6 +203,7 @@ private fun ProfileCreationNavHost(
     onPetUploadClick: () -> Unit,
     onPhotoUploadClick: () -> Unit = {},
     selectedImageUiState: SelectedImageUiState,
+    paymentUiState: PaymentUiState,
 ) {
     NavHost(
         modifier = modifier,
@@ -242,7 +252,10 @@ private fun ProfileCreationNavHost(
             )
         }
         composable(ProfileCreationScreen.PAYMENT.route) {
-            PaymentScreen(navController = navController)
+            PaymentScreen(
+                navController = navController,
+                paymentUiState = paymentUiState,
+            )
         }
         composable(ProfileCreationScreen.PAYMENT_RESULT.route) {
             PaymentResultScreen(navController = navController)
