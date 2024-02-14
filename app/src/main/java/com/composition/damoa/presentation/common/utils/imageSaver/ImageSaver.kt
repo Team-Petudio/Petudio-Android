@@ -8,6 +8,8 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
@@ -16,6 +18,8 @@ import java.util.UUID
 class ImageSaver(
     private val context: Context,
 ) {
+    private val mutex = Mutex()
+
     suspend fun saveImageFromUrl(
         imageUrl: String,
         imageName: String = "${UUID.randomUUID()}",
@@ -35,7 +39,7 @@ class ImageSaver(
         return BitmapFactory.decodeStream(input)
     }
 
-    private fun Bitmap.saveBitmapToGallery(imageName: String) {
+    private suspend fun Bitmap.saveBitmapToGallery(imageName: String) {
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, imageName)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
@@ -44,14 +48,15 @@ class ImageSaver(
             }
         }
 
-        val uri = context.contentResolver.insert(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            contentValues
-        )
-
-        val outputStream = context.contentResolver.openOutputStream(uri!!)
-        outputStream?.use {
-            compress(Bitmap.CompressFormat.PNG, 100, it)
+        mutex.withLock {
+            val uri = context.contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                contentValues
+            )
+            val outputStream = context.contentResolver.openOutputStream(uri!!)
+            outputStream?.use {
+                compress(Bitmap.CompressFormat.PNG, 100, it)
+            }
         }
     }
 }
