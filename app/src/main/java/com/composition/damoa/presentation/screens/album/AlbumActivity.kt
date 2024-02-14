@@ -9,7 +9,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -42,6 +41,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -248,14 +249,28 @@ class AlbumActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun LoadingScreen(modifier: Modifier = Modifier) {
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .background(Color.Transparent),
-            contentAlignment = Alignment.Center,
+    private fun LoadingScreen() {
+        Dialog(
+            onDismissRequest = {},
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false,
+                usePlatformDefaultWidth = false,
+            )
         ) {
-            CircularLoadingBar(size = 70.dp)
+            Column(
+                modifier = Modifier
+                    .background(color = Color.White, shape = RoundedCornerShape(12.dp))
+                    .padding(horizontal = 32.dp, vertical = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                CircularLoadingBar(size = 70.dp)
+                SmallTitle(
+                    modifier = Modifier.padding(top = 20.dp),
+                    titleRes = R.string.image_save_loading_message,
+                )
+            }
         }
     }
 }
