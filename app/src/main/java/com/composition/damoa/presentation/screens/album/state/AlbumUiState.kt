@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 data class AlbumUiState(
     override val state: State = State.NONE,
     val album: Album,
-    val onSavePhotosClick: () -> Unit,
+    val onSaveAllPhotosClick: () -> Unit,
 ) : BaseUiState() {
 
     companion object {

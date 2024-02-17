@@ -12,6 +12,9 @@ import com.composition.damoa.data.repository.interfaces.AlbumRepository
 import com.composition.damoa.presentation.common.base.BaseUiState.State
 import com.composition.damoa.presentation.common.utils.imageSaver.ImageSaver
 import com.composition.damoa.presentation.screens.album.state.AlbumUiEvent
+import com.composition.damoa.presentation.screens.album.state.AlbumUiEvent.NETWORK_ERROR
+import com.composition.damoa.presentation.screens.album.state.AlbumUiEvent.SAVE_PHOTOS_FAILURE
+import com.composition.damoa.presentation.screens.album.state.AlbumUiEvent.SAVE_PHOTOS_SUCCESS
 import com.composition.damoa.presentation.screens.album.state.AlbumUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -23,23 +26,25 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
 class AlbumViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val imageSaver: ImageSaver,
     private val albumRepository: AlbumRepository,
 ) : ViewModel() {
+
     private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
         viewModelScope.launch {
             _albumUiState.emit(albumUiState.value.copy(state = State.NONE))
-            _event.emit(AlbumUiEvent.SAVE_PHOTOS_FAILURE)
+            _event.emit(SAVE_PHOTOS_FAILURE)
         }
     }
 
     private val _albumUiState = MutableStateFlow(
         AlbumUiState(
             album = AlbumUiState.dummy,
-            onSavePhotosClick = ::saveAllPhotos,
+            onSaveAllPhotosClick = ::saveAllPhotos,
         )
     )
     val albumUiState = _albumUiState.asStateFlow()
@@ -62,7 +67,7 @@ class AlbumViewModel @Inject constructor(
                 is Failure, is Unexpected -> _albumUiState.emit(albumUiState.value.copy(state = State.NONE))
                 NetworkError, TokenExpired -> {
                     _albumUiState.emit(albumUiState.value.copy(state = State.NETWORK_ERROR))
-                    _event.emit(AlbumUiEvent.NETWORK_ERROR)
+                    _event.emit(NETWORK_ERROR)
                 }
             }
         }
@@ -79,7 +84,7 @@ class AlbumViewModel @Inject constructor(
             }.joinAll()
 
             _albumUiState.emit(albumUiState.value.copy(state = State.NONE))
-            _event.emit(AlbumUiEvent.SAVE_PHOTOS_SUCCESS)
+            _event.emit(SAVE_PHOTOS_SUCCESS)
         }
     }
 

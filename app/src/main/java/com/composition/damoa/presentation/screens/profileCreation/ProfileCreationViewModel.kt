@@ -9,7 +9,6 @@ import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
 import com.composition.damoa.data.common.retrofit.callAdapter.Success
 import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
-import com.composition.damoa.data.model.Pet
 import com.composition.damoa.data.model.PetColor
 import com.composition.damoa.data.model.ProfileConcept
 import com.composition.damoa.data.model.S3ImageUrls
@@ -61,7 +60,6 @@ class ProfileCreationViewModel @Inject constructor(
 
     private val _petPhotoSelectionUiState = MutableStateFlow(
         PetPhotoSelectionUiState(
-            pets = Pet.dummy,
             onPetSelected = ::selectPet
         )
     )

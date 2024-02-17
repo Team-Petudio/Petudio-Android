@@ -16,6 +16,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.composition.damoa.R
+import com.composition.damoa.presentation.common.utils.permissionRequester.Permission
+import com.composition.damoa.presentation.common.utils.permissionRequester.PermissionRequester
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default
 import id.zelory.compressor.constraint.quality
@@ -51,6 +53,20 @@ fun Context.checkPostNotificationPermission(): Boolean {
         this,
         Manifest.permission.POST_NOTIFICATIONS,
     ) == PackageManager.PERMISSION_GRANTED
+}
+
+fun Context.requestWriteExternalStoragePermission(
+    message: String,
+    onGranted: () -> Unit,
+    onDenied: () -> Unit,
+) {
+    PermissionRequester().launch(
+        context = this,
+        permission = Permission.WRITE_EXTERNAL_STORAGE,
+        dialogMessage = message,
+        onGranted = onGranted,
+        onDenied = onDenied,
+    )
 }
 
 fun Context.showNotification(
