@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.home
+package com.composition.damoa.presentation.screens.home.screen.user
 
 import android.content.Context
 import android.content.Intent
@@ -54,7 +54,7 @@ import com.composition.damoa.presentation.common.extensions.navigateToPrivacy
 import com.composition.damoa.presentation.common.extensions.navigateToTermOfUse
 import com.composition.damoa.presentation.common.extensions.navigateToWebsite
 import com.composition.damoa.presentation.screens.giftcard.GiftCardActivity
-import com.composition.damoa.presentation.screens.home.state.UserUiState
+import com.composition.damoa.presentation.screens.home.screen.user.state.UserUiState
 import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseActivity
 import com.composition.damoa.presentation.ui.theme.AlertIconColor
 import com.composition.damoa.presentation.ui.theme.Gray10
@@ -63,7 +63,7 @@ import com.composition.damoa.presentation.ui.theme.Gray40
 
 
 @Composable
-fun ProfileScreen(
+fun UserScreen(
     modifier: Modifier = Modifier,
     userUiState: UserUiState,
     onLogout: () -> Unit,

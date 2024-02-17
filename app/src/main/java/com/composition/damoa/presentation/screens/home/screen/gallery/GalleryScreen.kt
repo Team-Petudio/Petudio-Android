@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.home
+package com.composition.damoa.presentation.screens.home.screen.gallery
 
 import android.content.Context
 import androidx.compose.foundation.BorderStroke
@@ -59,8 +59,9 @@ import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
 import com.composition.damoa.presentation.common.components.ThrottledIconButton
 import com.composition.damoa.presentation.screens.album.AlbumActivity
-import com.composition.damoa.presentation.screens.home.state.AlbumUiState
-import com.composition.damoa.presentation.screens.home.state.PetFeedUiState
+import com.composition.damoa.presentation.screens.home.component.HomeBottomNavItem
+import com.composition.damoa.presentation.screens.home.screen.gallery.state.AlbumUiState
+import com.composition.damoa.presentation.screens.home.screen.gallery.state.PetFeedUiState
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationActivity
 import com.composition.damoa.presentation.ui.theme.Gray20
 import com.composition.damoa.presentation.ui.theme.Gray30

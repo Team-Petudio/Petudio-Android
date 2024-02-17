@@ -14,11 +14,18 @@ import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.repository.interfaces.PetFeedRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.presentation.common.base.BaseUiState.State
-import com.composition.damoa.presentation.screens.home.state.AlbumUiState
-import com.composition.damoa.presentation.screens.home.state.PetFeedUiState
-import com.composition.damoa.presentation.screens.home.state.ProfileUiState
-import com.composition.damoa.presentation.screens.home.state.UserUiState
-import com.composition.damoa.presentation.screens.home.state.UserUiState.Companion.INVALID_USER_ID
+import com.composition.damoa.presentation.screens.home.screen.gallery.state.AlbumUiState
+import com.composition.damoa.presentation.screens.home.screen.gallery.state.PetFeedUiState
+import com.composition.damoa.presentation.screens.home.screen.profileConcept.state.ProfileConceptUiState
+import com.composition.damoa.presentation.screens.home.screen.user.state.UserUiState
+import com.composition.damoa.presentation.screens.home.screen.user.state.UserUiState.Companion.INVALID_USER_ID
+import com.composition.damoa.presentation.screens.home.state.HomeUiEvent
+import com.composition.damoa.presentation.screens.home.state.HomeUiEvent.LOGOUT_FAILURE
+import com.composition.damoa.presentation.screens.home.state.HomeUiEvent.LOGOUT_SUCCESS
+import com.composition.damoa.presentation.screens.home.state.HomeUiEvent.NEED_LOGIN
+import com.composition.damoa.presentation.screens.home.state.HomeUiEvent.SIGN_OUT_FAILURE
+import com.composition.damoa.presentation.screens.home.state.HomeUiEvent.SIGN_OUT_SUCCESS
+import com.composition.damoa.presentation.screens.home.state.HomeUiEvent.TOKEN_EXPIRED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,11 +41,8 @@ class HomeViewModel @Inject constructor(
     private val petFeedRepository: PetFeedRepository,
     private val albumRepository: AlbumRepository,
 ) : ViewModel() {
-    private val _profileUiState = MutableStateFlow(ProfileUiState())
-    val profileUiState = _profileUiState.asStateFlow()
-
-    private val _userUiState = MutableStateFlow(UserUiState())
-    val userUiState = _userUiState.asStateFlow()
+    private val _profileConceptUiState = MutableStateFlow(ProfileConceptUiState())
+    val profileUiState = _profileConceptUiState.asStateFlow()
 
     private val _albumUiState = MutableStateFlow(AlbumUiState())
     val albumUiState = _albumUiState.asStateFlow()
@@ -48,7 +52,16 @@ class HomeViewModel @Inject constructor(
     )
     val petFeedUiState = _petFeedUiState.asStateFlow()
 
-    private val _event = MutableSharedFlow<Event>()
+    private val _userUiState = MutableStateFlow(
+        UserUiState(
+            onLogin = ::login,
+            onLogout = ::logout,
+            onSignOut = ::signOut,
+        )
+    )
+    val userUiState = _userUiState.asStateFlow()
+
+    private val _event = MutableSharedFlow<HomeUiEvent>()
     val event = _event.asSharedFlow()
 
     init {
@@ -59,20 +72,19 @@ class HomeViewModel @Inject constructor(
 
     private fun fetchProfileConcepts() {
         viewModelScope.launch {
-            _profileUiState.value = profileUiState.value.copy(state = State.LOADING)
+            _profileConceptUiState.value = profileUiState.value.copy(state = State.LOADING)
             when (val concepts = conceptRepository.getConcepts()) {
-                is Success -> _profileUiState.value = profileUiState.value.copy(
+                is Success -> _profileConceptUiState.value = profileUiState.value.copy(
                     state = State.SUCCESS,
                     profileConcepts = concepts.data
                 )
 
-                NetworkError, TokenExpired -> _profileUiState.value = profileUiState.value.copy(
+                NetworkError, TokenExpired -> _profileConceptUiState.value = profileUiState.value.copy(
                     state = State.NETWORK_ERROR
                 )
 
-                is Failure, is Unexpected -> _profileUiState.value = profileUiState.value.copy(
-                    state = State.NONE
-                )
+                is Failure, is Unexpected -> _profileConceptUiState.value =
+                    profileUiState.value.copy(state = State.NONE)
             }
         }
     }
@@ -86,6 +98,43 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+    private fun fetchFeeds(userId: Long) {
+        viewModelScope.launch {
+            when (val feeds = petFeedRepository.getPetFeeds(userId)) {
+                is Success -> _petFeedUiState.value = petFeedUiState.value.copy(petFeeds = feeds.data)
+                NetworkError, TokenExpired -> _petFeedUiState.emit(petFeedUiState.value.copy(state = State.NETWORK_ERROR))
+                is Failure, is Unexpected -> _petFeedUiState.value = petFeedUiState.value.copy(state = State.NONE)
+            }
+
+        }
+    }
+
+    private fun toggleFeedLike(toggledPetFeed: PetFeed) {
+        viewModelScope.launch {
+            if (!userUiState.value.isLogined) {
+                _event.emit(TOKEN_EXPIRED)
+                return@launch
+            }
+
+            when (petFeedRepository.toggleLike(toggledPetFeed.id)) {
+                is Success -> {
+                    val updatedFeeds = petFeedUiState.value.petFeeds.map { petFeed ->
+                        if (petFeed.id == toggledPetFeed.id) updatedFeedLike(petFeed) else petFeed
+                    }
+                    _petFeedUiState.value = petFeedUiState.value.copy(petFeeds = updatedFeeds)
+                }
+
+                NetworkError, TokenExpired -> _petFeedUiState.emit(petFeedUiState.value.copy(state = State.NETWORK_ERROR))
+                is Failure, is Unexpected -> _petFeedUiState.value = petFeedUiState.value.copy(state = State.NONE)
+            }
+        }
+    }
+
+    private fun updatedFeedLike(petFeed: PetFeed) = petFeed.copy(
+        isLike = !petFeed.isLike,
+        likeCount = if (petFeed.isLike) petFeed.likeCount - 1 else petFeed.likeCount + 1
+    )
 
     private fun fetchUser(onFetched: (user: User?) -> Unit = {}) {
         viewModelScope.launch {
@@ -109,68 +158,25 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun logout() {
+    private fun login() {
+        viewModelScope.launch { _event.emit(NEED_LOGIN) }
+    }
+
+    private fun logout() {
         viewModelScope.launch {
             when (userRepository.logout()) {
-                is Success -> _event.emit(Event.LOGOUT_SUCCESS)
-                else -> _event.emit(Event.LOGOUT_FAILURE)
+                is Success -> _event.emit(LOGOUT_SUCCESS)
+                else -> _event.emit(LOGOUT_FAILURE)
             }
         }
     }
 
-    fun signOut() {
+    private fun signOut() {
         viewModelScope.launch {
             when (userRepository.signOut()) {
-                is Success -> _event.emit(Event.SIGN_OUT_SUCCESS)
-                else -> _event.emit(Event.SIGN_OUT_FAILURE)
-
+                is Success -> _event.emit(SIGN_OUT_SUCCESS)
+                else -> _event.emit(SIGN_OUT_FAILURE)
             }
         }
-    }
-
-    private fun fetchFeeds(userId: Long) {
-        viewModelScope.launch {
-            when (val feeds = petFeedRepository.getPetFeeds(userId)) {
-                is Success -> _petFeedUiState.value = petFeedUiState.value.copy(petFeeds = feeds.data)
-                NetworkError, TokenExpired -> _petFeedUiState.emit(petFeedUiState.value.copy(state = State.NETWORK_ERROR))
-                is Failure, is Unexpected -> _petFeedUiState.value = petFeedUiState.value.copy(state = State.NONE)
-            }
-
-        }
-    }
-
-    private fun toggleFeedLike(toggledPetFeed: PetFeed) {
-        viewModelScope.launch {
-            if (!userUiState.value.isLogined) {
-                _event.emit(Event.TOKEN_EXPIRED)
-                return@launch
-            }
-
-            when (petFeedRepository.toggleLike(toggledPetFeed.id)) {
-                is Success -> {
-                    val updatedFeeds = petFeedUiState.value.petFeeds.map { petFeed ->
-                        if (petFeed.id == toggledPetFeed.id) updatedFeedLike(petFeed) else petFeed
-                    }
-                    _petFeedUiState.value = petFeedUiState.value.copy(petFeeds = updatedFeeds)
-                }
-
-                NetworkError, TokenExpired -> _petFeedUiState.emit(petFeedUiState.value.copy(state = State.NETWORK_ERROR))
-                is Failure, is Unexpected -> _petFeedUiState.value = petFeedUiState.value.copy(state = State.NONE)
-            }
-        }
-    }
-
-    private fun updatedFeedLike(petFeed: PetFeed) = petFeed.copy(
-        isLike = !petFeed.isLike,
-        likeCount = if (petFeed.isLike) petFeed.likeCount - 1 else petFeed.likeCount + 1
-    )
-
-
-    enum class Event {
-        LOGOUT_SUCCESS,
-        LOGOUT_FAILURE,
-        SIGN_OUT_SUCCESS,
-        SIGN_OUT_FAILURE,
-        TOKEN_EXPIRED,
     }
 }

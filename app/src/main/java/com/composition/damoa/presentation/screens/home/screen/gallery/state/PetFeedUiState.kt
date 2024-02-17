@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.home.state
+package com.composition.damoa.presentation.screens.home.screen.gallery.state
 
 import com.composition.damoa.data.model.PetFeed
 import com.composition.damoa.presentation.common.base.BaseUiState

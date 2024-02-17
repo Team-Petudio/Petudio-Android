@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.home
+package com.composition.damoa.presentation.screens.home.screen.profileConcept
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -39,19 +39,20 @@ import com.composition.damoa.R
 import com.composition.damoa.data.model.PetType
 import com.composition.damoa.data.model.ProfileConcept
 import com.composition.damoa.presentation.common.components.GradientPetudioTitle
+import com.composition.damoa.presentation.screens.home.screen.profileConcept.state.ProfileConceptUiState
 import com.composition.damoa.presentation.ui.theme.Purple60
 
 @Composable
 fun ProfileConceptScreen(
     modifier: Modifier = Modifier,
-    profileConcepts: List<ProfileConcept>,
+    profileConceptUiState: ProfileConceptUiState,
     onProfileConceptClick: (conceptId: Long) -> Unit = {},
 ) {
     Column {
         ProfileConceptTopAppBar()
         ProfileConceptList(
             modifier = modifier.fillMaxSize(),
-            profileConcepts = profileConcepts,
+            profileConcepts = profileConceptUiState.profileConcepts,
             onProfileConceptClick = onProfileConceptClick,
         )
     }

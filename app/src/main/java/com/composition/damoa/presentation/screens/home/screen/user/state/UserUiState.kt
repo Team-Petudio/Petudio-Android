@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.home.state
+package com.composition.damoa.presentation.screens.home.screen.user.state
 
 import com.composition.damoa.data.model.User
 import com.composition.damoa.presentation.common.base.BaseUiState
@@ -11,6 +11,9 @@ data class UserUiState(
         socialType = User.SocialType.GOOGLE,
         ticket = 0,
     ),
+    val onLogin: () -> Unit,
+    val onLogout: () -> Unit,
+    val onSignOut: () -> Unit,
 ) : BaseUiState() {
     companion object {
         const val INVALID_USER_ID = -1L
