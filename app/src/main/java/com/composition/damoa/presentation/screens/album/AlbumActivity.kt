@@ -35,6 +35,7 @@ class AlbumActivity : ComponentActivity() {
                 onSaveClick = { saveAllPhotos(viewModel.albumUiState.value) }
             )
         }
+
         viewModel.event.collectEvent()
     }
 
