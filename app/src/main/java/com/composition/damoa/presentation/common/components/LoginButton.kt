@@ -13,7 +13,7 @@ import com.composition.damoa.R
 @Composable
 fun LoginButton(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit,
 ) {
     GradientButton(
         modifier = modifier.height(56.dp),

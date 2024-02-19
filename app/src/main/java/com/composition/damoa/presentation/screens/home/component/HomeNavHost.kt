@@ -58,12 +58,7 @@ fun HomeNavHost(
         }
 
         composable(HomeBottomNavItem.Profile.route) {
-            UserScreen(
-                userUiState = userUiState,
-                onLogout = userUiState.onLogout,
-                onSignOut = userUiState.onSignOut,
-                onLogin = userUiState.onLogin,
-            )
+            UserScreen(uiState = userUiState)
         }
     }
 }
