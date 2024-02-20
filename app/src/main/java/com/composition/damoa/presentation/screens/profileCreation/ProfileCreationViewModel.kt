@@ -23,6 +23,7 @@ import com.composition.damoa.presentation.screens.profileCreation.state.ConceptD
 import com.composition.damoa.presentation.screens.profileCreation.state.PaymentUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoSelectionUiState
+import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent
 import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
 import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,8 +76,8 @@ class ProfileCreationViewModel @Inject constructor(
 
     private lateinit var s3ImageUrls: S3ImageUrls
 
-    private val _uiEvent = MutableSharedFlow<UiEvent>(replay = 1)
-    val uiEvent = _uiEvent.asSharedFlow()
+    private val _event = MutableSharedFlow<ProfileCreationUiEvent>(replay = 1)
+    val event = _event.asSharedFlow()
 
     init {
         fetchTicket()
@@ -89,7 +90,7 @@ class ProfileCreationViewModel @Inject constructor(
             when (val user = userRepository.getUser()) {
                 is Success -> _paymentUiState.value = _paymentUiState.value.copy(ticketCount = user.data.ticket)
                 NetworkError -> _paymentUiState.value = _paymentUiState.value.copy(state = State.NETWORK_ERROR)
-                TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
+                TokenExpired -> _event.emit(ProfileCreationUiEvent.TOKEN_EXPIRED)
                 is Failure, is Unexpected -> _paymentUiState.value = _paymentUiState.value.copy(
                     state = State.NONE
                 )
@@ -113,7 +114,7 @@ class ProfileCreationViewModel @Inject constructor(
                     state = State.NETWORK_ERROR
                 )
 
-                TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
+                TokenExpired -> _event.emit(ProfileCreationUiEvent.TOKEN_EXPIRED)
                 is Failure, is Unexpected -> _conceptDetailUiState.value = conceptDetailUiState.value.copy(
                     state = State.NONE
                 )
@@ -133,7 +134,7 @@ class ProfileCreationViewModel @Inject constructor(
                 NetworkError -> _petPhotoSelectionUiState.value =
                     petPhotoSelectionUiState.value.copy(state = State.NETWORK_ERROR)
 
-                TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
+                TokenExpired -> _event.emit(ProfileCreationUiEvent.TOKEN_EXPIRED)
                 is Failure, is Unexpected -> _petPhotoSelectionUiState.value = petPhotoSelectionUiState.value.copy(
                     state = State.NONE
                 )
@@ -166,7 +167,7 @@ class ProfileCreationViewModel @Inject constructor(
                 s3ImageUrls = preSignedUrlsResult.data
 
                 if (!uploadPetImagesToS3(selectedImageFiles)) {
-                    _uiEvent.emit(UiEvent.UNKNOWN_ERROR)
+                    _event.emit(ProfileCreationUiEvent.UNKNOWN_ERROR)
                     s3ImageUrlRepository.deleteS3ImageDirectory(s3ImageUrls.s3DirectoryPath)
                     return
                 }
@@ -178,25 +179,25 @@ class ProfileCreationViewModel @Inject constructor(
                 when (uploadPet()) {
                     is Success -> {
                         _petInfoUiState.value = petInfoUiState.value.copy(state = State.SUCCESS)
-                        _uiEvent.emit(UiEvent.UPLOAD_PET_SUCCESS)
+                        _event.emit(ProfileCreationUiEvent.UPLOAD_PET_SUCCESS)
                     }
 
                     NetworkError -> {
                         _petInfoUiState.value = petInfoUiState.value.copy(state = State.NETWORK_ERROR)
-                        _uiEvent.emit(UiEvent.NETWORK_ERROR)
+                        _event.emit(ProfileCreationUiEvent.NETWORK_ERROR)
                     }
 
-                    TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
+                    TokenExpired -> _event.emit(ProfileCreationUiEvent.TOKEN_EXPIRED)
                     is Failure, is Unexpected -> {
                         _petInfoUiState.value = petInfoUiState.value.copy(state = State.NONE)
-                        _uiEvent.emit(UiEvent.UNKNOWN_ERROR)
+                        _event.emit(ProfileCreationUiEvent.UNKNOWN_ERROR)
                     }
                 }
             }
 
-            NetworkError -> _uiEvent.emit(UiEvent.NETWORK_ERROR)
-            TokenExpired -> _uiEvent.emit(UiEvent.TOKEN_EXPIRED)
-            is Failure, is Unexpected -> _uiEvent.emit(UiEvent.UNKNOWN_ERROR)
+            NetworkError -> _event.emit(ProfileCreationUiEvent.NETWORK_ERROR)
+            TokenExpired -> _event.emit(ProfileCreationUiEvent.TOKEN_EXPIRED)
+            is Failure, is Unexpected -> _event.emit(ProfileCreationUiEvent.UNKNOWN_ERROR)
         }
     }
 
@@ -235,7 +236,7 @@ class ProfileCreationViewModel @Inject constructor(
     private fun payment() {
         viewModelScope.launch {
             if (!hasTicket()) {
-                _uiEvent.emit(UiEvent.PAYMENT_FAILED_LACK_OF_TICKET)
+                _event.emit(ProfileCreationUiEvent.PAYMENT_FAILED_LACK_OF_TICKET)
                 return@launch
             }
 
@@ -267,7 +268,7 @@ class ProfileCreationViewModel @Inject constructor(
             return true
         }
 
-        _uiEvent.tryEmit(UiEvent.INVALID_PET_IMAGE_SIZE)
+        _event.tryEmit(ProfileCreationUiEvent.INVALID_PET_IMAGE_SIZE)
         return false
     }
 
@@ -285,11 +286,11 @@ class ProfileCreationViewModel @Inject constructor(
                         badImageFiles = badImageFiles
                     )
                     _selectedImageUiState.emit(newSelectedImageUiState)
-                    _uiEvent.emit(UiEvent.PET_DETECT_SUCCESS)
+                    _event.emit(ProfileCreationUiEvent.PET_DETECT_SUCCESS)
                 }
 
                 else -> {
-                    _uiEvent.emit(UiEvent.UNKNOWN_ERROR)
+                    _event.emit(ProfileCreationUiEvent.UNKNOWN_ERROR)
                     _selectedImageUiState.emit(selectedImageUiState.value.copy(state = State.NONE))
                 }
             }
@@ -313,17 +314,6 @@ class ProfileCreationViewModel @Inject constructor(
     private fun unselectPetImage(imageFile: File) {
         val unselectedImageFiles = selectedImageUiState.value.selectedImageFiles - imageFile
         _selectedImageUiState.value = selectedImageUiState.value.copy(selectedImageFiles = unselectedImageFiles)
-    }
-
-    enum class UiEvent {
-        PAYMENT_SUCCESS,
-        PAYMENT_FAILED_LACK_OF_TICKET,
-        INVALID_PET_IMAGE_SIZE,
-        PET_DETECT_SUCCESS,
-        UPLOAD_PET_SUCCESS,
-        TOKEN_EXPIRED,
-        NETWORK_ERROR,
-        UNKNOWN_ERROR,
     }
 
     companion object {

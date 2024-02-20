@@ -37,7 +37,6 @@ import com.composition.damoa.presentation.common.utils.permissionRequester.Permi
 import com.composition.damoa.presentation.common.utils.permissionRequester.PermissionRequester
 import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.Companion.KEY_CONCEPT_ID
-import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.UiEvent
 import com.composition.damoa.presentation.screens.profileCreation.screen.payment.PaymentScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.paymentResult.PaymentResultScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.petColor.PetColorScreen
@@ -50,6 +49,15 @@ import com.composition.damoa.presentation.screens.profileCreation.state.ConceptD
 import com.composition.damoa.presentation.screens.profileCreation.state.PaymentUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoSelectionUiState
+import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent
+import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.INVALID_PET_IMAGE_SIZE
+import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.NETWORK_ERROR
+import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.PAYMENT_FAILED_LACK_OF_TICKET
+import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.PAYMENT_SUCCESS
+import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.PET_DETECT_SUCCESS
+import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.TOKEN_EXPIRED
+import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.UNKNOWN_ERROR
+import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.UPLOAD_PET_SUCCESS
 import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
 import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseActivity
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
@@ -57,6 +65,7 @@ import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
 
@@ -69,10 +78,38 @@ class ProfileCreationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()
             ProfileCreation(
                 viewModel = viewModel,
                 onPhotoUploadClick = ::launchStoragePermissionRequester,
+                navController = navController,
             )
+
+            viewModel.event.collectEvent(navController)
+        }
+    }
+
+    private fun SharedFlow<ProfileCreationUiEvent>.collectEvent(navController: NavHostController) {
+        onUi {
+            collectLatest { event ->
+                when (event) {
+                    PAYMENT_SUCCESS -> navController.navigate(ProfileCreationScreen.PAYMENT_RESULT.route)
+                    INVALID_PET_IMAGE_SIZE -> showToast(R.string.pet_photo_size_invalid_message)
+                    PET_DETECT_SUCCESS -> navController.navigate(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route)
+                    UPLOAD_PET_SUCCESS -> navController.navigate(ProfileCreationScreen.PAYMENT.route)
+                    NETWORK_ERROR -> showToast(R.string.network_failure_message)
+                    UNKNOWN_ERROR -> showToast(R.string.unknown_error_message)
+                    PAYMENT_FAILED_LACK_OF_TICKET -> {
+                        TicketPurchaseActivity.startActivity(this@ProfileCreationActivity)
+                        finish()
+                    }
+
+                    TOKEN_EXPIRED -> {
+                        LoginActivity.startActivity(this@ProfileCreationActivity)
+                        finish()
+                    }
+                }
+            }
         }
     }
 
@@ -124,38 +161,16 @@ class ProfileCreationActivity : ComponentActivity() {
 @Composable
 private fun ProfileCreation(
     viewModel: ProfileCreationViewModel,
-    onPhotoUploadClick: () -> Unit = {},
+    onPhotoUploadClick: () -> Unit,
+    navController: NavHostController = rememberNavController(),
 ) {
     PetudioTheme {
         val activity = LocalContext.current as? ComponentActivity
-        val navController = rememberNavController()
         val conceptDetailUiState by viewModel.conceptDetailUiState.collectAsStateWithLifecycle()
         val petPhotoSelectionUiState by viewModel.petPhotoSelectionUiState.collectAsStateWithLifecycle()
         val petUiState by viewModel.petInfoUiState.collectAsStateWithLifecycle()
         val selectedImageUiState by viewModel.selectedImageUiState.collectAsStateWithLifecycle()
         val ticketUiState by viewModel.paymentUiState.collectAsStateWithLifecycle()
-
-        activity?.onUi {
-            viewModel.uiEvent.collectLatest { event ->
-                when (event) {
-                    UiEvent.PAYMENT_SUCCESS -> navController.navigate(ProfileCreationScreen.PAYMENT_RESULT.route)
-                    UiEvent.INVALID_PET_IMAGE_SIZE -> activity.showToast(R.string.pet_photo_size_invalid_message)
-                    UiEvent.PET_DETECT_SUCCESS -> navController.navigate(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route)
-                    UiEvent.UPLOAD_PET_SUCCESS -> navController.navigate(ProfileCreationScreen.PAYMENT.route)
-                    UiEvent.NETWORK_ERROR -> activity.showToast(R.string.network_failure_message)
-                    UiEvent.UNKNOWN_ERROR -> activity.showToast(R.string.unknown_error_message)
-                    UiEvent.PAYMENT_FAILED_LACK_OF_TICKET -> {
-                        TicketPurchaseActivity.startActivity(activity)
-                        activity.finish()
-                    }
-
-                    UiEvent.TOKEN_EXPIRED -> {
-                        LoginActivity.startActivity(activity)
-                        activity.finish()
-                    }
-                }
-            }
-        }
 
         Scaffold(
             topBar = {
