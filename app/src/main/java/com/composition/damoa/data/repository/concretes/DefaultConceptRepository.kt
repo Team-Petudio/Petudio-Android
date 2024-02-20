@@ -11,11 +11,17 @@ class DefaultConceptRepository(
     private val conceptService: ConceptService,
 ) : ConceptRepository {
 
-    override suspend fun getConcepts(): ApiResponse<List<ProfileConcept>> = conceptService
+    override suspend fun getProfileConcepts(): ApiResponse<List<ProfileConcept>> = conceptService
         .getConcepts()
         .map { response -> response.data.toDomain() }
 
-    override suspend fun getConceptDetail(conceptId: Long): ApiResponse<ProfileConceptDetail> = conceptService
+    override suspend fun getProfileConcept(conceptId: Long): ApiResponse<ProfileConcept> = conceptService
+        .getConcepts()
+        .map { response ->
+            response.data.toDomain().first { it.id == conceptId }
+        }
+
+    override suspend fun getProfileConceptDetail(conceptId: Long): ApiResponse<ProfileConceptDetail> = conceptService
         .getConceptDetail(conceptId)
         .map { response -> response.data.toDomain() }
 }

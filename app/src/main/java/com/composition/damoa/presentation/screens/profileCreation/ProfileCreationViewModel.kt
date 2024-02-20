@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
+
 @HiltViewModel
 class ProfileCreationViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -48,7 +49,6 @@ class ProfileCreationViewModel @Inject constructor(
 //    private val paymentRepository: PaymentRepository,
 ) : ViewModel() {
     private val conceptId = requireNotNull(savedStateHandle.get<Long>(KEY_CONCEPT_ID))
-    private var profileConcept: ProfileConcept? = null
 
     private val _paymentUiState = MutableStateFlow(
         PaymentUiState(onPaymentClick = ::payment)
@@ -99,12 +99,14 @@ class ProfileCreationViewModel @Inject constructor(
 
     private fun fetchProfileConceptDetail() {
         viewModelScope.launch {
+            val profileConcept = getProfileConcept(conceptId) ?: return@launch
             _conceptDetailUiState.value = conceptDetailUiState.value.copy(state = State.LOADING)
 
-            when (val conceptDetail = conceptRepository.getConceptDetail(conceptId)) {
+            when (val conceptDetail = conceptRepository.getProfileConceptDetail(conceptId)) {
                 is Success -> _conceptDetailUiState.value = conceptDetailUiState.value.copy(
                     state = State.SUCCESS,
-                    conceptDetail = conceptDetail.data
+                    conceptDetail = conceptDetail.data,
+                    profileConcept = profileConcept,
                 )
 
                 NetworkError -> _conceptDetailUiState.value = conceptDetailUiState.value.copy(
@@ -248,18 +250,9 @@ class ProfileCreationViewModel @Inject constructor(
         return _paymentUiState.value.ticketCount >= 1
     }
 
-    private suspend fun getConcept(conceptId: Long): ProfileConcept? {
-        if (profileConcept != null) return profileConcept
-
-        val concepts = conceptRepository.getConcepts()
-        if (concepts !is Success) {
-            _uiEvent.emit(UiEvent.UNKNOWN_ERROR)
-            return null
-        }
-
-        return concepts.data
-            .find { it.id == conceptId }
-            .also { profileConcept = it }
+    private suspend fun getProfileConcept(conceptId: Long): ProfileConcept? {
+        val concept = conceptRepository.getProfileConcept(conceptId)
+        return if (concept is Success) concept.data else null
     }
 
     fun changeToImageSelectLoading() {
@@ -282,9 +275,9 @@ class ProfileCreationViewModel @Inject constructor(
         val originSelectedImageFiles = selectedImageUiState.value.selectedImageFiles
 
         viewModelScope.launch {
-            val concept = getConcept(conceptId) ?: return@launch
+            val profileConcept = _conceptDetailUiState.value.profileConcept ?: return@launch
 
-            when (val petDetectResult = petDetectRepository.detectPet(imageFiles, concept.petType)) {
+            when (val petDetectResult = petDetectRepository.detectPet(imageFiles, profileConcept.petType)) {
                 is Success -> {
                     val (goodImageFiles, badImageFiles) = classifyPetImages(imageFiles, petDetectResult.data)
                     val newSelectedImageUiState = selectedImageUiState.value.copy(

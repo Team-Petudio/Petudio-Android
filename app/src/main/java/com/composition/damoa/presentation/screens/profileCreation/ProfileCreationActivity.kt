@@ -28,7 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.data.model.PetColor
-import com.composition.damoa.data.model.ProfileConceptDetail
+import com.composition.damoa.data.model.PetType
 import com.composition.damoa.presentation.common.extensions.onDefault
 import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.common.extensions.reduceImageSizeAndCreateFile
@@ -38,6 +38,8 @@ import com.composition.damoa.presentation.common.utils.permissionRequester.Permi
 import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.Companion.KEY_CONCEPT_ID
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.UiEvent
+import com.composition.damoa.presentation.screens.profileCreation.screen.paymentResult.PaymentResultScreen
+import com.composition.damoa.presentation.screens.profileCreation.state.ConceptDetailUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PaymentUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoSelectionUiState
@@ -158,7 +160,7 @@ private fun ProfileCreation(
             ProfileCreationNavHost(
                 modifier = Modifier.padding(top = padding.calculateTopPadding()),
                 navController = navController,
-                profileConceptDetail = conceptDetailUiState.conceptDetail,
+                conceptDetailUiState = conceptDetailUiState,
                 petPhotoSelectionUiState = petPhotoSelectionUiState,
                 petInfoUiState = petUiState,
                 onPetNameChanged = viewModel::updatePetName,
@@ -195,7 +197,7 @@ private fun ProfileCreationNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     startDestination: ProfileCreationScreen = ProfileCreationScreen.PROFILE_CREATION_INTRODUCE,
-    profileConceptDetail: ProfileConceptDetail,
+    conceptDetailUiState: ConceptDetailUiState,
     petPhotoSelectionUiState: PetPhotoSelectionUiState,
     petInfoUiState: PetInfoUiState,
     onPetNameChanged: (String) -> Unit,
@@ -213,7 +215,7 @@ private fun ProfileCreationNavHost(
         composable(ProfileCreationScreen.PROFILE_CREATION_INTRODUCE.route) {
             ProfileCreationIntroduceScreen(
                 navController = navController,
-                profileConceptDetail = profileConceptDetail,
+                profileConceptDetail = conceptDetailUiState.conceptDetail,
                 hasAlreadyPet = petPhotoSelectionUiState.pets.isNotEmpty(),
             )
         }
@@ -254,7 +256,9 @@ private fun ProfileCreationNavHost(
             PaymentScreen(paymentUiState = paymentUiState)
         }
         composable(ProfileCreationScreen.PAYMENT_RESULT.route) {
-            PaymentResultScreen()
+            PaymentResultScreen(
+                petType = conceptDetailUiState.profileConcept?.petType ?: PetType.DOG,
+            )
         }
     }
 }

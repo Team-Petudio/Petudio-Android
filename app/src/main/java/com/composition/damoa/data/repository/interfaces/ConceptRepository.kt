@@ -5,7 +5,9 @@ import com.composition.damoa.data.model.ProfileConcept
 import com.composition.damoa.data.model.ProfileConceptDetail
 
 interface ConceptRepository {
-    suspend fun getConcepts(): ApiResponse<List<ProfileConcept>>
+    suspend fun getProfileConcepts(): ApiResponse<List<ProfileConcept>>
 
-    suspend fun getConceptDetail(conceptId: Long): ApiResponse<ProfileConceptDetail>
+    suspend fun getProfileConcept(conceptId: Long): ApiResponse<ProfileConcept>
+
+    suspend fun getProfileConceptDetail(conceptId: Long): ApiResponse<ProfileConceptDetail>
 }

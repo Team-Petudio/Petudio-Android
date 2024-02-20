@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation
+package com.composition.damoa.presentation.screens.profileCreation.screen.paymentResult
 
 import android.content.Context
 import androidx.compose.foundation.background
@@ -32,7 +32,7 @@ import com.composition.damoa.presentation.common.utils.permissionRequester.Permi
 @Composable
 fun PaymentResultScreen(
     modifier: Modifier = Modifier,
-    petType: PetType = PetType.DOG,
+    petType: PetType,
 ) {
     launchNotificationPermissionRequester(context = LocalContext.current)
 

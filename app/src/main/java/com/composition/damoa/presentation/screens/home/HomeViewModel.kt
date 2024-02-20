@@ -73,7 +73,7 @@ class HomeViewModel @Inject constructor(
     private fun fetchProfileConcepts() {
         viewModelScope.launch {
             _profileConceptUiState.value = profileUiState.value.copy(state = State.LOADING)
-            when (val concepts = conceptRepository.getConcepts()) {
+            when (val concepts = conceptRepository.getProfileConcepts()) {
                 is Success -> _profileConceptUiState.value = profileUiState.value.copy(
                     state = State.SUCCESS,
                     profileConcepts = concepts.data
