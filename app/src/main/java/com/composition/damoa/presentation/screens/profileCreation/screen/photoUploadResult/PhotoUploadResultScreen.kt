@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation
+package com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadResult
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -29,6 +29,7 @@ import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.TinyTitle
 import com.composition.damoa.presentation.screens.profileCreation.component.PetPhoto
 import com.composition.damoa.presentation.screens.profileCreation.component.PhotoUploadButton
+import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.PetPhoto
 import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
 import java.io.File
 

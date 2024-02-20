@@ -38,7 +38,14 @@ import com.composition.damoa.presentation.common.utils.permissionRequester.Permi
 import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.Companion.KEY_CONCEPT_ID
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.UiEvent
+import com.composition.damoa.presentation.screens.profileCreation.screen.payment.PaymentScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.paymentResult.PaymentResultScreen
+import com.composition.damoa.presentation.screens.profileCreation.screen.petColor.PetColorScreen
+import com.composition.damoa.presentation.screens.profileCreation.screen.petName.PetNameScreen
+import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.PetPhotoSelectionScreen
+import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.PhotoUploadIntroduceScreen
+import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadResult.PhotoUploadResultScreen
+import com.composition.damoa.presentation.screens.profileCreation.screen.profileCreationIntroduce.ProfileCreationIntroduceScreen
 import com.composition.damoa.presentation.screens.profileCreation.state.ConceptDetailUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PaymentUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState

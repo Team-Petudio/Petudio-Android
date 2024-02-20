@@ -28,7 +28,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.composition.damoa.R
 import com.composition.damoa.presentation.common.utils.badDogPhotoExamples
 import com.composition.damoa.presentation.common.utils.goodDogPhotoExamples
-import com.composition.damoa.presentation.screens.profileCreation.PetPhoto
+import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.PetPhoto
 import com.composition.damoa.presentation.ui.theme.AlertIconColor
 import com.composition.damoa.presentation.ui.theme.GoodIconColor
 import com.composition.damoa.presentation.ui.theme.Gray40

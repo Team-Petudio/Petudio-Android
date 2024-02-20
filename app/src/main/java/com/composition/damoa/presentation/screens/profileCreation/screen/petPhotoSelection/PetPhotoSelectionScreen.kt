@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation
+package com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -47,6 +47,7 @@ import com.composition.damoa.data.model.Pet
 import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
+import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationScreen
 import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoSelectionUiState
 import com.composition.damoa.presentation.ui.theme.Gray20
 import com.composition.damoa.presentation.ui.theme.Purple60

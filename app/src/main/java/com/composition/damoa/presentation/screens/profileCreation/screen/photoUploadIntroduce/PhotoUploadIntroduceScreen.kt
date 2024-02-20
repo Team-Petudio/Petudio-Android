@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation
+package com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.composition.damoa.R
 import com.composition.damoa.data.model.PetType
 import com.composition.damoa.presentation.common.base.BaseUiState.State

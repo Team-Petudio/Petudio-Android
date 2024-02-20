@@ -1,7 +1,7 @@
 package com.composition.damoa.presentation.common.utils
 
 import com.composition.damoa.R
-import com.composition.damoa.presentation.screens.profileCreation.PetPhoto
+import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.PetPhoto
 
 fun goodDogPhotoExamples(): List<PetPhoto> =
     listOf(

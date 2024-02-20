@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation
+package com.composition.damoa.presentation.screens.profileCreation.screen.profileCreationIntroduce
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -32,6 +32,7 @@ import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
 import com.composition.damoa.presentation.common.components.SmallTitle
+import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationScreen
 
 @Composable
 fun ProfileCreationIntroduceScreen(

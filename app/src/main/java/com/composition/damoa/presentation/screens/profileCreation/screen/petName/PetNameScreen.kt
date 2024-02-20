@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation
+package com.composition.damoa.presentation.screens.profileCreation.screen.petName
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -26,6 +26,7 @@ import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.SmallTitle
+import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationScreen
 import com.composition.damoa.presentation.ui.theme.Gray20
 import com.composition.damoa.presentation.ui.theme.Gray40
 import com.composition.damoa.presentation.ui.theme.Purple60
