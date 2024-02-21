@@ -73,6 +73,7 @@ class ProfileCreationViewModel @Inject constructor(
 
     private val _petInfoUiState = MutableStateFlow(
         PetInfoUiState(
+            onPetNameChanged = ::updatePetName,
             onPetColorSelected = ::updateColor,
         )
     )
@@ -150,7 +151,7 @@ class ProfileCreationViewModel @Inject constructor(
         _petPhotoSelectionUiState.value = petPhotoSelectionUiState.value.copy(selectedPetId = petId)
     }
 
-    fun updatePetName(name: String) {
+    private fun updatePetName(name: String) {
         _petInfoUiState.value = petInfoUiState.value.copy(petName = name)
     }
 

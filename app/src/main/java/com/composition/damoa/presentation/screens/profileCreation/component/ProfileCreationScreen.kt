@@ -41,7 +41,6 @@ fun ProfileCreationScreen(
                 conceptDetailUiState = conceptDetailUiState,
                 petPhotoSelectionUiState = petPhotoSelectionUiState,
                 petInfoUiState = petUiState,
-                onPetNameChanged = viewModel::updatePetName,
                 onPetUploadClick = viewModel::uploadPetImages,
                 onPhotoUploadClick = onPhotoUploadClick,
                 photoUploadResultUiState = selectedImageUiState,
