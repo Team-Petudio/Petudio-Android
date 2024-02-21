@@ -27,7 +27,7 @@ class DefaultPetDetectRepository(
 
         return petDetectService.detectPet(
             petType = petType.name,
-            imageMultiParts = imageMultiParts,
+            petImages = imageMultiParts,
         ).map { response -> response.detectResults }
     }
 }

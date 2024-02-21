@@ -13,7 +13,7 @@ interface PetDetectService {
     @POST("/detect")
     suspend fun detectPet(
         @Query("petType") petType: String,
-        @Part imageMultiParts: List<MultipartBody.Part>,
+        @Part petImages: List<MultipartBody.Part>,
     ): ApiResponse<PetDetectResponse>
 
     companion object {
