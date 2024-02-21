@@ -27,7 +27,7 @@ class DefaultUserRepository(
     ): ApiResponse<User.Token> =
         when (val loginResult = userService.login(LoginRequest(socialType, accessToken, fcmToken))) {
             is Success -> {
-                val token = TokenParser.parseToken(loginResult.headers)
+                val token = TokenParser.parseHeaders(loginResult.headers)
                 tokenRepository.saveToken(token)
                 Success(token)
             }

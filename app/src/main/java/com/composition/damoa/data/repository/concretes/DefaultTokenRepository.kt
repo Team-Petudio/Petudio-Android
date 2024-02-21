@@ -17,7 +17,7 @@ class DefaultTokenRepository(
     override suspend fun reissueToken(): ApiResponse<Unit> {
         return when (val reissueResult = tokenService.reissueToken(ReissueTokenRequest(tokenDataSource.getToken()))) {
             is Success -> {
-                TokenParser.parseToken(reissueResult.headers).also { tokenDataSource.saveToken(it) }
+                TokenParser.parseHeaders(reissueResult.headers).also { tokenDataSource.saveToken(it) }
                 Success(Unit)
             }
 

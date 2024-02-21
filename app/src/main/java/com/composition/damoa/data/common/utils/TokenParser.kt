@@ -7,7 +7,7 @@ object TokenParser {
     private const val ACCESS_TOKEN = "accessToken"
     private const val REFRESH_TOKEN = "refreshToken"
 
-    fun parseToken(headers: Headers): User.Token {
+    fun parseHeaders(headers: Headers): User.Token {
         val tokens = headers
             .filter { (key, _) -> key == "Set-Cookie" }
             .mapNotNull { (_, cookieValue) ->
