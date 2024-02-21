@@ -10,12 +10,12 @@ import com.composition.damoa.data.repository.interfaces.TokenRepository
 import com.composition.damoa.data.service.TokenService
 
 class DefaultTokenRepository(
-    private val tokenService: TokenService,
+    private val service: TokenService,
     private val tokenDataSource: TokenDataSource,
 ) : TokenRepository {
 
     override suspend fun reissueToken(): ApiResponse<Unit> {
-        return when (val reissueResult = tokenService.reissueToken(ReissueTokenRequest(tokenDataSource.getToken()))) {
+        return when (val reissueResult = service.reissueToken(ReissueTokenRequest(tokenDataSource.getToken()))) {
             is Success -> {
                 TokenParser.parseHeaders(reissueResult.headers).also { tokenDataSource.saveToken(it) }
                 Success(Unit)

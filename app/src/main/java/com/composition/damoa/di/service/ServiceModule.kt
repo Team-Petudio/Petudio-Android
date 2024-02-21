@@ -37,31 +37,31 @@ class ServiceModule {
     @Singleton
     fun provideUserService(
         @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
-    ): UserService = serviceFactory.create(UserService::class.java)
+    ): UserService = serviceFactory.create(service = UserService::class.java)
 
     @Provides
     @Singleton
     fun provideTokenService(
         @ServiceFactoryWithoutAuthQualifier serviceFactory: ServiceFactory,
-    ): TokenService = serviceFactory.create(TokenService::class.java)
+    ): TokenService = serviceFactory.create(service = TokenService::class.java)
 
     @Provides
     @Singleton
     fun provideConceptService(
         @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
-    ): ConceptService = serviceFactory.create(ConceptService::class.java)
+    ): ConceptService = serviceFactory.create(service = ConceptService::class.java)
 
     @Provides
     @Singleton
     fun providePetService(
         @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
-    ): PetService = serviceFactory.create(PetService::class.java)
+    ): PetService = serviceFactory.create(service = PetService::class.java)
 
     @Provides
     @Singleton
     fun provideS3ImageUrlService(
         @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
-    ): S3ImageUrlService = serviceFactory.create(S3ImageUrlService::class.java)
+    ): S3ImageUrlService = serviceFactory.create(service = S3ImageUrlService::class.java)
 
     @Provides
     @Singleton
@@ -85,11 +85,11 @@ class ServiceModule {
     @Singleton
     fun provideGiftCardService(
         @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
-    ): GiftCardService = serviceFactory.create(GiftCardService::class.java)
+    ): GiftCardService = serviceFactory.create(service = GiftCardService::class.java)
 
     @Provides
     @Singleton
     fun providePetFeedService(
         @ServiceFactoryWithAuthQualifier serviceFactory: ServiceFactory,
-    ): PetFeedService = serviceFactory.create(PetFeedService::class.java)
+    ): PetFeedService = serviceFactory.create(service = PetFeedService::class.java)
 }

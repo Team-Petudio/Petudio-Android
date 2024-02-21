@@ -16,7 +16,7 @@ import com.composition.damoa.data.service.UserService
 
 
 class DefaultUserRepository(
-    private val userService: UserService,
+    private val service: UserService,
     private val tokenRepository: TokenRepository,
 ) : UserRepository {
 
@@ -25,7 +25,7 @@ class DefaultUserRepository(
         accessToken: String,
         fcmToken: String,
     ): ApiResponse<User.Token> =
-        when (val loginResult = userService.login(LoginRequest(socialType, accessToken, fcmToken))) {
+        when (val loginResult = service.login(LoginRequest(socialType, accessToken, fcmToken))) {
             is Success -> {
                 val token = TokenParser.parseHeaders(loginResult.headers)
                 tokenRepository.saveToken(token)
@@ -39,21 +39,21 @@ class DefaultUserRepository(
         }
 
     override suspend fun logout(): ApiResponse<Unit> {
-        return userService.logout().also { tokenRepository.deleteToken() }
+        return service.logout().also { tokenRepository.deleteToken() }
     }
 
     override suspend fun getUser(): ApiResponse<User> {
         val token = tokenRepository.getToken()
-        return userService.getUser().map { it.data.toDomain(token) }
+        return service.getUser().map { it.data.toDomain(token) }
     }
 
     override suspend fun signOut(): ApiResponse<Unit> {
-        return userService.signOut().also { tokenRepository.deleteToken() }
+        return service.signOut().also { tokenRepository.deleteToken() }
     }
 
     override suspend fun updateNotificationStatus(
         newStatus: Boolean,
-    ): ApiResponse<Boolean> = userService
+    ): ApiResponse<Boolean> = service
         .updateNotificationStatus(newStatus)
         .map { it.data.notificationStatus }
 }

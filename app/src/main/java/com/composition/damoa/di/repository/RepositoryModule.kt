@@ -48,63 +48,69 @@ class RepositoryModule {
     @Provides
     fun provideGoogleRepository(
         googleService: GoogleService,
-    ): GoogleRepository = DefaultGoogleRepository(googleService)
+    ): GoogleRepository = DefaultGoogleRepository(service = googleService)
 
     @Singleton
     @Provides
     fun provideUserRepository(
         userService: UserService,
         tokenRepository: TokenRepository,
-    ): UserRepository = DefaultUserRepository(userService, tokenRepository)
+    ): UserRepository = DefaultUserRepository(
+        service = userService,
+        tokenRepository = tokenRepository
+    )
 
     @Singleton
     @Provides
     fun provideTokenRepository(
         tokenService: TokenService,
         tokenDataSource: TokenDataSource,
-    ): TokenRepository = DefaultTokenRepository(tokenService, tokenDataSource)
+    ): TokenRepository = DefaultTokenRepository(
+        service = tokenService,
+        tokenDataSource = tokenDataSource
+    )
 
     @Singleton
     @Provides
     fun provideConceptRepository(
         conceptService: ConceptService,
-    ): ConceptRepository = DefaultConceptRepository(conceptService)
+    ): ConceptRepository = DefaultConceptRepository(service = conceptService)
 
     @Singleton
     @Provides
     fun providePetRepository(
         petService: PetService,
-    ): PetRepository = DefaultPetRepository(petService)
+    ): PetRepository = DefaultPetRepository(service = petService)
 
     @Singleton
     @Provides
     fun provideS3ImageUrlRepository(
         s3ImageUrlService: S3ImageUrlService,
-    ): S3ImageUrlRepository = DefaultS3ImageUrlRepository(s3ImageUrlService)
+    ): S3ImageUrlRepository = DefaultS3ImageUrlRepository(service = s3ImageUrlService)
 
     @Singleton
     @Provides
     fun providePetDetectRepository(
         petDetectService: PetDetectService,
-    ): PetDetectRepository = DefaultPetDetectRepository(petDetectService)
+    ): PetDetectRepository = DefaultPetDetectRepository(service = petDetectService)
 
     @Singleton
     @Provides
     fun provideS3ImageRepository(
         s3ImageService: S3ImageService,
-    ): S3ImageRepository = DefaultS3ImageRepository(s3ImageService)
+    ): S3ImageRepository = DefaultS3ImageRepository(service = s3ImageService)
 
     @Singleton
     @Provides
     fun provideGiftCardRepository(
         giftCardService: GiftCardService,
-    ): GiftCardRepository = DefaultGiftCardRepository(giftCardService)
+    ): GiftCardRepository = DefaultGiftCardRepository(service = giftCardService)
 
     @Singleton
     @Provides
     fun providePetFeedRepository(
         petFeedService: PetFeedService,
-    ): PetFeedRepository = DefaultPetFeedRepository(petFeedService)
+    ): PetFeedRepository = DefaultPetFeedRepository(service = petFeedService)
 
     @Singleton
     @Provides

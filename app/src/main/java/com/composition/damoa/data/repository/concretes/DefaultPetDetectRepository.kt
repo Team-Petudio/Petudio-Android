@@ -10,7 +10,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
 class DefaultPetDetectRepository(
-    private val petDetectService: PetDetectService,
+    private val service: PetDetectService,
 ) : PetDetectRepository {
 
     override suspend fun detectPet(
@@ -25,7 +25,7 @@ class DefaultPetDetectRepository(
             )
         }
 
-        return petDetectService.detectPet(
+        return service.detectPet(
             petType = petType.name,
             petImages = imageMultiParts,
         ).map { response -> response.detectResults }

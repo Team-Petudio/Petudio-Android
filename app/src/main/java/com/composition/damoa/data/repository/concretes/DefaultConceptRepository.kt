@@ -8,20 +8,20 @@ import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.service.ConceptService
 
 class DefaultConceptRepository(
-    private val conceptService: ConceptService,
+    private val service: ConceptService,
 ) : ConceptRepository {
 
-    override suspend fun getProfileConcepts(): ApiResponse<List<ProfileConcept>> = conceptService
+    override suspend fun getProfileConcepts(): ApiResponse<List<ProfileConcept>> = service
         .getConcepts()
         .map { response -> response.data.toDomain() }
 
-    override suspend fun getProfileConcept(conceptId: Long): ApiResponse<ProfileConcept> = conceptService
+    override suspend fun getProfileConcept(conceptId: Long): ApiResponse<ProfileConcept> = service
         .getConcepts()
         .map { response ->
             response.data.toDomain().first { it.id == conceptId }
         }
 
-    override suspend fun getProfileConceptDetail(conceptId: Long): ApiResponse<ProfileConceptDetail> = conceptService
+    override suspend fun getProfileConceptDetail(conceptId: Long): ApiResponse<ProfileConceptDetail> = service
         .getConceptDetail(conceptId)
         .map { response -> response.data.toDomain() }
 }
