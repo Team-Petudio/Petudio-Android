@@ -19,10 +19,10 @@ import com.composition.damoa.data.repository.interfaces.S3ImageRepository
 import com.composition.damoa.data.repository.interfaces.S3ImageUrlRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.presentation.common.base.BaseUiState.State
+import com.composition.damoa.presentation.screens.profileCreation.screen.creationIntroduce.state.ProfileCreationIntroduceUiState
 import com.composition.damoa.presentation.screens.profileCreation.screen.payment.state.PaymentUiState
-import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.state.PetPhotoSelectionUiState
+import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.state.PetSelectionUiState
 import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoUpload.state.PhotoUploadUiState
-import com.composition.damoa.presentation.screens.profileCreation.screen.profileCreationIntroduce.state.ConceptDetailUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent
 import com.esafirm.imagepicker.model.Image
@@ -56,15 +56,15 @@ class ProfileCreationViewModel @Inject constructor(
     )
     val paymentUiState = _paymentUiState.asStateFlow()
 
-    private val _conceptDetailUiState = MutableStateFlow(ConceptDetailUiState())
-    val conceptDetailUiState = _conceptDetailUiState.asStateFlow()
+    private val _profileCreationIntroduceUiState = MutableStateFlow(ProfileCreationIntroduceUiState())
+    val profileCreationIntroduceUiState = _profileCreationIntroduceUiState.asStateFlow()
 
-    private val _petPhotoSelectionUiState = MutableStateFlow(
-        PetPhotoSelectionUiState(
+    private val _petSelectionUiState = MutableStateFlow(
+        PetSelectionUiState(
             onPetSelected = ::selectPet
         )
     )
-    val petPhotoSelectionUiState = _petPhotoSelectionUiState.asStateFlow()
+    val petSelectionUiState = _petSelectionUiState.asStateFlow()
 
     private val _photoUploadUiState = MutableStateFlow(
         PhotoUploadUiState(onUnselectImage = ::unselectPetImage)
@@ -107,41 +107,42 @@ class ProfileCreationViewModel @Inject constructor(
     private fun fetchProfileConceptDetail() {
         viewModelScope.launch {
             val profileConcept = getProfileConcept(conceptId) ?: return@launch
-            _conceptDetailUiState.value = conceptDetailUiState.value.copy(state = State.LOADING)
+            _profileCreationIntroduceUiState.value = profileCreationIntroduceUiState.value.copy(state = State.LOADING)
 
             when (val conceptDetail = conceptRepository.getProfileConceptDetail(conceptId)) {
-                is Success -> _conceptDetailUiState.value = conceptDetailUiState.value.copy(
+                is Success -> _profileCreationIntroduceUiState.value = profileCreationIntroduceUiState.value.copy(
                     state = State.SUCCESS,
                     conceptDetail = conceptDetail.data,
                     profileConcept = profileConcept,
                 )
 
-                NetworkError -> _conceptDetailUiState.value = conceptDetailUiState.value.copy(
+                NetworkError -> _profileCreationIntroduceUiState.value = profileCreationIntroduceUiState.value.copy(
                     state = State.NETWORK_ERROR
                 )
 
                 TokenExpired -> _event.emit(ProfileCreationUiEvent.TOKEN_EXPIRED)
-                is Failure, is Unexpected -> _conceptDetailUiState.value = conceptDetailUiState.value.copy(
-                    state = State.NONE
-                )
+                is Failure, is Unexpected -> _profileCreationIntroduceUiState.value =
+                    profileCreationIntroduceUiState.value.copy(
+                        state = State.NONE
+                    )
             }
         }
     }
 
     private fun fetchPets() {
         viewModelScope.launch {
-            _petPhotoSelectionUiState.value = petPhotoSelectionUiState.value.copy(state = State.LOADING)
+            _petSelectionUiState.value = petSelectionUiState.value.copy(state = State.LOADING)
             when (val conceptDetail = petRepository.getPets()) {
-                is Success -> _petPhotoSelectionUiState.value = petPhotoSelectionUiState.value.copy(
+                is Success -> _petSelectionUiState.value = petSelectionUiState.value.copy(
                     state = State.SUCCESS,
                     pets = conceptDetail.data
                 )
 
-                NetworkError -> _petPhotoSelectionUiState.value =
-                    petPhotoSelectionUiState.value.copy(state = State.NETWORK_ERROR)
+                NetworkError -> _petSelectionUiState.value =
+                    petSelectionUiState.value.copy(state = State.NETWORK_ERROR)
 
                 TokenExpired -> _event.emit(ProfileCreationUiEvent.TOKEN_EXPIRED)
-                is Failure, is Unexpected -> _petPhotoSelectionUiState.value = petPhotoSelectionUiState.value.copy(
+                is Failure, is Unexpected -> _petSelectionUiState.value = petSelectionUiState.value.copy(
                     state = State.NONE
                 )
             }
@@ -149,7 +150,7 @@ class ProfileCreationViewModel @Inject constructor(
     }
 
     private fun selectPet(petId: Long) {
-        _petPhotoSelectionUiState.value = petPhotoSelectionUiState.value.copy(selectedPetId = petId)
+        _petSelectionUiState.value = petSelectionUiState.value.copy(selectedPetId = petId)
     }
 
     private fun updatePetName(name: String) {
@@ -282,7 +283,7 @@ class ProfileCreationViewModel @Inject constructor(
         val originSelectedImageFiles = selectedImageUiState.value.selectedImageFiles
 
         viewModelScope.launch {
-            val profileConcept = _conceptDetailUiState.value.profileConcept ?: return@launch
+            val profileConcept = _profileCreationIntroduceUiState.value.profileConcept ?: return@launch
 
             when (val petDetectResult = petDetectRepository.detectPet(imageFiles, profileConcept.petType)) {
                 is Success -> {

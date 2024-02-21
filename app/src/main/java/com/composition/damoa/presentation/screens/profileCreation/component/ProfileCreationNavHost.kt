@@ -6,18 +6,18 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.composition.damoa.data.model.PetType
+import com.composition.damoa.presentation.screens.profileCreation.screen.creationIntroduce.ProfileCreationIntroduceScreen
+import com.composition.damoa.presentation.screens.profileCreation.screen.creationIntroduce.state.ProfileCreationIntroduceUiState
 import com.composition.damoa.presentation.screens.profileCreation.screen.payment.PaymentResultScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.payment.PaymentScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.payment.state.PaymentUiState
 import com.composition.damoa.presentation.screens.profileCreation.screen.petColor.PetColorScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.petName.PetNameScreen
-import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.PetPhotoSelectionScreen
-import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.state.PetPhotoSelectionUiState
+import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.PetSelectionScreen
+import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.state.PetSelectionUiState
 import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoUpload.PetPhotoUploadResultScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoUpload.PhotoUploadIntroduceScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoUpload.state.PhotoUploadUiState
-import com.composition.damoa.presentation.screens.profileCreation.screen.profileCreationIntroduce.ProfileCreationIntroduceScreen
-import com.composition.damoa.presentation.screens.profileCreation.screen.profileCreationIntroduce.state.ConceptDetailUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
 
 
@@ -25,7 +25,7 @@ enum class ProfileCreationScreen(
     val route: String,
 ) {
     PROFILE_CREATION_INTRODUCE("profileCreationIntroduce"),
-    PET_PHOTO_SELECT("petPhotoSelect"),
+    PET_SELECT("petSelect"),
     PET_NAME("petName"),
     PET_COLOR("petColor/{petType}"),
     PHOTO_UPLOAD_INTRODUCE("photoUploadIntroduce"),
@@ -39,8 +39,8 @@ fun ProfileCreationNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     startDestination: ProfileCreationScreen = ProfileCreationScreen.PROFILE_CREATION_INTRODUCE,
-    conceptDetailUiState: ConceptDetailUiState,
-    petPhotoSelectionUiState: PetPhotoSelectionUiState,
+    profileCreationIntroduceUiState: ProfileCreationIntroduceUiState,
+    petSelectionUiState: PetSelectionUiState,
     petInfoUiState: PetInfoUiState,
     onPhotoUploadClick: () -> Unit,
     photoUploadUiState: PhotoUploadUiState,
@@ -53,14 +53,20 @@ fun ProfileCreationNavHost(
     ) {
         composable(ProfileCreationScreen.PROFILE_CREATION_INTRODUCE.route) {
             ProfileCreationIntroduceScreen(
-                navController = navController,
-                profileConceptDetail = conceptDetailUiState.conceptDetail,
-                hasAlreadyPet = petPhotoSelectionUiState.pets.isNotEmpty(),
+                profileConceptDetail = profileCreationIntroduceUiState.conceptDetail,
+                onKeepGoingClick = {
+                    val hasPet = petSelectionUiState.pets.isNotEmpty()
+                    if (hasPet) {
+                        navController.navigate(ProfileCreationScreen.PET_SELECT.route)
+                    } else {
+                        navController.navigate(ProfileCreationScreen.PET_NAME.route)
+                    }
+                },
             )
         }
-        composable(ProfileCreationScreen.PET_PHOTO_SELECT.route) {
-            PetPhotoSelectionScreen(
-                petPhotoSelectionUiState = petPhotoSelectionUiState,
+        composable(ProfileCreationScreen.PET_SELECT.route) {
+            PetSelectionScreen(
+                petSelectionUiState = petSelectionUiState,
                 onNewPhotoUploadClick = { navController.navigate(ProfileCreationScreen.PET_NAME.route) },
                 onKeepGoingClick = { navController.navigate(ProfileCreationScreen.PAYMENT.route) },
             )
@@ -95,7 +101,7 @@ fun ProfileCreationNavHost(
         }
         composable(ProfileCreationScreen.PAYMENT_RESULT.route) {
             PaymentResultScreen(
-                petType = conceptDetailUiState.profileConcept?.petType ?: PetType.DOG,
+                petType = profileCreationIntroduceUiState.profileConcept?.petType ?: PetType.DOG,
             )
         }
     }

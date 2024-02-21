@@ -22,8 +22,8 @@ fun ProfileCreationScreen(
 ) {
     PetudioTheme {
         val activity = LocalContext.current as ComponentActivity
-        val conceptDetailUiState by viewModel.conceptDetailUiState.collectAsStateWithLifecycle()
-        val petPhotoSelectionUiState by viewModel.petPhotoSelectionUiState.collectAsStateWithLifecycle()
+        val conceptDetailUiState by viewModel.profileCreationIntroduceUiState.collectAsStateWithLifecycle()
+        val petPhotoSelectionUiState by viewModel.petSelectionUiState.collectAsStateWithLifecycle()
         val petUiState by viewModel.petInfoUiState.collectAsStateWithLifecycle()
         val selectedImageUiState by viewModel.selectedImageUiState.collectAsStateWithLifecycle()
         val ticketUiState by viewModel.paymentUiState.collectAsStateWithLifecycle()
@@ -38,8 +38,8 @@ fun ProfileCreationScreen(
             ProfileCreationNavHost(
                 modifier = Modifier.padding(top = padding.calculateTopPadding()),
                 navController = navController,
-                conceptDetailUiState = conceptDetailUiState,
-                petPhotoSelectionUiState = petPhotoSelectionUiState,
+                profileCreationIntroduceUiState = conceptDetailUiState,
+                petSelectionUiState = petPhotoSelectionUiState,
                 petInfoUiState = petUiState,
                 onPhotoUploadClick = onPhotoUploadClick,
                 photoUploadUiState = selectedImageUiState,

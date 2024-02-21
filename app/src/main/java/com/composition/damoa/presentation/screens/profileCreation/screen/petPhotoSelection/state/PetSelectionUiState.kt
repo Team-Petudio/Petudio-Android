@@ -3,7 +3,7 @@ package com.composition.damoa.presentation.screens.profileCreation.screen.petPho
 import com.composition.damoa.data.model.Pet
 import com.composition.damoa.presentation.common.base.BaseUiState
 
-data class PetPhotoSelectionUiState(
+data class PetSelectionUiState(
     override val state: State = State.NONE,
     val pets: List<Pet> = emptyList(),
     val selectedPetId: Long? = null,

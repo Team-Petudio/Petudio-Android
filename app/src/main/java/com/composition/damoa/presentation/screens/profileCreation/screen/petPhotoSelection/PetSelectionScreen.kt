@@ -9,13 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.composition.damoa.presentation.common.components.KeepGoingButton
-import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.component.PetPhotoSelectContent
-import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.state.PetPhotoSelectionUiState
+import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.component.PetSelectionContent
+import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.state.PetSelectionUiState
 
 @Composable
-fun PetPhotoSelectionScreen(
+fun PetSelectionScreen(
     modifier: Modifier = Modifier,
-    petPhotoSelectionUiState: PetPhotoSelectionUiState,
+    petSelectionUiState: PetSelectionUiState,
     onNewPhotoUploadClick: () -> Unit,
     onKeepGoingClick: () -> Unit,
 ) {
@@ -26,14 +26,14 @@ fun PetPhotoSelectionScreen(
             .fillMaxSize()
             .padding(horizontal = 20.dp),
     ) {
-        PetPhotoSelectContent(
-            pets = petPhotoSelectionUiState.pets,
-            selectedPetId = petPhotoSelectionUiState.selectedPetId,
-            onPetSelected = { petId -> petPhotoSelectionUiState.onPetSelected(petId) },
+        PetSelectionContent(
+            pets = petSelectionUiState.pets,
+            selectedPetId = petSelectionUiState.selectedPetId,
+            onPetSelected = { petId -> petSelectionUiState.onPetSelected(petId) },
             onNewPhotoUploadClick = onNewPhotoUploadClick,
         )
         KeepGoingButton(
-            enabled = petPhotoSelectionUiState.selectedPetId != null,
+            enabled = petSelectionUiState.selectedPetId != null,
             onClick = onKeepGoingClick,
         )
     }

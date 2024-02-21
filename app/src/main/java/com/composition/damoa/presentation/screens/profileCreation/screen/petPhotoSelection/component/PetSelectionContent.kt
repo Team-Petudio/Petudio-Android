@@ -5,7 +5,7 @@ import com.composition.damoa.data.model.Pet
 
 
 @Composable
-fun PetPhotoSelectContent(
+fun PetSelectionContent(
     pets: List<Pet>,
     selectedPetId: Long? = null,
     onPetSelected: (petId: Long) -> Unit,
