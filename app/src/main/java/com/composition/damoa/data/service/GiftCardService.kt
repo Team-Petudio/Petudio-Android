@@ -12,5 +12,7 @@ interface GiftCardService {
     suspend fun getGiftCards(): ApiResponse<BaseResponse<GiftCardsResponse>>
 
     @DELETE("/api/v1/gift/use")
-    suspend fun useGiftCard(@Query("giftCode") giftCode: String): ApiResponse<Unit>
+    suspend fun useGiftCard(
+        @Query("giftCode") giftCode: String,
+    ): ApiResponse<Unit>
 }
