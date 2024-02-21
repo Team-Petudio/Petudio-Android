@@ -54,7 +54,7 @@ fun SelectablePetItem(
             .padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        PetThumbnail(thumbnailUrl = pet.thumbnailUrl)
+        PetThumbnail(thumbnailUrl = pet.petImageUrl)
         PetInformation(pet = pet)
     }
 }

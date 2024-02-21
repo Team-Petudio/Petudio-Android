@@ -9,5 +9,5 @@ fun PetsResponse.toDomain(): List<Pet> = pets
 private fun PetsResponse.PetResponse.toDomain(): Pet = Pet(
     id = id,
     petName = name,
-    thumbnailUrl = thumbnailUrl,
+    petImageUrl = petImageUrl,
 )

@@ -15,6 +15,6 @@ data class PetsResponse(
         @SerialName("name")
         val name: String,
         @SerialName("mainImageUri")
-        val thumbnailUrl: String,
+        val petImageUrl: String,
     )
 }
