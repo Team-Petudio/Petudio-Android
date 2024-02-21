@@ -14,9 +14,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Qualifier
 
+
 @Module
 @InstallIn(ActivityComponent::class)
 class AuthManagerModule {
+
     @GoogleAuth
     @Provides
     @ActivityScoped
@@ -32,6 +34,7 @@ class AuthManagerModule {
         @ApplicationContext context: Context,
     ): AuthManager = KakaoAuthManager(context)
 }
+
 
 @Retention(AnnotationRetention.BINARY)
 @Qualifier
