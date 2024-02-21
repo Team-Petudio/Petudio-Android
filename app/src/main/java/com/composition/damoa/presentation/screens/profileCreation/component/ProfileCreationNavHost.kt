@@ -44,7 +44,6 @@ fun ProfileCreationNavHost(
     petPhotoSelectionUiState: PetPhotoSelectionUiState,
     petInfoUiState: PetInfoUiState,
     onPetNameChanged: (String) -> Unit,
-    onPetColorSelected: (PetColor) -> Unit,
     onPetUploadClick: () -> Unit,
     onPhotoUploadClick: () -> Unit,
     photoUploadResultUiState: PhotoUploadResultUiState,
@@ -77,8 +76,7 @@ fun ProfileCreationNavHost(
         }
         composable(ProfileCreationScreen.PET_COLOR.route) {
             PetColorScreen(
-                selectedPetColor = petInfoUiState.petColor,
-                onPetColorSelected = onPetColorSelected,
+                petInfoUiState = petInfoUiState,
                 onKeepGoingClick = { navController.navigate(ProfileCreationScreen.PHOTO_UPLOAD_INTRODUCE.route) }
             )
         }

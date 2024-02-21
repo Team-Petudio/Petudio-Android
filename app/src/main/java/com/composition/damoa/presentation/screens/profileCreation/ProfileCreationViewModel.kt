@@ -71,7 +71,11 @@ class ProfileCreationViewModel @Inject constructor(
     )
     val selectedImageUiState = _photoUploadResultUiState.asStateFlow()
 
-    private val _petInfoUiState = MutableStateFlow(PetInfoUiState())
+    private val _petInfoUiState = MutableStateFlow(
+        PetInfoUiState(
+            onPetColorSelected = ::updateColor,
+        )
+    )
     val petInfoUiState = _petInfoUiState.asStateFlow()
 
     private lateinit var s3ImageUrls: S3ImageUrls
@@ -150,7 +154,7 @@ class ProfileCreationViewModel @Inject constructor(
         _petInfoUiState.value = petInfoUiState.value.copy(petName = name)
     }
 
-    fun updateColor(color: PetColor) {
+    private fun updateColor(color: PetColor) {
         _petInfoUiState.value = _petInfoUiState.value.copy(petColor = color)
     }
 

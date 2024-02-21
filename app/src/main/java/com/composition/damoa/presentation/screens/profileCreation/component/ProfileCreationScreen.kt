@@ -42,7 +42,6 @@ fun ProfileCreationScreen(
                 petPhotoSelectionUiState = petPhotoSelectionUiState,
                 petInfoUiState = petUiState,
                 onPetNameChanged = viewModel::updatePetName,
-                onPetColorSelected = viewModel::updateColor,
                 onPetUploadClick = viewModel::uploadPetImages,
                 onPhotoUploadClick = onPhotoUploadClick,
                 photoUploadResultUiState = selectedImageUiState,
