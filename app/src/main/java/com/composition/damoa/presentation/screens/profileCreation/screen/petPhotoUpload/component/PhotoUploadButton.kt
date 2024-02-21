@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.component
+package com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoUpload.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
 import com.composition.damoa.presentation.common.components.GradientButton
 import com.composition.damoa.presentation.ui.theme.PrimaryColors
+
 
 @Composable
 fun PhotoUploadButton(

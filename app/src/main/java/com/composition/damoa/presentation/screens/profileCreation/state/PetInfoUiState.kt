@@ -10,4 +10,5 @@ data class PetInfoUiState(
     val petColor: PetColor? = null,
     val onPetColorSelected: (PetColor) -> Unit,
     val uploadedPetPhotoUrls: List<String> = emptyList(),
+    val onPetUploadClick: () -> Unit,
 ) : BaseUiState()

@@ -6,16 +6,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.composition.damoa.data.model.PetType
+import com.composition.damoa.presentation.screens.profileCreation.screen.payment.PaymentResultScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.payment.PaymentScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.payment.state.PaymentUiState
-import com.composition.damoa.presentation.screens.profileCreation.screen.paymentResult.PaymentResultScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.petColor.PetColorScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.petName.PetNameScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.PetPhotoSelectionScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.state.PetPhotoSelectionUiState
-import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.PhotoUploadIntroduceScreen
-import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadResult.PhotoUploadResultScreen
-import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadResult.state.PhotoUploadResultUiState
+import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoUpload.PetPhotoUploadResultScreen
+import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoUpload.PhotoUploadIntroduceScreen
+import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoUpload.state.PhotoUploadUiState
 import com.composition.damoa.presentation.screens.profileCreation.screen.profileCreationIntroduce.ProfileCreationIntroduceScreen
 import com.composition.damoa.presentation.screens.profileCreation.screen.profileCreationIntroduce.state.ConceptDetailUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
@@ -42,9 +42,8 @@ fun ProfileCreationNavHost(
     conceptDetailUiState: ConceptDetailUiState,
     petPhotoSelectionUiState: PetPhotoSelectionUiState,
     petInfoUiState: PetInfoUiState,
-    onPetUploadClick: () -> Unit,
     onPhotoUploadClick: () -> Unit,
-    photoUploadResultUiState: PhotoUploadResultUiState,
+    photoUploadUiState: PhotoUploadUiState,
     paymentUiState: PaymentUiState,
 ) {
     NavHost(
@@ -80,15 +79,15 @@ fun ProfileCreationNavHost(
         }
         composable(ProfileCreationScreen.PHOTO_UPLOAD_INTRODUCE.route) {
             PhotoUploadIntroduceScreen(
+                photoUploadUiState = photoUploadUiState,
                 onPhotoUploadClick = onPhotoUploadClick,
-                photoUploadResultUiState = photoUploadResultUiState,
             )
         }
         composable(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route) {
-            PhotoUploadResultScreen(
-                onPetUploadClick = onPetUploadClick,
-                photoUploadResultUiState = photoUploadResultUiState,
-                onPhotoUploadClick = onPhotoUploadClick,
+            PetPhotoUploadResultScreen(
+                photoUploadUiState = photoUploadUiState,
+                petInfoUiState = petInfoUiState,
+                onPetPhotosUploadClick = onPhotoUploadClick,
             )
         }
         composable(ProfileCreationScreen.PAYMENT.route) {

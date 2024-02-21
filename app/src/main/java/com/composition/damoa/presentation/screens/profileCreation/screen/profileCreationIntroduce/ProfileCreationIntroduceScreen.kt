@@ -32,7 +32,8 @@ import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
 import com.composition.damoa.presentation.common.components.SmallTitle
-import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationScreen
+import com.composition.damoa.presentation.screens.profileCreation.component.ProfileCreationScreen
+
 
 @Composable
 fun ProfileCreationIntroduceScreen(

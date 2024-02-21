@@ -1,8 +1,9 @@
-package com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.component
+package com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoUpload.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
@@ -20,34 +21,51 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.composition.damoa.R
-import com.composition.damoa.presentation.common.utils.badDogPhotoExamples
-import com.composition.damoa.presentation.common.utils.goodDogPhotoExamples
-import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.PetPhoto
+import com.composition.damoa.presentation.common.components.SmallDescription
+import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoUpload.model.PetPhoto
 import com.composition.damoa.presentation.ui.theme.AlertIconColor
 import com.composition.damoa.presentation.ui.theme.GoodIconColor
 import com.composition.damoa.presentation.ui.theme.Gray40
 import java.io.File
 
+
 @Composable
-fun PetPhoto(
+fun PetPhotoItem(
     modifier: Modifier = Modifier,
-    petPhoto: File,
+    petPhoto: PetPhoto,
+    photoType: PetPhoto.PhotoType,
+) {
+    Column(modifier) {
+        PetPhotoItem(
+            petPhoto = petPhoto.imageRes,
+            photoType = photoType
+        )
+        SmallDescription(
+            modifier = Modifier.padding(top = 8.dp),
+            descriptionRes = petPhoto.descRes,
+        )
+    }
+}
+
+@Composable
+private fun PetPhotoItem(
+    modifier: Modifier = Modifier,
+    @DrawableRes petPhoto: Int,
     photoType: PetPhoto.PhotoType,
     onDelete: () -> Unit = {},
 ) {
     Box(modifier = modifier.padding(6.dp)) {
-        PetPhoto(petPhoto = petPhoto)
-        ExampleIcon(
+        PetPhotoItem(petPhoto = petPhoto)
+        PetPhotoTypeIcon(
             modifier = Modifier
                 .padding(6.dp)
                 .size(28.dp),
-            photoType = photoType,
+            petPhotoType = photoType,
         )
         if (photoType == PetPhoto.PhotoType.GOOD_EXAMPLE) {
             DeleteButton(
@@ -61,19 +79,19 @@ fun PetPhoto(
 }
 
 @Composable
-fun PetPhoto(
+fun PetPhotoItem(
     modifier: Modifier = Modifier,
-    @DrawableRes petPhoto: Int,
+    petPhoto: File,
     photoType: PetPhoto.PhotoType,
     onDelete: () -> Unit = {},
 ) {
     Box(modifier = modifier.padding(6.dp)) {
-        PetPhoto(petPhoto = petPhoto)
-        ExampleIcon(
+        PetPhotoItem(petPhoto = petPhoto)
+        PetPhotoTypeIcon(
             modifier = Modifier
                 .padding(6.dp)
                 .size(28.dp),
-            photoType = photoType,
+            petPhotoType = photoType,
         )
         if (photoType == PetPhoto.PhotoType.GOOD_EXAMPLE) {
             DeleteButton(
@@ -88,7 +106,7 @@ fun PetPhoto(
 
 @Composable
 @OptIn(ExperimentalGlideComposeApi::class)
-private fun PetPhoto(
+private fun PetPhotoItem(
     modifier: Modifier = Modifier,
     petPhoto: Any,
 ) {
@@ -109,28 +127,24 @@ private fun PetPhoto(
 }
 
 @Composable
-private fun ExampleIcon(
+private fun PetPhotoTypeIcon(
     modifier: Modifier = Modifier,
-    photoType: PetPhoto.PhotoType,
+    petPhotoType: PetPhoto.PhotoType,
 ) {
-    when (photoType) {
-        PetPhoto.PhotoType.GOOD_EXAMPLE ->
-            Icon(
-                modifier = modifier,
-                imageVector = Icons.Filled.CheckCircle,
-                contentDescription = null,
-                tint = GoodIconColor,
-            )
+    when (petPhotoType) {
+        PetPhoto.PhotoType.GOOD_EXAMPLE -> Icon(
+            modifier = modifier,
+            imageVector = Icons.Filled.CheckCircle,
+            contentDescription = null,
+            tint = GoodIconColor,
+        )
 
-        PetPhoto.PhotoType.BAD_EXAMPLE ->
-            Icon(
-                modifier = modifier,
-                painter = painterResource(id = R.drawable.ic_close),
-                contentDescription = null,
-                tint = AlertIconColor,
-            )
-
-        PetPhoto.PhotoType.NONE -> {}
+        PetPhoto.PhotoType.BAD_EXAMPLE -> Icon(
+            modifier = modifier,
+            painter = painterResource(id = R.drawable.ic_close),
+            contentDescription = null,
+            tint = AlertIconColor,
+        )
     }
 }
 
@@ -154,31 +168,4 @@ private fun DeleteButton(
             tint = Color.White,
         )
     }
-}
-
-@Preview
-@Composable
-private fun JustPetPhotoPreview() {
-    PetPhoto(
-        petPhoto = goodDogPhotoExamples().first().imageRes,
-        photoType = PetPhoto.PhotoType.NONE,
-    )
-}
-
-@Preview
-@Composable
-private fun BadPetPhotoPreview() {
-    PetPhoto(
-        petPhoto = badDogPhotoExamples().first().imageRes,
-        photoType = PetPhoto.PhotoType.BAD_EXAMPLE,
-    )
-}
-
-@Preview
-@Composable
-private fun DeletablePetPhotoPreview() {
-    PetPhoto(
-        petPhoto = goodDogPhotoExamples().first().imageRes,
-        photoType = PetPhoto.PhotoType.GOOD_EXAMPLE,
-    )
 }

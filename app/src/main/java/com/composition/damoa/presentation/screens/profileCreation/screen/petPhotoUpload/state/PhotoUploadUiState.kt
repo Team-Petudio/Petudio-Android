@@ -1,10 +1,18 @@
-package com.composition.damoa.presentation.common.utils
+package com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoUpload.state
 
 import com.composition.damoa.R
-import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.PetPhoto
+import com.composition.damoa.presentation.common.base.BaseUiState
+import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoUpload.model.PetPhoto
+import java.io.File
 
-fun goodDogPhotoExamples(): List<PetPhoto> =
-    listOf(
+data class PhotoUploadUiState(
+    override val state: State = State.NONE,
+    val selectedImageFiles: List<File> = emptyList(),
+    val badImageFiles: List<File> = emptyList(),
+    val onUnselectImage: (File) -> Unit,
+) : BaseUiState() {
+    val canMoreSelectPhotoSize = 12 - selectedImageFiles.size
+    val goodDogPhotoExamples: List<PetPhoto> = listOf(
         PetPhoto(
             imageRes = R.drawable.img_photo_upload_good_example1,
             descRes = R.string.dog_photo_upload_good_example_desc1,
@@ -23,8 +31,7 @@ fun goodDogPhotoExamples(): List<PetPhoto> =
         ),
     )
 
-fun badDogPhotoExamples(): List<PetPhoto> =
-    listOf(
+    val badDogPhotoExamples: List<PetPhoto> = listOf(
         PetPhoto(
             imageRes = R.drawable.img_photo_upload_bad_example1,
             descRes = R.string.dog_photo_upload_bad_example_desc1,
@@ -42,3 +49,6 @@ fun badDogPhotoExamples(): List<PetPhoto> =
             descRes = R.string.dog_photo_upload_bad_example_desc4,
         ),
     )
+
+    fun isValidPetPhotoSize() = selectedImageFiles.size in 10..12
+}
