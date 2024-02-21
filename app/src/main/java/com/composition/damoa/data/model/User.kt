@@ -6,7 +6,7 @@ data class User(
     val id: Long,
     val email: String,
     val socialType: SocialType,
-    val ticket: Int,
+    val ticketCount: Int,
     val token: Token = Token(),
 ) {
     enum class SocialType {

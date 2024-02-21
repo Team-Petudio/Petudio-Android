@@ -95,7 +95,7 @@ class ProfileCreationViewModel @Inject constructor(
     private fun fetchTicket() {
         viewModelScope.launch {
             when (val user = userRepository.getUser()) {
-                is Success -> _paymentUiState.update { it.copy(ticketCount = user.data.ticket) }
+                is Success -> _paymentUiState.update { it.copy(ticketCount = user.data.ticketCount) }
                 NetworkError -> _paymentUiState.update { it.copy(state = State.NETWORK_ERROR) }
                 TokenExpired -> _event.emit(ProfileCreationUiEvent.TOKEN_EXPIRED)
                 is Failure, is Unexpected -> _paymentUiState.update { it.copy(state = State.NONE) }

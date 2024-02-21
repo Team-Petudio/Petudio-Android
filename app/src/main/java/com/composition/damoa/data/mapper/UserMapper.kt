@@ -7,7 +7,7 @@ fun UserResponse.toDomain(token: User.Token): User = User(
     id = id,
     email = email,
     socialType = socialType.toDomain(),
-    ticket = ticketCount,
+    ticketCount = ticketCount,
     token = token,
 )
 

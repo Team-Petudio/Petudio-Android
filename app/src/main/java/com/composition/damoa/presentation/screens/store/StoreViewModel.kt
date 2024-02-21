@@ -43,7 +43,7 @@ class StoreViewModel @Inject constructor(
             _ticketPurchaseUiState.update { it.copy(state = State.LOADING) }
             when (val user = userRepository.getUser()) {
                 is Success -> _ticketPurchaseUiState.update {
-                    it.copy(state = State.SUCCESS, ticketCount = user.data.ticket)
+                    it.copy(state = State.SUCCESS, ticketCount = user.data.ticketCount)
                 }
 
                 NetworkError -> _ticketPurchaseUiState.update { it.copy(state = State.NETWORK_ERROR) }

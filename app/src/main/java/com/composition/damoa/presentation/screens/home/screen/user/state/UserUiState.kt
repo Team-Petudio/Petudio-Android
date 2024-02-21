@@ -9,7 +9,7 @@ data class UserUiState(
         id = INVALID_USER_ID,
         email = "",
         socialType = User.SocialType.GOOGLE,
-        ticket = 0,
+        ticketCount = 0,
     ),
     val onLogin: () -> Unit,
     val onLogout: () -> Unit,

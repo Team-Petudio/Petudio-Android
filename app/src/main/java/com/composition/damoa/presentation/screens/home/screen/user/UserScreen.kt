@@ -45,7 +45,7 @@ fun UserScreen(
     ) {
         ProfileTitle()
         if (isLogin) UserAccount(modifier = Modifier.padding(top = 28.dp), user = user)
-        UserOptionList(modifier = Modifier.padding(top = 28.dp), myOwnTicketCount = user.ticket, isLogin = isLogin)
+        UserOptionList(modifier = Modifier.padding(top = 28.dp), myOwnTicketCount = user.ticketCount, isLogin = isLogin)
         Spacer(modifier = Modifier.weight(1F))
         if (isLogin) {
             LogoutButton(modifier = Modifier.padding(top = 28.dp)) { isShowLogoutDialog = true }
