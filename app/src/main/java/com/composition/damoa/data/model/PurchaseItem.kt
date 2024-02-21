@@ -2,6 +2,7 @@ package com.composition.damoa.data.model
 
 import com.android.billingclient.api.ProductDetails
 
+
 data class PurchaseItem(
     val productDetails: ProductDetails,
     val category: Category,

@@ -28,7 +28,7 @@ import com.composition.damoa.presentation.screens.profileCreation.state.ProfileC
 import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.TOKEN_EXPIRED
 import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.UNKNOWN_ERROR
 import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.UPLOAD_PET_SUCCESS
-import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseActivity
+import com.composition.damoa.presentation.screens.store.StoreActivity
 import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
@@ -68,7 +68,7 @@ class ProfileCreationActivity : ComponentActivity() {
                     NETWORK_ERROR -> showToast(R.string.network_failure_message)
                     UNKNOWN_ERROR -> showToast(R.string.unknown_error_message)
                     PAYMENT_FAILED_LACK_OF_TICKET -> {
-                        TicketPurchaseActivity.startActivity(this@ProfileCreationActivity)
+                        StoreActivity.startActivity(this@ProfileCreationActivity)
                         finish()
                     }
 

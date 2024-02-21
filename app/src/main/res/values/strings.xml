@@ -106,7 +106,7 @@
     <string name="sign_out">회원탈퇴</string>
     <string name="sign_out_desc">탈퇴하시면 이용내역 및 AI 프로필 제작 내역이 모두 삭제되며, 복구할 수 없습니다.\n정말로 탈퇴 하시겠습니까?</string>
 
-    <string name="ticket_purchase_title">티켓 구매</string>
+    <string name="store_title">판매 상품</string>
     <string name="my_ticket_count">보유 티켓</string>
     <string name="gift_card_number_title">기프트 카드 번호</string>
     <string name="item_ai_profile_ticket">AI 프로필 생성 티켓</string>

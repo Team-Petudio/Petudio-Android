@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.ticketPurchase
+package com.composition.damoa.presentation.screens.store
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,7 +11,9 @@ import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.model.PurchaseItem
 import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.presentation.common.base.BaseUiState.State
-import com.composition.damoa.presentation.screens.ticketPurchase.state.TicketPurchaseUiState
+import com.composition.damoa.presentation.screens.store.state.StoreUiEvent
+import com.composition.damoa.presentation.screens.store.state.StoreUiEvent.TOKEN_EXPIRED
+import com.composition.damoa.presentation.screens.store.state.TicketPurchaseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,13 +24,13 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class TicketPurchaseViewModel @Inject constructor(
+class StoreViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ) : ViewModel() {
     private val _ticketPurchaseUiState = MutableStateFlow(TicketPurchaseUiState())
     val ticketPurchaseUiState = _ticketPurchaseUiState.asStateFlow()
 
-    private val _event = MutableSharedFlow<Event>()
+    private val _event = MutableSharedFlow<StoreUiEvent>()
     val event = _event.asSharedFlow()
 
     init {
@@ -47,7 +49,7 @@ class TicketPurchaseViewModel @Inject constructor(
                 NetworkError -> _ticketPurchaseUiState.value =
                     ticketPurchaseUiState.value.copy(state = State.NETWORK_ERROR)
 
-                TokenExpired -> _event.emit(Event.TOKEN_EXPIRED)
+                TokenExpired -> _event.emit(TOKEN_EXPIRED)
                 is Failure, is Unexpected -> _ticketPurchaseUiState.value = ticketPurchaseUiState.value.copy(
                     state = State.NONE
                 )
@@ -63,9 +65,5 @@ class TicketPurchaseViewModel @Inject constructor(
             )
         }
         _ticketPurchaseUiState.value = ticketPurchaseUiState.value.copy(purchaseItems = purchaseItems)
-    }
-
-    enum class Event {
-        TOKEN_EXPIRED,
     }
 }

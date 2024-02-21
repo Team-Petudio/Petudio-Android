@@ -50,7 +50,7 @@
             android:name=".presentation.screens.giftcard.GiftCardActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.screens.ticketPurchase.TicketPurchaseActivity"
+            android:name=".presentation.screens.store.StoreActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.screens.album.AlbumActivity"

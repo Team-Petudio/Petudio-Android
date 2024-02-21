@@ -11,7 +11,7 @@ import com.composition.damoa.presentation.common.extensions.navigateToPrivacy
 import com.composition.damoa.presentation.common.extensions.navigateToTermOfUse
 import com.composition.damoa.presentation.common.extensions.navigateToWebsite
 import com.composition.damoa.presentation.screens.giftcard.GiftCardActivity
-import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseActivity
+import com.composition.damoa.presentation.screens.store.StoreActivity
 
 
 @Composable
@@ -24,7 +24,7 @@ fun UserOptionList(
 
     Column(modifier) {
         if (isLogin) {
-            TicketPurchase(myOwnTicketCount) { TicketPurchaseActivity.startActivity(context) }
+            TicketPurchase(myOwnTicketCount) { StoreActivity.startActivity(context) }
             GiftCard { GiftCardActivity.startActivity(context) }
         }
         Question { context.navigateToWebsite("https://petudio.notion.site/09ab51dbfaae49bfbb3cc9278fdcdb19?pvs=4") }

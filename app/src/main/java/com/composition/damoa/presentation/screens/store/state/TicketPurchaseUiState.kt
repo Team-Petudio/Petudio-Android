@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.ticketPurchase.state
+package com.composition.damoa.presentation.screens.store.state
 
 import com.composition.damoa.data.model.PurchaseItem
 import com.composition.damoa.presentation.common.base.BaseUiState
