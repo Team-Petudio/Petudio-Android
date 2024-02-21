@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation.screen.paymentResult
+package com.composition.damoa.presentation.screens.profileCreation.screen.payment
 
 import android.content.Context
 import androidx.compose.foundation.background
@@ -17,7 +17,7 @@ import com.composition.damoa.data.model.PetType
 import com.composition.damoa.presentation.common.extensions.showToast
 import com.composition.damoa.presentation.common.utils.permissionRequester.Permission
 import com.composition.damoa.presentation.common.utils.permissionRequester.PermissionRequester
-import com.composition.damoa.presentation.screens.profileCreation.screen.paymentResult.component.PaymentResultContent
+import com.composition.damoa.presentation.screens.profileCreation.screen.payment.component.PaymentResultContent
 
 
 @Composable

@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation.screen.paymentResult.component
+package com.composition.damoa.presentation.screens.profileCreation.screen.payment.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
