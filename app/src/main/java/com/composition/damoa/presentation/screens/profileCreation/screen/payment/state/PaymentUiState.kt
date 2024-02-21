@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation.state
+package com.composition.damoa.presentation.screens.profileCreation.screen.payment.state
 
 import com.composition.damoa.presentation.common.base.BaseUiState
 

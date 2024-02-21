@@ -47,8 +47,8 @@ import com.composition.damoa.data.model.Pet
 import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.MediumTitle
-import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationScreen
-import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoSelectionUiState
+import com.composition.damoa.presentation.screens.profileCreation.component.ProfileCreationScreen
+import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.state.PetPhotoSelectionUiState
 import com.composition.damoa.presentation.ui.theme.Gray20
 import com.composition.damoa.presentation.ui.theme.Purple60
 

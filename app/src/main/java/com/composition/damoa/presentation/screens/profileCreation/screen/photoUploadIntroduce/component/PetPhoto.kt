@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation.component
+package com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable

@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation
+package com.composition.damoa.presentation.common.utils
 
 import android.content.Context
 import androidx.activity.ComponentActivity

@@ -19,12 +19,12 @@ import com.composition.damoa.data.repository.interfaces.S3ImageRepository
 import com.composition.damoa.data.repository.interfaces.S3ImageUrlRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
 import com.composition.damoa.presentation.common.base.BaseUiState.State
-import com.composition.damoa.presentation.screens.profileCreation.state.ConceptDetailUiState
-import com.composition.damoa.presentation.screens.profileCreation.state.PaymentUiState
+import com.composition.damoa.presentation.screens.profileCreation.screen.profileCreationIntroduce.state.ConceptDetailUiState
+import com.composition.damoa.presentation.screens.profileCreation.screen.payment.state.PaymentUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
-import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoSelectionUiState
+import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.state.PetPhotoSelectionUiState
 import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent
-import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
+import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadResult.state.PhotoUploadResultUiState
 import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -66,10 +66,10 @@ class ProfileCreationViewModel @Inject constructor(
     )
     val petPhotoSelectionUiState = _petPhotoSelectionUiState.asStateFlow()
 
-    private val _selectedImageUiState = MutableStateFlow(
-        SelectedImageUiState(onUnselectImage = ::unselectPetImage)
+    private val _photoUploadResultUiState = MutableStateFlow(
+        PhotoUploadResultUiState(onUnselectImage = ::unselectPetImage)
     )
-    val selectedImageUiState = _selectedImageUiState.asStateFlow()
+    val selectedImageUiState = _photoUploadResultUiState.asStateFlow()
 
     private val _petInfoUiState = MutableStateFlow(PetInfoUiState())
     val petInfoUiState = _petInfoUiState.asStateFlow()
@@ -257,7 +257,7 @@ class ProfileCreationViewModel @Inject constructor(
     }
 
     fun changeToImageSelectLoading() {
-        _selectedImageUiState.tryEmit(selectedImageUiState.value.copy(state = State.LOADING))
+        _photoUploadResultUiState.tryEmit(selectedImageUiState.value.copy(state = State.LOADING))
     }
 
     fun validatePetImageSize(images: List<Image>): Boolean {
@@ -285,13 +285,13 @@ class ProfileCreationViewModel @Inject constructor(
                         selectedImageFiles = originSelectedImageFiles + goodImageFiles,
                         badImageFiles = badImageFiles
                     )
-                    _selectedImageUiState.emit(newSelectedImageUiState)
+                    _photoUploadResultUiState.emit(newSelectedImageUiState)
                     _event.emit(ProfileCreationUiEvent.PET_DETECT_SUCCESS)
                 }
 
                 else -> {
                     _event.emit(ProfileCreationUiEvent.UNKNOWN_ERROR)
-                    _selectedImageUiState.emit(selectedImageUiState.value.copy(state = State.NONE))
+                    _photoUploadResultUiState.emit(selectedImageUiState.value.copy(state = State.NONE))
                 }
             }
         }
@@ -313,7 +313,7 @@ class ProfileCreationViewModel @Inject constructor(
 
     private fun unselectPetImage(imageFile: File) {
         val unselectedImageFiles = selectedImageUiState.value.selectedImageFiles - imageFile
-        _selectedImageUiState.value = selectedImageUiState.value.copy(selectedImageFiles = unselectedImageFiles)
+        _photoUploadResultUiState.value = selectedImageUiState.value.copy(selectedImageFiles = unselectedImageFiles)
     }
 
     companion object {

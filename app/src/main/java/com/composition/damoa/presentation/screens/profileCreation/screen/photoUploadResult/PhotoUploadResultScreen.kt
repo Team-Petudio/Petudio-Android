@@ -27,16 +27,16 @@ import com.composition.damoa.presentation.common.components.BigTitle
 import com.composition.damoa.presentation.common.components.KeepGoingButton
 import com.composition.damoa.presentation.common.components.MediumDescription
 import com.composition.damoa.presentation.common.components.TinyTitle
-import com.composition.damoa.presentation.screens.profileCreation.component.PetPhoto
-import com.composition.damoa.presentation.screens.profileCreation.component.PhotoUploadButton
+import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.component.PetPhoto
+import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.component.PhotoUploadButton
 import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.PetPhoto
-import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
+import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadResult.state.PhotoUploadResultUiState
 import java.io.File
 
 @Composable
 fun PhotoUploadResultScreen(
     modifier: Modifier = Modifier,
-    selectedImageUiState: SelectedImageUiState,
+    photoUploadResultUiState: PhotoUploadResultUiState,
     onPetUploadClick: () -> Unit,
     onPhotoUploadClick: () -> Unit,
 ) {
@@ -48,15 +48,15 @@ fun PhotoUploadResultScreen(
             .padding(horizontal = 20.dp),
     ) {
         PhotoUploadIntroduceContent(
-            badPetPhotos = selectedImageUiState.badImageFiles,
-            goodPetPhotos = selectedImageUiState.selectedImageFiles,
-            onUnselectImage = selectedImageUiState.onUnselectImage,
+            badPetPhotos = photoUploadResultUiState.badImageFiles,
+            goodPetPhotos = photoUploadResultUiState.selectedImageFiles,
+            onUnselectImage = photoUploadResultUiState.onUnselectImage,
         )
         Column(Modifier.padding(bottom = 20.dp)) {
             Spacer(modifier = Modifier.weight(1F))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 PhotoUploadButton(modifier = Modifier.weight(1F), onClick = onPhotoUploadClick)
-                if (selectedImageUiState.isValidPetPhotoSize()) {
+                if (photoUploadResultUiState.isValidPetPhotoSize()) {
                     KeepGoingButton(modifier = Modifier.weight(1F), onClick = onPetUploadClick)
                 }
             }

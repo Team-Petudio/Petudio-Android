@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation.state
+package com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.state
 
 import com.composition.damoa.data.model.Pet
 import com.composition.damoa.presentation.common.base.BaseUiState

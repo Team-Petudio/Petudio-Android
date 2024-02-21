@@ -1,8 +1,7 @@
-package com.composition.damoa.presentation.screens.profileCreation.component
+package com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding

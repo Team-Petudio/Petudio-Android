@@ -33,9 +33,9 @@ import com.composition.damoa.presentation.common.components.SmallDescription
 import com.composition.damoa.presentation.common.components.SmallTitle
 import com.composition.damoa.presentation.common.utils.badDogPhotoExamples
 import com.composition.damoa.presentation.common.utils.goodDogPhotoExamples
-import com.composition.damoa.presentation.screens.profileCreation.component.PetPhoto
-import com.composition.damoa.presentation.screens.profileCreation.component.PhotoUploadButton
-import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
+import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.component.PetPhoto
+import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.component.PhotoUploadButton
+import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadResult.state.PhotoUploadResultUiState
 
 data class PetPhoto(
     @DrawableRes val imageRes: Int,
@@ -52,7 +52,7 @@ data class PetPhoto(
 fun PhotoUploadIntroduceScreen(
     modifier: Modifier = Modifier,
     petType: PetType = PetType.DOG,
-    selectedImageUiState: SelectedImageUiState,
+    photoUploadResultUiState: PhotoUploadResultUiState,
     onPhotoUploadClick: () -> Unit = {},
 ) {
     Surface(
@@ -69,7 +69,7 @@ fun PhotoUploadIntroduceScreen(
             goodPetPhotos = goodDogPhotoExamples(),
         )
         PhotoUploadButton(onClick = onPhotoUploadClick)
-        if (selectedImageUiState.state == State.LOADING) LoadingScreen()
+        if (photoUploadResultUiState.state == State.LOADING) LoadingScreen()
     }
 }
 

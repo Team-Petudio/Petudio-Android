@@ -6,49 +6,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
-import com.composition.damoa.data.model.PetColor
-import com.composition.damoa.data.model.PetType
 import com.composition.damoa.presentation.common.extensions.onDefault
 import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.common.extensions.reduceImageSizeAndCreateFile
 import com.composition.damoa.presentation.common.extensions.showToast
+import com.composition.damoa.presentation.common.utils.PhotoPicker
 import com.composition.damoa.presentation.common.utils.permissionRequester.Permission
 import com.composition.damoa.presentation.common.utils.permissionRequester.PermissionRequester
 import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.Companion.KEY_CONCEPT_ID
-import com.composition.damoa.presentation.screens.profileCreation.screen.payment.PaymentScreen
-import com.composition.damoa.presentation.screens.profileCreation.screen.paymentResult.PaymentResultScreen
-import com.composition.damoa.presentation.screens.profileCreation.screen.petColor.PetColorScreen
-import com.composition.damoa.presentation.screens.profileCreation.screen.petName.PetNameScreen
-import com.composition.damoa.presentation.screens.profileCreation.screen.petPhotoSelection.PetPhotoSelectionScreen
-import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadIntroduce.PhotoUploadIntroduceScreen
-import com.composition.damoa.presentation.screens.profileCreation.screen.photoUploadResult.PhotoUploadResultScreen
-import com.composition.damoa.presentation.screens.profileCreation.screen.profileCreationIntroduce.ProfileCreationIntroduceScreen
-import com.composition.damoa.presentation.screens.profileCreation.state.ConceptDetailUiState
-import com.composition.damoa.presentation.screens.profileCreation.state.PaymentUiState
-import com.composition.damoa.presentation.screens.profileCreation.state.PetInfoUiState
-import com.composition.damoa.presentation.screens.profileCreation.state.PetPhotoSelectionUiState
+import com.composition.damoa.presentation.screens.profileCreation.component.ProfileCreationScreen
 import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent
 import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.INVALID_PET_IMAGE_SIZE
 import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.NETWORK_ERROR
@@ -58,9 +28,7 @@ import com.composition.damoa.presentation.screens.profileCreation.state.ProfileC
 import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.TOKEN_EXPIRED
 import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.UNKNOWN_ERROR
 import com.composition.damoa.presentation.screens.profileCreation.state.ProfileCreationUiEvent.UPLOAD_PET_SUCCESS
-import com.composition.damoa.presentation.screens.profileCreation.state.SelectedImageUiState
 import com.composition.damoa.presentation.screens.ticketPurchase.TicketPurchaseActivity
-import com.composition.damoa.presentation.ui.theme.PetudioTheme
 import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
@@ -79,10 +47,10 @@ class ProfileCreationActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            ProfileCreation(
+            ProfileCreationScreen(
                 viewModel = viewModel,
-                onPhotoUploadClick = ::launchStoragePermissionRequester,
                 navController = navController,
+                onPhotoUploadClick = ::launchStoragePermissionRequester,
             )
 
             viewModel.event.collectEvent(navController)
@@ -147,153 +115,9 @@ class ProfileCreationActivity : ComponentActivity() {
 
     companion object {
         fun startActivity(context: Context, conceptId: Long) {
-            context.startActivity(getIntent(context, conceptId))
-        }
-
-        private fun getIntent(
-            context: Context,
-            conceptId: Long,
-        ): Intent = Intent(context, ProfileCreationActivity::class.java)
-            .putExtra(KEY_CONCEPT_ID, conceptId)
-    }
-}
-
-@Composable
-private fun ProfileCreation(
-    viewModel: ProfileCreationViewModel,
-    onPhotoUploadClick: () -> Unit,
-    navController: NavHostController = rememberNavController(),
-) {
-    PetudioTheme {
-        val activity = LocalContext.current as? ComponentActivity
-        val conceptDetailUiState by viewModel.conceptDetailUiState.collectAsStateWithLifecycle()
-        val petPhotoSelectionUiState by viewModel.petPhotoSelectionUiState.collectAsStateWithLifecycle()
-        val petUiState by viewModel.petInfoUiState.collectAsStateWithLifecycle()
-        val selectedImageUiState by viewModel.selectedImageUiState.collectAsStateWithLifecycle()
-        val ticketUiState by viewModel.paymentUiState.collectAsStateWithLifecycle()
-
-        Scaffold(
-            topBar = {
-                ProfileCreationTopAppBar(
-                    onNavigationClick = { if (!navController.popBackStack()) activity?.finish() },
-                )
-            },
-        ) { padding ->
-            ProfileCreationNavHost(
-                modifier = Modifier.padding(top = padding.calculateTopPadding()),
-                navController = navController,
-                conceptDetailUiState = conceptDetailUiState,
-                petPhotoSelectionUiState = petPhotoSelectionUiState,
-                petInfoUiState = petUiState,
-                onPetNameChanged = viewModel::updatePetName,
-                onPetColorSelected = viewModel::updateColor,
-                onPetUploadClick = viewModel::uploadPetImages,
-                onPhotoUploadClick = onPhotoUploadClick,
-                selectedImageUiState = selectedImageUiState,
-                paymentUiState = ticketUiState,
-            )
+            val intent = Intent(context, ProfileCreationActivity::class.java)
+                .putExtra(KEY_CONCEPT_ID, conceptId)
+            context.startActivity(intent)
         }
     }
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun ProfileCreationTopAppBar(onNavigationClick: () -> Unit = {}) {
-    TopAppBar(
-        title = { },
-        navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = stringResource(id = R.string.navigate_back),
-                    tint = Color.Black,
-                )
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
-    )
-}
-
-@Composable
-private fun ProfileCreationNavHost(
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
-    startDestination: ProfileCreationScreen = ProfileCreationScreen.PROFILE_CREATION_INTRODUCE,
-    conceptDetailUiState: ConceptDetailUiState,
-    petPhotoSelectionUiState: PetPhotoSelectionUiState,
-    petInfoUiState: PetInfoUiState,
-    onPetNameChanged: (String) -> Unit,
-    onPetColorSelected: (PetColor) -> Unit,
-    onPetUploadClick: () -> Unit,
-    onPhotoUploadClick: () -> Unit,
-    selectedImageUiState: SelectedImageUiState,
-    paymentUiState: PaymentUiState,
-) {
-    NavHost(
-        modifier = modifier,
-        navController = navController,
-        startDestination = startDestination.route,
-    ) {
-        composable(ProfileCreationScreen.PROFILE_CREATION_INTRODUCE.route) {
-            ProfileCreationIntroduceScreen(
-                navController = navController,
-                profileConceptDetail = conceptDetailUiState.conceptDetail,
-                hasAlreadyPet = petPhotoSelectionUiState.pets.isNotEmpty(),
-            )
-        }
-        composable(ProfileCreationScreen.PET_PHOTO_SELECT.route) {
-            PetPhotoSelectionScreen(
-                petPhotoSelectionUiState = petPhotoSelectionUiState,
-                navController = navController
-            )
-        }
-        composable(ProfileCreationScreen.PET_NAME.route) {
-            PetNameScreen(
-                navController = navController,
-                petName = petInfoUiState.petName,
-                onPetNameChanged = onPetNameChanged
-            )
-        }
-        composable(ProfileCreationScreen.PET_COLOR.route) {
-            PetColorScreen(
-                selectedPetColor = petInfoUiState.petColor,
-                onPetColorSelected = onPetColorSelected,
-                onKeepGoingClick = { navController.navigate(ProfileCreationScreen.PHOTO_UPLOAD_INTRODUCE.route) }
-            )
-        }
-        composable(ProfileCreationScreen.PHOTO_UPLOAD_INTRODUCE.route) {
-            PhotoUploadIntroduceScreen(
-                onPhotoUploadClick = onPhotoUploadClick,
-                selectedImageUiState = selectedImageUiState,
-            )
-        }
-        composable(ProfileCreationScreen.PHOTO_UPLOAD_RESULT.route) {
-            PhotoUploadResultScreen(
-                onPetUploadClick = onPetUploadClick,
-                selectedImageUiState = selectedImageUiState,
-                onPhotoUploadClick = onPhotoUploadClick,
-            )
-        }
-        composable(ProfileCreationScreen.PAYMENT.route) {
-            PaymentScreen(paymentUiState = paymentUiState)
-        }
-        composable(ProfileCreationScreen.PAYMENT_RESULT.route) {
-            PaymentResultScreen(
-                petType = conceptDetailUiState.profileConcept?.petType ?: PetType.DOG,
-            )
-        }
-    }
-}
-
-enum class ProfileCreationScreen(
-    val route: String,
-) {
-    PROFILE_CREATION_INTRODUCE("profileCreationIntroduce"),
-    PET_PHOTO_SELECT("petPhotoSelect"),
-    PET_NAME("petName"),
-    PET_COLOR("petColor/{petType}"),
-    PHOTO_UPLOAD_INTRODUCE("photoUploadIntroduce"),
-    PHOTO_UPLOAD_RESULT("photoUploadResult"),
-    PAYMENT("payment"),
-    PAYMENT_RESULT("paymentResult"),
 }

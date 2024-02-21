@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.common.components
+package com.composition.damoa.presentation.screens.profileCreation.screen.payment.component
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke

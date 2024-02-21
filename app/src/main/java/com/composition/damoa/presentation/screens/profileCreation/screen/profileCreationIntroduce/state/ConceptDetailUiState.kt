@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.screens.profileCreation.state
+package com.composition.damoa.presentation.screens.profileCreation.screen.profileCreationIntroduce.state
 
 import com.composition.damoa.data.model.ProfileConcept
 import com.composition.damoa.data.model.ProfileConceptDetail
