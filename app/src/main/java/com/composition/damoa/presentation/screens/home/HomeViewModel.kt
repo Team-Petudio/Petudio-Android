@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,7 +43,7 @@ class HomeViewModel @Inject constructor(
     private val albumRepository: AlbumRepository,
 ) : ViewModel() {
     private val _profileConceptUiState = MutableStateFlow(ProfileConceptUiState())
-    val profileUiState = _profileConceptUiState.asStateFlow()
+    val profileConceptUiState = _profileConceptUiState.asStateFlow()
 
     private val _albumUiState = MutableStateFlow(AlbumUiState())
     val albumUiState = _albumUiState.asStateFlow()
@@ -72,19 +73,14 @@ class HomeViewModel @Inject constructor(
 
     private fun fetchProfileConcepts() {
         viewModelScope.launch {
-            _profileConceptUiState.value = profileUiState.value.copy(state = State.LOADING)
+            _profileConceptUiState.update { it.copy(state = State.LOADING) }
             when (val concepts = conceptRepository.getProfileConcepts()) {
-                is Success -> _profileConceptUiState.value = profileUiState.value.copy(
-                    state = State.SUCCESS,
-                    profileConcepts = concepts.data
-                )
+                is Success -> _profileConceptUiState.update {
+                    it.copy(state = State.SUCCESS, profileConcepts = concepts.data)
+                }
 
-                NetworkError, TokenExpired -> _profileConceptUiState.value = profileUiState.value.copy(
-                    state = State.NETWORK_ERROR
-                )
-
-                is Failure, is Unexpected -> _profileConceptUiState.value =
-                    profileUiState.value.copy(state = State.NONE)
+                NetworkError, TokenExpired -> _profileConceptUiState.update { it.copy(state = State.NETWORK_ERROR) }
+                is Failure, is Unexpected -> _profileConceptUiState.update { it.copy(state = State.NONE) }
             }
         }
     }
@@ -92,9 +88,9 @@ class HomeViewModel @Inject constructor(
     private fun fetchAlbum() {
         viewModelScope.launch {
             when (val album = albumRepository.getAlbums()) {
-                is Success -> _albumUiState.emit(albumUiState.value.copy(state = State.SUCCESS, albums = album.data))
-                NetworkError, TokenExpired -> _albumUiState.emit(albumUiState.value.copy(state = State.NETWORK_ERROR))
-                is Failure, is Unexpected -> _albumUiState.emit(albumUiState.value.copy(state = State.NONE))
+                is Success -> _albumUiState.update { it.copy(state = State.SUCCESS, albums = album.data) }
+                NetworkError, TokenExpired -> _albumUiState.update { it.copy(state = State.NETWORK_ERROR) }
+                is Failure, is Unexpected -> _albumUiState.update { it.copy(state = State.NONE) }
             }
         }
     }
@@ -102,32 +98,35 @@ class HomeViewModel @Inject constructor(
     private fun fetchFeeds(userId: Long) {
         viewModelScope.launch {
             when (val feeds = petFeedRepository.getPetFeeds(userId)) {
-                is Success -> _petFeedUiState.value = petFeedUiState.value.copy(petFeeds = feeds.data)
-                NetworkError, TokenExpired -> _petFeedUiState.emit(petFeedUiState.value.copy(state = State.NETWORK_ERROR))
-                is Failure, is Unexpected -> _petFeedUiState.value = petFeedUiState.value.copy(state = State.NONE)
+                is Success -> _petFeedUiState.update { it.copy(petFeeds = feeds.data) }
+                NetworkError, TokenExpired -> _petFeedUiState.update { it.copy(state = State.NETWORK_ERROR) }
+                is Failure, is Unexpected -> _petFeedUiState.update { it.copy(state = State.NONE) }
             }
 
         }
     }
 
-    private fun toggleFeedLike(toggledPetFeed: PetFeed) {
+    private fun toggleFeedLike(petFeedToToggle: PetFeed) {
         viewModelScope.launch {
             if (!userUiState.value.isLogined) {
                 _event.emit(TOKEN_EXPIRED)
                 return@launch
             }
 
-            when (petFeedRepository.toggleLike(toggledPetFeed.id)) {
-                is Success -> {
-                    val updatedFeeds = petFeedUiState.value.petFeeds.map { petFeed ->
-                        if (petFeed.id == toggledPetFeed.id) updatedFeedLike(petFeed) else petFeed
-                    }
-                    _petFeedUiState.value = petFeedUiState.value.copy(petFeeds = updatedFeeds)
+            when (petFeedRepository.toggleLike(petFeedToToggle.id)) {
+                is Success -> _petFeedUiState.update {
+                    it.copy(petFeeds = it.petFeeds.updateFeedLike(petFeedToToggle.id))
                 }
 
-                NetworkError, TokenExpired -> _petFeedUiState.emit(petFeedUiState.value.copy(state = State.NETWORK_ERROR))
-                is Failure, is Unexpected -> _petFeedUiState.value = petFeedUiState.value.copy(state = State.NONE)
+                NetworkError, TokenExpired -> _petFeedUiState.update { it.copy(state = State.NETWORK_ERROR) }
+                is Failure, is Unexpected -> _petFeedUiState.update { it.copy(state = State.NONE) }
             }
+        }
+    }
+
+    private fun List<PetFeed>.updateFeedLike(feedIdToToggle: Long): List<PetFeed> {
+        return this.map { petFeed ->
+            if (petFeed.id == feedIdToToggle) updatedFeedLike(petFeed) else petFeed
         }
     }
 
@@ -138,20 +137,20 @@ class HomeViewModel @Inject constructor(
 
     private fun fetchUser(onFetched: (user: User?) -> Unit = {}) {
         viewModelScope.launch {
-            _userUiState.value = userUiState.value.copy(state = State.LOADING)
+            _userUiState.update { it.copy(state = State.LOADING) }
             when (val user = userRepository.getUser()) {
                 is Success -> {
-                    _userUiState.emit(userUiState.value.copy(state = State.SUCCESS, user = user.data))
+                    _userUiState.update { it.copy(state = State.SUCCESS, user = user.data) }
                     onFetched(user.data)
                 }
 
                 NetworkError, TokenExpired -> {
-                    _userUiState.emit(userUiState.value.copy(state = State.NETWORK_ERROR))
+                    _userUiState.update { it.copy(state = State.NETWORK_ERROR) }
                     onFetched(null)
                 }
 
                 is Failure, is Unexpected -> {
-                    _userUiState.emit(userUiState.value.copy(state = State.NONE))
+                    _userUiState.update { it.copy(state = State.NONE) }
                     onFetched(null)
                 }
             }

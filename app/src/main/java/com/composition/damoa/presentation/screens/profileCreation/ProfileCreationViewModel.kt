@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -94,12 +95,10 @@ class ProfileCreationViewModel @Inject constructor(
     private fun fetchTicket() {
         viewModelScope.launch {
             when (val user = userRepository.getUser()) {
-                is Success -> _paymentUiState.value = _paymentUiState.value.copy(ticketCount = user.data.ticket)
-                NetworkError -> _paymentUiState.value = _paymentUiState.value.copy(state = State.NETWORK_ERROR)
+                is Success -> _paymentUiState.update { it.copy(ticketCount = user.data.ticket) }
+                NetworkError -> _paymentUiState.update { it.copy(state = State.NETWORK_ERROR) }
                 TokenExpired -> _event.emit(ProfileCreationUiEvent.TOKEN_EXPIRED)
-                is Failure, is Unexpected -> _paymentUiState.value = _paymentUiState.value.copy(
-                    state = State.NONE
-                )
+                is Failure, is Unexpected -> _paymentUiState.update { it.copy(state = State.NONE) }
             }
         }
     }
@@ -107,62 +106,46 @@ class ProfileCreationViewModel @Inject constructor(
     private fun fetchProfileConceptDetail() {
         viewModelScope.launch {
             val profileConcept = getProfileConcept(conceptId) ?: return@launch
-            _profileCreationIntroduceUiState.value = profileCreationIntroduceUiState.value.copy(state = State.LOADING)
+            _profileCreationIntroduceUiState.update { it.copy(state = State.LOADING) }
 
             when (val conceptDetail = conceptRepository.getProfileConceptDetail(conceptId)) {
-                is Success -> _profileCreationIntroduceUiState.value = profileCreationIntroduceUiState.value.copy(
-                    state = State.SUCCESS,
-                    conceptDetail = conceptDetail.data,
-                    profileConcept = profileConcept,
-                )
+                is Success -> _profileCreationIntroduceUiState.update {
+                    it.copy(state = State.SUCCESS, conceptDetail = conceptDetail.data, profileConcept = profileConcept)
+                }
 
-                NetworkError -> _profileCreationIntroduceUiState.value = profileCreationIntroduceUiState.value.copy(
-                    state = State.NETWORK_ERROR
-                )
-
+                NetworkError -> _profileCreationIntroduceUiState.update { it.copy(state = State.NETWORK_ERROR) }
                 TokenExpired -> _event.emit(ProfileCreationUiEvent.TOKEN_EXPIRED)
-                is Failure, is Unexpected -> _profileCreationIntroduceUiState.value =
-                    profileCreationIntroduceUiState.value.copy(
-                        state = State.NONE
-                    )
+                is Failure, is Unexpected -> _profileCreationIntroduceUiState.update { it.copy(state = State.NONE) }
             }
         }
     }
 
     private fun fetchPets() {
         viewModelScope.launch {
-            _petSelectionUiState.value = petSelectionUiState.value.copy(state = State.LOADING)
+            _petSelectionUiState.update { it.copy(state = State.LOADING) }
             when (val conceptDetail = petRepository.getPets()) {
-                is Success -> _petSelectionUiState.value = petSelectionUiState.value.copy(
-                    state = State.SUCCESS,
-                    pets = conceptDetail.data
-                )
-
-                NetworkError -> _petSelectionUiState.value =
-                    petSelectionUiState.value.copy(state = State.NETWORK_ERROR)
-
+                is Success -> _petSelectionUiState.update { it.copy(state = State.SUCCESS, pets = conceptDetail.data) }
+                NetworkError -> _petSelectionUiState.update { it.copy(state = State.NETWORK_ERROR) }
                 TokenExpired -> _event.emit(ProfileCreationUiEvent.TOKEN_EXPIRED)
-                is Failure, is Unexpected -> _petSelectionUiState.value = petSelectionUiState.value.copy(
-                    state = State.NONE
-                )
+                is Failure, is Unexpected -> _petSelectionUiState.update { it.copy(state = State.NONE) }
             }
         }
     }
 
     private fun selectPet(petId: Long) {
-        _petSelectionUiState.value = petSelectionUiState.value.copy(selectedPetId = petId)
+        _petSelectionUiState.update { it.copy(selectedPetId = petId) }
     }
 
     private fun updatePetName(name: String) {
-        _petInfoUiState.value = petInfoUiState.value.copy(petName = name)
+        _petInfoUiState.update { it.copy(petName = name) }
     }
 
     private fun updateColor(color: PetColor) {
-        _petInfoUiState.value = _petInfoUiState.value.copy(petColor = color)
+        _petInfoUiState.update { it.copy(petColor = color) }
     }
 
     private fun uploadPetImages() {
-        _petInfoUiState.value = petInfoUiState.value.copy(state = State.LOADING)
+        _petInfoUiState.update { it.copy(state = State.LOADING) }
         viewModelScope.launch { uploadPetImagesToS3() }
     }
 
@@ -179,24 +162,26 @@ class ProfileCreationViewModel @Inject constructor(
                     return
                 }
 
-                _petInfoUiState.value = petInfoUiState.value.copy(
-                    uploadedPetPhotoUrls = s3ImageUrls.preSignedImageUrls.map { it.storedImageUrl }
-                )
+                _petInfoUiState.update {
+                    it.copy(uploadedPetPhotoUrls = s3ImageUrls.preSignedImageUrls.map { preSignedImageUrl ->
+                        preSignedImageUrl.storedImageUrl
+                    })
+                }
 
                 when (uploadPet()) {
                     is Success -> {
-                        _petInfoUiState.value = petInfoUiState.value.copy(state = State.SUCCESS)
+                        _petInfoUiState.update { it.copy(state = State.SUCCESS) }
                         _event.emit(ProfileCreationUiEvent.UPLOAD_PET_SUCCESS)
                     }
 
                     NetworkError -> {
-                        _petInfoUiState.value = petInfoUiState.value.copy(state = State.NETWORK_ERROR)
+                        _petInfoUiState.update { it.copy(state = State.NETWORK_ERROR) }
                         _event.emit(ProfileCreationUiEvent.NETWORK_ERROR)
                     }
 
                     TokenExpired -> _event.emit(ProfileCreationUiEvent.TOKEN_EXPIRED)
                     is Failure, is Unexpected -> {
-                        _petInfoUiState.value = petInfoUiState.value.copy(state = State.NONE)
+                        _petInfoUiState.update { it.copy(state = State.NONE) }
                         _event.emit(ProfileCreationUiEvent.UNKNOWN_ERROR)
                     }
                 }
@@ -264,7 +249,7 @@ class ProfileCreationViewModel @Inject constructor(
     }
 
     fun changeToImageSelectLoading() {
-        _photoUploadUiState.tryEmit(selectedImageUiState.value.copy(state = State.LOADING))
+        _photoUploadUiState.update { it.copy(state = State.LOADING) }
     }
 
     fun validatePetImageSize(images: List<Image>): Boolean {
@@ -288,17 +273,18 @@ class ProfileCreationViewModel @Inject constructor(
             when (val petDetectResult = petDetectRepository.detectPet(imageFiles, profileConcept.petType)) {
                 is Success -> {
                     val (goodImageFiles, badImageFiles) = classifyPetImages(imageFiles, petDetectResult.data)
-                    val newSelectedImageUiState = selectedImageUiState.value.copy(
-                        selectedImageFiles = originSelectedImageFiles + goodImageFiles,
-                        badImageFiles = badImageFiles
-                    )
-                    _photoUploadUiState.emit(newSelectedImageUiState)
+                    _photoUploadUiState.update {
+                        it.copy(
+                            selectedImageFiles = originSelectedImageFiles + goodImageFiles,
+                            badImageFiles = badImageFiles
+                        )
+                    }
                     _event.emit(ProfileCreationUiEvent.PET_DETECT_SUCCESS)
                 }
 
                 else -> {
                     _event.emit(ProfileCreationUiEvent.UNKNOWN_ERROR)
-                    _photoUploadUiState.emit(selectedImageUiState.value.copy(state = State.NONE))
+                    _photoUploadUiState.update { it.copy(state = State.NONE) }
                 }
             }
         }
@@ -320,7 +306,7 @@ class ProfileCreationViewModel @Inject constructor(
 
     private fun unselectPetImage(imageFile: File) {
         val unselectedImageFiles = selectedImageUiState.value.selectedImageFiles - imageFile
-        _photoUploadUiState.value = selectedImageUiState.value.copy(selectedImageFiles = unselectedImageFiles)
+        _photoUploadUiState.update { it.copy(selectedImageFiles = unselectedImageFiles) }
     }
 
     companion object {

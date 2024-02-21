@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,8 +29,8 @@ class LoginViewModel @Inject constructor(
     private val _loginUiState = MutableStateFlow(LoginUiState())
     val loginUiState = _loginUiState.asStateFlow()
 
-    private val _loginUiEvent = MutableSharedFlow<LoginUiEvent>()
-    val loginUiEvent = _loginUiEvent.asSharedFlow()
+    private val _event = MutableSharedFlow<LoginUiEvent>()
+    val event = _event.asSharedFlow()
 
     fun login(
         socialType: SocialType,
@@ -38,9 +39,9 @@ class LoginViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             when (userRepository.login(socialType, socialAccessToken, fcmToken)) {
-                is Success -> _loginUiEvent.emit(LoginUiEvent.LOGIN_SUCCESS)
+                is Success -> _event.emit(LoginUiEvent.LOGIN_SUCCESS)
                 is Failure, NetworkError, TokenExpired, is Unexpected -> {
-                    _loginUiEvent.emit(LoginUiEvent.LOGIN_FAILURE)
+                    _event.emit(LoginUiEvent.LOGIN_FAILURE)
                     changeToNone()
                 }
             }
@@ -48,10 +49,10 @@ class LoginViewModel @Inject constructor(
     }
 
     fun changeToLoading() {
-        _loginUiState.value = loginUiState.value.copy(state = State.LOADING)
+        _loginUiState.update { it.copy(state = State.LOADING) }
     }
 
     fun changeToNone() {
-        _loginUiState.value = loginUiState.value.copy(state = State.NONE)
+        _loginUiState.update { it.copy(state = State.NONE) }
     }
 }

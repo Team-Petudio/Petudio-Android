@@ -18,7 +18,7 @@ fun HomeScreen(
 ) {
     PetudioTheme {
         val homeNavController = rememberNavController()
-        val profileUiState by viewModel.profileUiState.collectAsStateWithLifecycle()
+        val profileUiState by viewModel.profileConceptUiState.collectAsStateWithLifecycle()
         val userUiState by viewModel.userUiState.collectAsStateWithLifecycle()
         val albumUiState by viewModel.albumUiState.collectAsStateWithLifecycle()
         val petFeedUiState by viewModel.petFeedUiState.collectAsStateWithLifecycle()

@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,7 +37,7 @@ class AlbumViewModel @Inject constructor(
 
     private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
         viewModelScope.launch {
-            _albumUiState.emit(albumUiState.value.copy(state = State.NONE))
+            _albumUiState.update { it.copy(state = State.NONE) }
             _event.emit(SAVE_PHOTOS_FAILURE)
         }
     }
@@ -60,13 +61,13 @@ class AlbumViewModel @Inject constructor(
 
     private fun fetchAlbum(id: Long) {
         viewModelScope.launch {
-            _albumUiState.emit(albumUiState.value.copy(state = State.LOADING))
+            _albumUiState.update { it.copy(state = State.LOADING) }
 
             when (val result = albumRepository.getAlbum(id)) {
-                is Success -> _albumUiState.emit(albumUiState.value.copy(album = result.data, state = State.SUCCESS))
-                is Failure, is Unexpected -> _albumUiState.emit(albumUiState.value.copy(state = State.NONE))
+                is Success -> _albumUiState.update { it.copy(album = result.data, state = State.SUCCESS) }
+                is Failure, is Unexpected -> _albumUiState.update { it.copy(state = State.NONE) }
                 NetworkError, TokenExpired -> {
-                    _albumUiState.emit(albumUiState.value.copy(state = State.NETWORK_ERROR))
+                    _albumUiState.update { it.copy(state = State.NETWORK_ERROR) }
                     _event.emit(NETWORK_ERROR)
                 }
             }
@@ -77,13 +78,13 @@ class AlbumViewModel @Inject constructor(
         val photoUrls = albumUiState.value.album.photoUrls
 
         viewModelScope.launch(exceptionHandler) {
-            _albumUiState.emit(albumUiState.value.copy(state = State.LOADING))
+            _albumUiState.update { it.copy(state = State.LOADING) }
 
             photoUrls.map { photoUrl ->
                 launch { imageSaver.saveImageFromUrl(photoUrl) }
             }.joinAll()
 
-            _albumUiState.emit(albumUiState.value.copy(state = State.NONE))
+            _albumUiState.update { it.copy(state = State.NONE) }
             _event.emit(SAVE_PHOTOS_SUCCESS)
         }
     }

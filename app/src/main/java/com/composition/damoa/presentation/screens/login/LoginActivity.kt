@@ -46,7 +46,7 @@ class LoginActivity : ComponentActivity() {
             )
         }
 
-        viewModel.loginUiEvent.collectEvent()
+        viewModel.event.collectEvent()
     }
 
     private fun SharedFlow<LoginUiEvent>.collectEvent() {

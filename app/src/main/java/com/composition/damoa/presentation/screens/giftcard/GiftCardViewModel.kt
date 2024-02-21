@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,8 +28,8 @@ class GiftCardViewModel @Inject constructor(
         GiftCardUiState(
             onGiftCardNumberChanged = ::updateGiftCardNumber,
             onGiftCardEnteringDone = ::useGiftCard,
-            onGiftCardDetailShow = ::updateSelectedGiftCard,
-            onGiftCardDetailDismiss = { updateSelectedGiftCard(null) },
+            onGiftCardDetailShow = ::selectGiftCard,
+            onGiftCardDetailDismiss = ::unselectGiftCard,
         )
     )
     val giftCardUiState = _giftCardUiState.asStateFlow()
@@ -40,8 +41,19 @@ class GiftCardViewModel @Inject constructor(
         fetchGiftCards()
     }
 
+    private fun fetchGiftCards() {
+        viewModelScope.launch {
+            when (val result = giftCardRepository.getGiftCards()) {
+                is Success -> _giftCardUiState.update { it.copy(giftCards = result.data) }
+                is Failure, is Unexpected -> _event.emit(GiftCardUiEvent.UNKNOWN_ERROR)
+                TokenExpired -> _event.emit(GiftCardUiEvent.TOKEN_EXPIRED)
+                NetworkError -> _event.emit(GiftCardUiEvent.NETWORK_ERROR)
+            }
+        }
+    }
+
     private fun updateGiftCardNumber(number: String) {
-        _giftCardUiState.tryEmit(giftCardUiState.value.copy(enteredGiftCardNumber = number))
+        _giftCardUiState.update { it.copy(enteredGiftCardNumber = number) }
     }
 
     private fun useGiftCard() {
@@ -50,7 +62,7 @@ class GiftCardViewModel @Inject constructor(
             when (giftCardRepository.useGiftCard(giftCode)) {
                 is Success -> {
                     _event.emit(GiftCardUiEvent.GIFT_CARD_USE_SUCCESS)
-                    _giftCardUiState.emit(giftCardUiState.value.copy(enteredGiftCardNumber = ""))
+                    _giftCardUiState.update { it.copy(enteredGiftCardNumber = "") }
                     fetchGiftCards()
                 }
 
@@ -62,18 +74,11 @@ class GiftCardViewModel @Inject constructor(
         }
     }
 
-    private fun fetchGiftCards() {
-        viewModelScope.launch {
-            when (val result = giftCardRepository.getGiftCards()) {
-                is Success -> _giftCardUiState.emit(giftCardUiState.value.copy(giftCards = result.data))
-                is Failure, is Unexpected -> _event.emit(GiftCardUiEvent.UNKNOWN_ERROR)
-                TokenExpired -> _event.emit(GiftCardUiEvent.TOKEN_EXPIRED)
-                NetworkError -> _event.emit(GiftCardUiEvent.NETWORK_ERROR)
-            }
-        }
+    private fun selectGiftCard(giftCard: GiftCard?) {
+        _giftCardUiState.update { it.copy(selectedGiftCard = giftCard) }
     }
 
-    private fun updateSelectedGiftCard(giftCard: GiftCard?) {
-        _giftCardUiState.tryEmit(giftCardUiState.value.copy(selectedGiftCard = giftCard))
+    private fun unselectGiftCard() {
+        selectGiftCard(null)
     }
 }

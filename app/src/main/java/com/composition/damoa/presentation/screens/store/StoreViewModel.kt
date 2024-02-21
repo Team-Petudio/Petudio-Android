@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,20 +40,15 @@ class StoreViewModel @Inject constructor(
 
     private fun fetchTicket() {
         viewModelScope.launch {
-            _ticketPurchaseUiState.value = ticketPurchaseUiState.value.copy(state = State.LOADING)
+            _ticketPurchaseUiState.update { it.copy(state = State.LOADING) }
             when (val user = userRepository.getUser()) {
-                is Success -> _ticketPurchaseUiState.value = ticketPurchaseUiState.value.copy(
-                    state = State.SUCCESS,
-                    ticketCount = user.data.ticket,
-                )
+                is Success -> _ticketPurchaseUiState.update {
+                    it.copy(state = State.SUCCESS, ticketCount = user.data.ticket)
+                }
 
-                NetworkError -> _ticketPurchaseUiState.value =
-                    ticketPurchaseUiState.value.copy(state = State.NETWORK_ERROR)
-
+                NetworkError -> _ticketPurchaseUiState.update { it.copy(state = State.NETWORK_ERROR) }
                 TokenExpired -> _event.emit(TOKEN_EXPIRED)
-                is Failure, is Unexpected -> _ticketPurchaseUiState.value = ticketPurchaseUiState.value.copy(
-                    state = State.NONE
-                )
+                is Failure, is Unexpected -> _ticketPurchaseUiState.update { it.copy(state = State.NONE) }
             }
         }
     }
@@ -64,6 +60,6 @@ class StoreViewModel @Inject constructor(
                 category = PurchaseItem.Category.from(productDetail.productId),
             )
         }
-        _ticketPurchaseUiState.value = ticketPurchaseUiState.value.copy(purchaseItems = purchaseItems)
+        _ticketPurchaseUiState.update { it.copy(purchaseItems = purchaseItems) }
     }
 }
