@@ -62,7 +62,8 @@ fun ProfileCreationNavHost(
         composable(ProfileCreationScreen.PET_PHOTO_SELECT.route) {
             PetPhotoSelectionScreen(
                 petPhotoSelectionUiState = petPhotoSelectionUiState,
-                navController = navController
+                onNewPhotoUploadClick = { navController.navigate(ProfileCreationScreen.PET_NAME.route) },
+                onKeepGoingClick = { navController.navigate(ProfileCreationScreen.PAYMENT.route) },
             )
         }
         composable(ProfileCreationScreen.PET_NAME.route) {
