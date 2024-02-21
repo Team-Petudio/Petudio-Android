@@ -37,19 +37,19 @@ fun PaymentInformationList() {
     InformationItem(
         titleRes = R.string.goods_information_title,
         descResList =
-            listOf(
-                R.string.goods_information_desc1,
-                R.string.goods_information_desc2,
-            ),
+        listOf(
+            R.string.goods_information_desc1,
+            R.string.goods_information_desc2,
+        ),
     )
     InformationItem(
         titleRes = R.string.refund_information_title,
         descResList =
-            listOf(
-                R.string.refund_information_desc1,
-                R.string.refund_information_desc2,
-                R.string.refund_information_desc3,
-            ),
+        listOf(
+            R.string.refund_information_desc1,
+            R.string.refund_information_desc2,
+            R.string.refund_information_desc3,
+        ),
     )
 }
 
@@ -89,14 +89,14 @@ private fun InformationTitle(
 ) {
     Row(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = onClick,
-                ),
+        modifier
+            .fillMaxWidth()
+            .height(60.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick,
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {

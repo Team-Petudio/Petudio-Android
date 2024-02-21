@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,18 +30,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.Gray30
-import com.composition.damoa.presentation.ui.theme.PrimaryColors
-import com.composition.damoa.presentation.ui.theme.Purple60
 
 @Composable
 fun NetworkErrorScreen(modifier: Modifier = Modifier) {
     Column(
         modifier =
-            modifier
-                .background(Color.White)
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 30.dp)
-                .fillMaxSize(),
+        modifier
+            .background(Color.White)
+            .padding(horizontal = 20.dp)
+            .padding(bottom = 30.dp)
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {

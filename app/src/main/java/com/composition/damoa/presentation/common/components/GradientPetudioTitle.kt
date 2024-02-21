@@ -21,11 +21,11 @@ fun GradientPetudioTitle(
         modifier = modifier,
         text = stringResource(id = R.string.en_app_name),
         style =
-            TextStyle(
-                fontSize = fontSize,
-                fontWeight = FontWeight.Black,
-                brush = Brush.horizontalGradient(PrimaryColors),
-            ),
+        TextStyle(
+            fontSize = fontSize,
+            fontWeight = FontWeight.Black,
+            brush = Brush.horizontalGradient(PrimaryColors),
+        ),
     )
 }
 
@@ -38,10 +38,10 @@ fun GradientPetudioSubTitle(
         modifier = modifier,
         text = stringResource(id = R.string.app_sub_title),
         style =
-            TextStyle(
-                fontSize = fontSize,
-                fontWeight = FontWeight.Black,
-                brush = Brush.horizontalGradient(PrimaryColors),
-            ),
+        TextStyle(
+            fontSize = fontSize,
+            fontWeight = FontWeight.Black,
+            brush = Brush.horizontalGradient(PrimaryColors),
+        ),
     )
 }
