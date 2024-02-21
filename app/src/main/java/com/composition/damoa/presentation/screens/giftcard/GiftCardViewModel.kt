@@ -33,8 +33,8 @@ class GiftCardViewModel @Inject constructor(
     )
     val giftCardUiState = _giftCardUiState.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<GiftCardUiEvent>()
-    val uiEvent = _uiEvent.asSharedFlow()
+    private val _event = MutableSharedFlow<GiftCardUiEvent>()
+    val event = _event.asSharedFlow()
 
     init {
         fetchGiftCards()
@@ -49,15 +49,15 @@ class GiftCardViewModel @Inject constructor(
             val giftCode = giftCardUiState.value.enteredGiftCardNumber
             when (giftCardRepository.useGiftCard(giftCode)) {
                 is Success -> {
-                    _uiEvent.emit(GiftCardUiEvent.GIFT_CARD_USE_SUCCESS)
+                    _event.emit(GiftCardUiEvent.GIFT_CARD_USE_SUCCESS)
                     _giftCardUiState.emit(giftCardUiState.value.copy(enteredGiftCardNumber = ""))
                     fetchGiftCards()
                 }
 
-                is Failure -> _uiEvent.emit(GiftCardUiEvent.USED_GIFT_CARD_ERROR)
-                is Unexpected -> _uiEvent.emit(GiftCardUiEvent.UNKNOWN_ERROR)
-                TokenExpired -> _uiEvent.emit(GiftCardUiEvent.TOKEN_EXPIRED)
-                NetworkError -> _uiEvent.emit(GiftCardUiEvent.NETWORK_ERROR)
+                is Failure -> _event.emit(GiftCardUiEvent.USED_GIFT_CARD_ERROR)
+                is Unexpected -> _event.emit(GiftCardUiEvent.UNKNOWN_ERROR)
+                TokenExpired -> _event.emit(GiftCardUiEvent.TOKEN_EXPIRED)
+                NetworkError -> _event.emit(GiftCardUiEvent.NETWORK_ERROR)
             }
         }
     }
@@ -66,9 +66,9 @@ class GiftCardViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = giftCardRepository.getGiftCards()) {
                 is Success -> _giftCardUiState.emit(giftCardUiState.value.copy(giftCards = result.data))
-                is Failure, is Unexpected -> _uiEvent.emit(GiftCardUiEvent.UNKNOWN_ERROR)
-                TokenExpired -> _uiEvent.emit(GiftCardUiEvent.TOKEN_EXPIRED)
-                NetworkError -> _uiEvent.emit(GiftCardUiEvent.NETWORK_ERROR)
+                is Failure, is Unexpected -> _event.emit(GiftCardUiEvent.UNKNOWN_ERROR)
+                TokenExpired -> _event.emit(GiftCardUiEvent.TOKEN_EXPIRED)
+                NetworkError -> _event.emit(GiftCardUiEvent.NETWORK_ERROR)
             }
         }
     }
