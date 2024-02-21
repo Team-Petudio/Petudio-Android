@@ -14,5 +14,7 @@ class DefaultGiftCardRepository(
         .getGiftCards()
         .map { it.data.toDomain() }
 
-    override suspend fun useGiftCard(giftCode: String): ApiResponse<Unit> = service.useGiftCard(giftCode)
+    override suspend fun useGiftCard(
+        giftCode: String,
+    ): ApiResponse<Unit> = service.useGiftCard(giftCode)
 }

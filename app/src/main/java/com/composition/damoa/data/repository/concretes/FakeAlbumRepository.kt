@@ -41,10 +41,9 @@ class FakeAlbumRepository : AlbumRepository {
         )
     )
 
-    override suspend fun getAlbum(id: Long): ApiResponse<Album> {
-        return getAlbums().map { albums ->
-            albums.first { it.id == id }
-        }
+    override suspend fun getAlbum(
+        id: Long,
+    ): ApiResponse<Album> = getAlbums().map { albums ->
+        albums.first { it.id == id }
     }
-
 }

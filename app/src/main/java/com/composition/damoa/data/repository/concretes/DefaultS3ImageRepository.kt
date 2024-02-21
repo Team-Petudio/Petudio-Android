@@ -11,6 +11,7 @@ import java.io.File
 class DefaultS3ImageRepository(
     private val service: S3ImageService,
 ) : S3ImageRepository {
+
     override suspend fun uploadImage(
         directoryPath: String,
         imageFile: File,

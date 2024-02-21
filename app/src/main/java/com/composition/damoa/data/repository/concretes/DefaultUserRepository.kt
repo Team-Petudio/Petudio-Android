@@ -39,7 +39,7 @@ class DefaultUserRepository(
         }
 
     override suspend fun logout(): ApiResponse<Unit> {
-        return userService.logout().map { tokenRepository.deleteToken() }
+        return userService.logout().also { tokenRepository.deleteToken() }
     }
 
     override suspend fun getUser(): ApiResponse<User> {
@@ -48,7 +48,7 @@ class DefaultUserRepository(
     }
 
     override suspend fun signOut(): ApiResponse<Unit> {
-        return userService.signOut().map { tokenRepository.deleteToken() }
+        return userService.signOut().also { tokenRepository.deleteToken() }
     }
 
     override suspend fun updateNotificationStatus(

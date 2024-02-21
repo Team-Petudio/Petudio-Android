@@ -20,5 +20,7 @@ class DefaultS3ImageUrlRepository(
 
     override suspend fun deleteS3ImageDirectory(
         directoryPath: String,
-    ): ApiResponse<Unit> = service.deleteS3ImageDirectory(S3DirectoryDeleteRequest(directoryPath))
+    ): ApiResponse<Unit> = service.deleteS3ImageDirectory(
+        request = S3DirectoryDeleteRequest(directoryPath)
+    )
 }

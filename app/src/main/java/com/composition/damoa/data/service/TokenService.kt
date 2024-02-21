@@ -7,5 +7,7 @@ import retrofit2.http.POST
 
 interface TokenService {
     @POST("/api/v1/auth/reissue")
-    suspend fun reissueToken(@Body request: ReissueTokenRequest): ApiResponse<Unit>
+    suspend fun reissueToken(
+        @Body request: ReissueTokenRequest,
+    ): ApiResponse<Unit>
 }
