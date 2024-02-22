@@ -1,7 +1,7 @@
 package com.composition.damoa.di.other
 
 import android.content.Context
-import com.composition.damoa.presentation.common.utils.imageSaver.ImageSaver
+import com.composition.damoa.presentation.common.utils.ImageSaver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

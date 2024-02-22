@@ -10,7 +10,7 @@ import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
 import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.repository.interfaces.AlbumRepository
 import com.composition.damoa.presentation.common.base.BaseUiState.State
-import com.composition.damoa.presentation.common.utils.imageSaver.ImageSaver
+import com.composition.damoa.presentation.common.utils.ImageSaver
 import com.composition.damoa.presentation.screens.album.state.AlbumUiEvent
 import com.composition.damoa.presentation.screens.album.state.AlbumUiEvent.NETWORK_ERROR
 import com.composition.damoa.presentation.screens.album.state.AlbumUiEvent.SAVE_PHOTOS_FAILURE

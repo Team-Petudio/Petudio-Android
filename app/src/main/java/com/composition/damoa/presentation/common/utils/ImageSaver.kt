@@ -1,4 +1,4 @@
-package com.composition.damoa.presentation.common.utils.imageSaver
+package com.composition.damoa.presentation.common.utils
 
 import android.content.ContentValues
 import android.content.Context
@@ -52,7 +52,7 @@ class ImageSaver(
         mutex.withLock {
             val uri = context.contentResolver.insert(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                contentValues
+                contentValues,
             )
             val outputStream = context.contentResolver.openOutputStream(uri!!)
             outputStream?.use {
