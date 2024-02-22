@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.composition.damoa.presentation.ui.theme.Purple60
 
+
 @Composable
 fun CircularLoadingBar(size: Dp = 50.dp) {
     CircularProgressIndicator(

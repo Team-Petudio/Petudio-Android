@@ -20,6 +20,7 @@ import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.AlertIconColor
 import com.composition.damoa.presentation.ui.theme.Gray60
 
+
 @Composable
 fun BigTitle(
     modifier: Modifier = Modifier,

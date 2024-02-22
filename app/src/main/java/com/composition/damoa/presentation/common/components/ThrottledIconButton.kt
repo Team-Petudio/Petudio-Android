@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
 
+
 @OptIn(FlowPreview::class)
 @Composable
 fun ThrottledIconButton(
@@ -30,6 +31,6 @@ fun ThrottledIconButton(
     IconButton(
         modifier = modifier,
         onClick = { scope.launch { clickFlow.emit(Unit) } },
-        content = content
+        content = content,
     )
 }

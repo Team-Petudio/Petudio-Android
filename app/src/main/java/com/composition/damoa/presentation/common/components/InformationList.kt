@@ -32,20 +32,19 @@ import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.Gray20
 import com.composition.damoa.presentation.ui.theme.Gray40
 
+
 @Composable
 fun PaymentInformationList() {
     InformationItem(
         titleRes = R.string.goods_information_title,
-        descResList =
-        listOf(
+        descriptionRes = listOf(
             R.string.goods_information_desc1,
             R.string.goods_information_desc2,
         ),
     )
     InformationItem(
         titleRes = R.string.refund_information_title,
-        descResList =
-        listOf(
+        descriptionRes = listOf(
             R.string.refund_information_desc1,
             R.string.refund_information_desc2,
             R.string.refund_information_desc3,
@@ -54,10 +53,10 @@ fun PaymentInformationList() {
 }
 
 @Composable
-fun InformationItem(
+private fun InformationItem(
     modifier: Modifier = Modifier,
     @StringRes titleRes: Int,
-    @StringRes descResList: List<Int> = emptyList(),
+    @StringRes descriptionRes: List<Int> = emptyList(),
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     val dividerPadding = if (isExpanded) 12.dp else 0.dp
@@ -71,12 +70,11 @@ fun InformationItem(
             onClick = { isExpanded = !isExpanded },
         )
         AnimatedVisibility(visible = isExpanded) {
-            InformationDescription(descResList = descResList)
+            DescriptionList(descriptionRes = descriptionRes)
         }
         Divider(
-            thickness = 1.dp,
-            color = Gray20,
             modifier = Modifier.padding(top = dividerPadding),
+            thickness = 1.dp, color = Gray20,
         )
     }
 }
@@ -88,8 +86,7 @@ private fun InformationTitle(
     onClick: () -> Unit,
 ) {
     Row(
-        modifier =
-        modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(60.dp)
             .clickable(
@@ -108,26 +105,26 @@ private fun InformationTitle(
         )
         Icon(
             imageVector = Icons.Filled.KeyboardArrowDown,
-            contentDescription = null,
             tint = Color.Gray,
+            contentDescription = null,
         )
     }
 }
 
 @Composable
-private fun InformationDescription(
+private fun DescriptionList(
     modifier: Modifier = Modifier,
-    @StringRes descResList: List<Int>,
+    @StringRes descriptionRes: List<Int>,
 ) {
     Column(modifier) {
-        descResList.forEach { descRes ->
-            InformationDescriptionItem(descRes = descRes)
+        descriptionRes.forEach { descRes ->
+            DescriptionItem(descRes = descRes)
         }
     }
 }
 
 @Composable
-private fun InformationDescriptionItem(
+private fun DescriptionItem(
     modifier: Modifier = Modifier,
     @StringRes descRes: Int,
 ) {

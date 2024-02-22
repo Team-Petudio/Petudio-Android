@@ -9,14 +9,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.composition.damoa.R
 
+
 @Composable
-fun NavigationButton(
-    onNavigationClick: () -> Unit,
-) {
+fun NavigationButton(onNavigationClick: () -> Unit) {
     IconButton(onClick = onNavigationClick) {
         Icon(
             imageVector = Icons.Filled.ArrowBack,
-            contentDescription = stringResource(id = R.string.navigate_back),
+            contentDescription = stringResource(R.string.navigate_back),
             tint = Color.Black,
         )
     }

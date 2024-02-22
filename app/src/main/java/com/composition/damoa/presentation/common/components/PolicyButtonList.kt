@@ -13,13 +13,17 @@ import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.Gray40
 
+
 @Composable
 fun PolicyButtonList(
     modifier: Modifier = Modifier,
     onTermOfUseClick: () -> Unit,
     onPrivacyClick: () -> Unit,
 ) {
-    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+    ) {
         TermOfUse(onClick = onTermOfUseClick)
         Privacy(onClick = onPrivacyClick)
     }
@@ -27,12 +31,18 @@ fun PolicyButtonList(
 
 @Composable
 private fun TermOfUse(onClick: () -> Unit) {
-    PolicyTextButton(textRes = R.string.terms_of_use, onClick = onClick)
+    PolicyTextButton(
+        textRes = R.string.terms_of_use,
+        onClick = onClick,
+    )
 }
 
 @Composable
 private fun Privacy(onClick: () -> Unit) {
-    PolicyTextButton(textRes = R.string.privacy_policy, onClick = onClick)
+    PolicyTextButton(
+        textRes = R.string.privacy_policy,
+        onClick = onClick,
+    )
 }
 
 @Composable
@@ -41,11 +51,14 @@ private fun PolicyTextButton(
     @StringRes textRes: Int,
     onClick: () -> Unit,
 ) {
-    TextButton(modifier = modifier, onClick = onClick) {
+    TextButton(
+        modifier = modifier,
+        onClick = onClick,
+    ) {
         Text(
-            text = stringResource(id = textRes),
-            color = Gray40,
+            text = stringResource(textRes),
             fontSize = 12.sp,
+            color = Gray40,
         )
     }
 }

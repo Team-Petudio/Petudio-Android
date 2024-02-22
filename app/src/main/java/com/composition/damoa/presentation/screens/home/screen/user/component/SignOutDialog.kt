@@ -13,7 +13,7 @@ fun SignOutDialog(
     onSignOutClick: () -> Unit,
 ) {
     PetudioDialog(
-        painter = painterResource(R.drawable.alert),
+        dialogIcon = painterResource(R.drawable.alert),
         iconColor = AlertIconColor,
         dialogTitleRes = R.string.sign_out,
         dialogDescRes = R.string.sign_out_desc,

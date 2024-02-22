@@ -26,6 +26,7 @@ import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.Gray30
 import com.composition.damoa.presentation.ui.theme.PrimaryColors
 
+
 @Composable
 fun GradientButton(
     modifier: Modifier = Modifier,
@@ -49,9 +50,14 @@ fun GradientButton(
         enabled = enabled,
         onClick = onClick,
     ) {
-        val boxModifier = if (enabled) Modifier.background(gradient) else Modifier.background(disabledColor)
+        val backgroundAppliedModifier = if (enabled) {
+            Modifier.background(gradient)
+        } else {
+            Modifier.background(disabledColor)
+        }
+
         Box(
-            modifier = boxModifier.fillMaxSize(),
+            modifier = backgroundAppliedModifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -68,8 +74,7 @@ fun GradientButton(
 @Composable
 private fun GradientButtonPreview() {
     GradientButton(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(6 / 1F),
         shape = RoundedCornerShape(12.dp),

@@ -31,11 +31,14 @@ import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.Gray30
 
+
 @Composable
-fun NetworkErrorScreen(modifier: Modifier = Modifier) {
+fun NetworkErrorScreen(
+    modifier: Modifier = Modifier,
+    onRetryClick: () -> Unit,
+) {
     Column(
-        modifier =
-        modifier
+        modifier = modifier
             .background(Color.White)
             .padding(horizontal = 20.dp)
             .padding(bottom = 30.dp)
@@ -44,20 +47,23 @@ fun NetworkErrorScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_wifi_error),
-            contentDescription = null,
-            tint = Color.DarkGray,
             modifier = Modifier.size(120.dp),
+            painter = painterResource(R.drawable.ic_wifi_error),
+            tint = Color.DarkGray,
+            contentDescription = null,
         )
         Text(
-            text = stringResource(id = R.string.network_failure_message),
+            modifier = Modifier.padding(top = 12.dp),
+            text = stringResource(R.string.network_failure_message),
+            fontSize = 17.sp,
             color = Color.DarkGray,
             textAlign = TextAlign.Center,
-            fontSize = 17.sp,
             fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(top = 12.dp),
         )
-        RetryButton(modifier.padding(top = 40.dp)) {}
+        RetryButton(
+            modifier = modifier.padding(top = 40.dp),
+            onRetryClick = onRetryClick,
+        )
     }
 }
 
@@ -70,9 +76,9 @@ private fun RetryButton(
         modifier = modifier.wrapContentSize(),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, Gray30),
-        onClick = onRetryClick,
         colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
+        onClick = onRetryClick,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
@@ -82,10 +88,10 @@ private fun RetryButton(
                 tint = Color.DarkGray,
             )
             Text(
-                text = stringResource(id = R.string.refresh),
                 modifier = Modifier.padding(start = 12.dp),
-                color = Color.DarkGray,
+                text = stringResource(R.string.refresh),
                 fontSize = 16.sp,
+                color = Color.DarkGray,
             )
         }
     }
@@ -94,5 +100,5 @@ private fun RetryButton(
 @Preview
 @Composable
 private fun NetworkErrorScreenPreview() {
-    NetworkErrorScreen()
+    NetworkErrorScreen(onRetryClick = {})
 }

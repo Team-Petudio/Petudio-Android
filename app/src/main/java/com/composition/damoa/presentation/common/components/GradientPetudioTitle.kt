@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.PrimaryColors
 
+
 @Composable
 fun GradientPetudioTitle(
     modifier: Modifier = Modifier,
@@ -20,8 +21,7 @@ fun GradientPetudioTitle(
     Text(
         modifier = modifier,
         text = stringResource(id = R.string.en_app_name),
-        style =
-        TextStyle(
+        style = TextStyle(
             fontSize = fontSize,
             fontWeight = FontWeight.Black,
             brush = Brush.horizontalGradient(PrimaryColors),
@@ -37,8 +37,7 @@ fun GradientPetudioSubTitle(
     Text(
         modifier = modifier,
         text = stringResource(id = R.string.app_sub_title),
-        style =
-        TextStyle(
+        style = TextStyle(
             fontSize = fontSize,
             fontWeight = FontWeight.Black,
             brush = Brush.horizontalGradient(PrimaryColors),

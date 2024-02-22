@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import com.composition.damoa.R
 import com.composition.damoa.presentation.ui.theme.PrimaryColors
 
+
 @Composable
 fun KeepGoingButton(
     enabled: Boolean = true,
@@ -43,7 +44,7 @@ fun KeepGoingButton(
             .fillMaxWidth()
             .height(60.dp),
         shape = RoundedCornerShape(12.dp),
-        text = stringResource(id = R.string.keep_going),
+        text = stringResource(R.string.keep_going),
         fontColor = Color.White,
         fontSize = 16.sp,
         enabled = enabled,
