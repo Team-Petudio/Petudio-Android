@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+
 fun ComponentActivity.onUi(block: suspend CoroutineScope.() -> Unit): Job {
     return lifecycleScope.launch(Dispatchers.Main) { block() }
 }

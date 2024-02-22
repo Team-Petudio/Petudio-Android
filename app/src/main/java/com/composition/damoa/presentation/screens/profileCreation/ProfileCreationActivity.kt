@@ -2,6 +2,8 @@ package com.composition.damoa.presentation.screens.profileCreation
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.presentation.common.extensions.onDefault
 import com.composition.damoa.presentation.common.extensions.onUi
-import com.composition.damoa.presentation.common.extensions.reduceImageSizeAndCreateFile
 import com.composition.damoa.presentation.common.extensions.showToast
 import com.composition.damoa.presentation.common.utils.PhotoPicker
 import com.composition.damoa.presentation.common.utils.permissionRequester.Permission
@@ -31,10 +32,16 @@ import com.composition.damoa.presentation.screens.profileCreation.state.ProfileC
 import com.composition.damoa.presentation.screens.store.StoreActivity
 import com.esafirm.imagepicker.model.Image
 import dagger.hilt.android.AndroidEntryPoint
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.default
+import id.zelory.compressor.constraint.quality
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 
 @AndroidEntryPoint
@@ -112,6 +119,46 @@ class ProfileCreationActivity : ComponentActivity() {
             viewModel.detectPetImages(resizedImageFiles.filterNotNull())
         }
     }
+
+    private suspend fun Context.reduceImageSizeAndCreateFile(
+        contentUri: Uri,
+        fileName: String,
+        quality: Int = 80,
+        imageWidth: Int = 512,
+    ): File? = runCatching {
+        val imageFile = requireNotNull(createFileFromContentUri(contentUri, "$fileName.jpg")) {
+            "[ERROR] content uri로부터 File을 생성하는데 실패했습니다."
+        }
+        val originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(contentUri))
+        val imageHeight = (originalBitmap.height * (imageWidth.toFloat() / originalBitmap.width)).toInt()
+
+        Compressor.compress(this, imageFile) {
+            quality(quality)
+            default(width = imageWidth, height = imageHeight)
+        }
+    }.getOrNull()
+
+    private fun Context.createFileFromContentUri(contentUri: Uri, fileName: String): File? {
+        var inputStream: InputStream? = null
+        var outputStream: FileOutputStream? = null
+        val newFile = File(filesDir, fileName)
+
+        try {
+            inputStream = contentResolver.openInputStream(contentUri)
+            outputStream = FileOutputStream(newFile)
+
+            inputStream?.copyTo(outputStream)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        } finally {
+            inputStream?.close()
+            outputStream?.close()
+        }
+
+        return newFile
+    }
+
 
     companion object {
         fun startActivity(context: Context, conceptId: Long) {
