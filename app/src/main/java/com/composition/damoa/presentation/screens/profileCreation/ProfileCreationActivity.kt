@@ -49,22 +49,23 @@ class ProfileCreationActivity : ComponentActivity() {
     private val viewModel: ProfileCreationViewModel by viewModels()
     private val permissionRequester = PermissionRequester()
     private val photoPicker = PhotoPicker(this)
+    private lateinit var navController: NavHostController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navController = rememberNavController()
+            navController = rememberNavController()
             ProfileCreationScreen(
                 viewModel = viewModel,
                 navController = navController,
                 onPhotoUploadClick = ::launchStoragePermissionRequester,
             )
-
-            viewModel.event.collectEvent(navController)
         }
+
+        viewModel.event.collectEvent()
     }
 
-    private fun SharedFlow<ProfileCreationUiEvent>.collectEvent(navController: NavHostController) {
+    private fun SharedFlow<ProfileCreationUiEvent>.collectEvent() {
         onUi {
             collectLatest { event ->
                 when (event) {

@@ -17,7 +17,7 @@ import com.composition.damoa.presentation.ui.theme.PetudioTheme
 @Composable
 fun ProfileCreationScreen(
     viewModel: ProfileCreationViewModel,
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController,
     onPhotoUploadClick: () -> Unit,
 ) {
     PetudioTheme {

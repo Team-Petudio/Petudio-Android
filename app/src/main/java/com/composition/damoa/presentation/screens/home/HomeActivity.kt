@@ -22,13 +22,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
+
 @AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
     private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             HomeScreen(viewModel = viewModel)
         }
