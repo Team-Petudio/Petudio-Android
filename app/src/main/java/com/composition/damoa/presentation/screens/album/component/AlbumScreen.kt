@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composition.damoa.presentation.common.base.BaseUiState
 import com.composition.damoa.presentation.screens.album.AlbumViewModel
-import com.composition.damoa.presentation.screens.album.state.AlbumUiState
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 
 
@@ -24,31 +23,22 @@ fun AlbumScreen(
         val activity = LocalContext.current as ComponentActivity
         val albumUiState by viewModel.albumUiState.collectAsStateWithLifecycle()
 
-        AlbumScreen(activity, albumUiState, onSaveClick)
-    }
-}
-
-@Composable
-private fun AlbumScreen(
-    activity: ComponentActivity,
-    uiState: AlbumUiState,
-    onSaveClick: () -> Unit,
-) {
-    Scaffold(
-        topBar = {
-            AlbumTopAppBar(
-                onNavigationClick = { activity.finish() },
-                onSaveClick = onSaveClick,
+        Scaffold(
+            topBar = {
+                AlbumTopAppBar(
+                    onNavigationClick = { activity.finish() },
+                    onSaveClick = onSaveClick,
+                )
+            },
+        ) { padding ->
+            AlbumContent(
+                modifier = Modifier
+                    .padding(top = padding.calculateTopPadding())
+                    .padding(horizontal = 20.dp),
+                album = albumUiState.album,
             )
-        },
-    ) { padding ->
-        AlbumContent(
-            modifier = Modifier
-                .padding(top = padding.calculateTopPadding())
-                .padding(horizontal = 20.dp),
-            album = uiState.album,
-        )
 
-        if (uiState.state == BaseUiState.State.LOADING) SavePhotoLoading()
+            if (albumUiState.state == BaseUiState.State.LOADING) SavePhotoLoading()
+        }
     }
 }
