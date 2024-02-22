@@ -13,10 +13,9 @@ import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.R
 import com.composition.damoa.presentation.common.extensions.onDefault
 import com.composition.damoa.presentation.common.extensions.onUi
+import com.composition.damoa.presentation.common.extensions.requestReadExternalStoragePermission
 import com.composition.damoa.presentation.common.extensions.showToast
 import com.composition.damoa.presentation.common.utils.PhotoPicker
-import com.composition.damoa.presentation.common.utils.permissionRequester.Permission
-import com.composition.damoa.presentation.common.utils.permissionRequester.PermissionRequester
 import com.composition.damoa.presentation.screens.login.LoginActivity
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel.Companion.KEY_CONCEPT_ID
 import com.composition.damoa.presentation.screens.profileCreation.component.ProfileCreationScreen
@@ -47,7 +46,6 @@ import java.io.InputStream
 @AndroidEntryPoint
 class ProfileCreationActivity : ComponentActivity() {
     private val viewModel: ProfileCreationViewModel by viewModels()
-    private val permissionRequester = PermissionRequester()
     private val photoPicker = PhotoPicker(this)
     private lateinit var navController: NavHostController
 
@@ -58,7 +56,7 @@ class ProfileCreationActivity : ComponentActivity() {
             ProfileCreationScreen(
                 viewModel = viewModel,
                 navController = navController,
-                onPhotoUploadClick = ::launchStoragePermissionRequester,
+                onPhotoUploadClick = this::requestReadExternalStoragePermission,
             )
         }
 
@@ -89,11 +87,9 @@ class ProfileCreationActivity : ComponentActivity() {
         }
     }
 
-    private fun launchStoragePermissionRequester() {
-        permissionRequester.launch(
-            context = this,
-            permission = Permission.READ_EXTERNAL_STORAGE,
-            dialogMessage = getString(R.string.read_external_storage_message),
+    private fun requestReadExternalStoragePermission() {
+        requestReadExternalStoragePermission(
+            message = getString(R.string.read_external_storage_message),
             onGranted = ::launchPhotoPicker,
             onDenied = { showToast(getString(R.string.read_external_storage_permission_denied_message)) },
         )

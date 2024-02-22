@@ -116,3 +116,17 @@ fun Context.requestWriteExternalStoragePermission(
         onDenied = onDenied,
     )
 }
+
+fun Context.requestReadExternalStoragePermission(
+    message: String,
+    onGranted: () -> Unit,
+    onDenied: () -> Unit,
+) {
+    PermissionRequester().launch(
+        context = this,
+        permission = Permission.READ_EXTERNAL_STORAGE,
+        dialogMessage = message,
+        onGranted = onGranted,
+        onDenied = onDenied,
+    )
+}
