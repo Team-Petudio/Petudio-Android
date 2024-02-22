@@ -2,7 +2,6 @@ package com.composition.damoa.presentation.screens.album
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -52,11 +51,6 @@ class AlbumActivity : ComponentActivity() {
     }
 
     private fun saveAllPhotos(uiState: AlbumUiState) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            uiState.onSaveAllPhotosClick()
-            return
-        }
-
         requestWriteExternalStoragePermission(
             message = getString(R.string.permission_request_photos_save_permission_message),
             onGranted = { uiState.onSaveAllPhotosClick() },

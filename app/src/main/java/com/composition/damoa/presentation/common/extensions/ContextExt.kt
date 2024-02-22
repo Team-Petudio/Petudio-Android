@@ -103,6 +103,11 @@ fun Context.requestWriteExternalStoragePermission(
     onGranted: () -> Unit,
     onDenied: () -> Unit,
 ) {
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+        onGranted()
+        return
+    }
+
     PermissionRequester().launch(
         context = this,
         permission = Permission.WRITE_EXTERNAL_STORAGE,
