@@ -28,6 +28,10 @@
         android:theme="@style/Theme.Petudio"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <profileable
+            android:shell="true"
+            tools:targetApi="29" />
+
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">
@@ -66,6 +70,7 @@
             android:theme="@style/Theme.Petudio">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
