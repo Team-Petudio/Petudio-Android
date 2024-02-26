@@ -1,7 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":app:benchmark")
-
 
 pluginManagement {
     repositories {
@@ -23,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Petudio"
 include(":app")
+include(":app:benchmark")
