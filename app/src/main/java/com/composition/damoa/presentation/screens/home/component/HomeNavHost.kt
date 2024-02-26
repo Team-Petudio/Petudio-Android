@@ -1,6 +1,8 @@
 package com.composition.damoa.presentation.screens.home.component
 
 import android.app.Activity
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -37,6 +39,8 @@ fun HomeNavHost(
         modifier = modifier,
         navController = navController,
         startDestination = startDestination,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
     ) {
         composable(HomeBottomNavItem.ProfileConcept.route) {
             ProfileConceptScreen(

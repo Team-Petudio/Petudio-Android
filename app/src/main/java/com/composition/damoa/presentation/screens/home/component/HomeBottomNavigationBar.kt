@@ -47,7 +47,7 @@ fun HomeBottomNavigationBar(
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
-        HomeBottomNavItem.values().forEach { item ->
+        HomeBottomNavItem.entries.forEach { item ->
             val isSelected = currentRoute == item.route
 
             BottomNavigationItem(
