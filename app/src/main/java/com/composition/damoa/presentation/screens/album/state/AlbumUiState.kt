@@ -2,6 +2,7 @@ package com.composition.damoa.presentation.screens.album.state
 
 import com.composition.damoa.data.model.Album
 import com.composition.damoa.presentation.common.base.BaseUiState
+import kotlinx.collections.immutable.persistentListOf
 import java.time.LocalDateTime
 
 data class AlbumUiState(
@@ -16,7 +17,7 @@ data class AlbumUiState(
             title = "코코",
             concept = "트렌디 룩북 컨셉",
             thumbnailUrl = "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
-            photoUrls = listOf(
+            photoUrls = persistentListOf(
                 "https://img.freepik.com/premium-photo/picture-of-a-cute-puppy-world-animal-day_944128-5890.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png",
                 "https://www.shutterstock.com/image-illustration/pristine-reflective-lake-show-image-260nw-2305485315.jpg",

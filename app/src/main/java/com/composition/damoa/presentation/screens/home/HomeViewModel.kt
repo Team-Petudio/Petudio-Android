@@ -89,6 +89,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             when (val album = albumRepository.getAlbums()) {
                 is Success -> _albumUiState.update { it.copy(state = State.SUCCESS, albums = album.data) }
+
                 NetworkError, TokenExpired -> _albumUiState.update { it.copy(state = State.NETWORK_ERROR) }
                 is Failure, is Unexpected -> _albumUiState.update { it.copy(state = State.NONE) }
             }
