@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.composition.damoa.presentation.common.components.MediumTitle
 import com.composition.damoa.presentation.ui.theme.Gray30
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 
 
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 fun GalleryTabRow(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    tabTitlesRes: List<Int>,
+    tabTitlesRes: ImmutableList<Int>,
 ) {
     val scope = rememberCoroutineScope()
 

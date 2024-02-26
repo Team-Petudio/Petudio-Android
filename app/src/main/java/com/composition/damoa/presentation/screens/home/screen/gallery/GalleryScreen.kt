@@ -24,6 +24,7 @@ import com.composition.damoa.presentation.screens.home.screen.gallery.component.
 import com.composition.damoa.presentation.screens.home.screen.gallery.state.AlbumUiState
 import com.composition.damoa.presentation.screens.home.screen.gallery.state.PetFeedUiState
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationActivity
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -54,14 +55,17 @@ fun GalleryScreen(
     petFeedUiState: PetFeedUiState,
     onLoginClick: () -> Unit,
 ) {
-    val tabTitlesRes = listOf(R.string.album, R.string.pet_feed)
+    val tabTitlesRes = persistentListOf(R.string.album, R.string.pet_feed)
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(Color.White),
     ) {
-        GalleryTabRow(pagerState = pagerState, tabTitlesRes = tabTitlesRes)
+        GalleryTabRow(
+            pagerState = pagerState,
+            tabTitlesRes = tabTitlesRes
+        )
         GalleryPager(
             pagerState = pagerState,
             navController = navController,
