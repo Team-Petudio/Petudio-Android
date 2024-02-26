@@ -151,6 +151,9 @@ dependencies {
 
     // Permission
     implementation("io.github.ParkSangGwon:tedpermission-normal:3.3.0")
+
+    // Immutable Collection
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
 }
 
 kapt {
