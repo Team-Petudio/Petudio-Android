@@ -33,6 +33,9 @@ fun PetColorScreen(
             selectedPetColor = petInfoUiState.petColor,
             onPetColorSelected = petInfoUiState.onPetColorSelected,
         )
-        KeepGoingButton(onClick = onKeepGoingClick)
+        KeepGoingButton(
+            enabled = petInfoUiState.petColor != null,
+            onClick = onKeepGoingClick,
+        )
     }
 }
