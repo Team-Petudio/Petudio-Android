@@ -1,6 +1,7 @@
 package com.composition.damoa.benchmark.benchmark
 
 import androidx.benchmark.macro.CompilationMode
+import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -21,6 +22,7 @@ class NavigateGalleryBenchmark {
     fun Baseline_Profile_없이_갤러리_화면으로_이동() = benchmarkRule.startupAndMeasure(
         compilationMode = CompilationMode.None(),
         startupMode = StartupMode.WARM,
+        metrics = listOf(FrameTimingMetric()),
         setupBlock = { onlyStartup() },
         measure = { navigateGalleryAndFindGalleryTabs() },
     )
@@ -29,6 +31,7 @@ class NavigateGalleryBenchmark {
     fun Baseline_Profile_포함_갤러리_화면으로_이동() = benchmarkRule.startupAndMeasure(
         compilationMode = CompilationMode.Partial(),
         startupMode = StartupMode.WARM,
+        metrics = listOf(FrameTimingMetric()),
         setupBlock = { onlyStartup() },
         measure = { navigateGalleryAndFindGalleryTabs() },
     )
