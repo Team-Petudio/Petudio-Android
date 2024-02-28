@@ -185,6 +185,9 @@ dependencies {
 
     // Immutable Collection
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
+
+    // Profile Installer
+    implementation("androidx.profileinstaller:profileinstaller:1.3.1")
 }
 
 kapt {
