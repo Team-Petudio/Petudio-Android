@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.composition.damoa.presentation.screens.profileCreation.ProfileCreationViewModel
 import com.composition.damoa.presentation.ui.theme.PetudioTheme
 

@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,7 +24,13 @@ import com.composition.damoa.presentation.ui.theme.Gray40
 fun UserOptionItem(
     modifier: Modifier = Modifier,
     item: @Composable () -> Unit,
-    endIcon: @Composable () -> Unit = { Icon(Icons.Filled.KeyboardArrowRight, null, tint = Gray40) },
+    endIcon: @Composable () -> Unit = {
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            tint = Gray40,
+            contentDescription = null,
+        )
+    },
     onClick: () -> Unit,
 ) {
     Row(
