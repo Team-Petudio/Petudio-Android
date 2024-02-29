@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -72,7 +72,7 @@ private fun InformationItem(
         AnimatedVisibility(visible = isExpanded) {
             DescriptionList(descriptionRes = descriptionRes)
         }
-        Divider(
+        HorizontalDivider(
             modifier = Modifier.padding(top = dividerPadding),
             thickness = 1.dp, color = Gray20,
         )
