@@ -1,6 +1,16 @@
 package com.composition.damoa.di.repository
 
 import com.composition.damoa.data.dataSource.local.interfaces.TokenDataSource
+import com.composition.damoa.data.network.service.ConceptService
+import com.composition.damoa.data.network.service.GiftCardService
+import com.composition.damoa.data.network.service.GoogleService
+import com.composition.damoa.data.network.service.PetDetectService
+import com.composition.damoa.data.network.service.PetFeedService
+import com.composition.damoa.data.network.service.PetService
+import com.composition.damoa.data.network.service.S3ImageService
+import com.composition.damoa.data.network.service.S3ImageUrlService
+import com.composition.damoa.data.network.service.TokenService
+import com.composition.damoa.data.network.service.UserService
 import com.composition.damoa.data.repository.concretes.DefaultConceptRepository
 import com.composition.damoa.data.repository.concretes.DefaultGiftCardRepository
 import com.composition.damoa.data.repository.concretes.DefaultGoogleRepository
@@ -23,16 +33,6 @@ import com.composition.damoa.data.repository.interfaces.S3ImageRepository
 import com.composition.damoa.data.repository.interfaces.S3ImageUrlRepository
 import com.composition.damoa.data.repository.interfaces.TokenRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
-import com.composition.damoa.data.service.ConceptService
-import com.composition.damoa.data.service.GiftCardService
-import com.composition.damoa.data.service.GoogleService
-import com.composition.damoa.data.service.PetDetectService
-import com.composition.damoa.data.service.PetFeedService
-import com.composition.damoa.data.service.PetService
-import com.composition.damoa.data.service.S3ImageService
-import com.composition.damoa.data.service.S3ImageUrlService
-import com.composition.damoa.data.service.TokenService
-import com.composition.damoa.data.service.UserService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

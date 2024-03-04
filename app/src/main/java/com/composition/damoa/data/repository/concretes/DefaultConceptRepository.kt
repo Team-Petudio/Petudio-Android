@@ -1,11 +1,11 @@
 package com.composition.damoa.data.repository.concretes
 
-import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
 import com.composition.damoa.data.mapper.toDomain
 import com.composition.damoa.data.model.ProfileConcept
 import com.composition.damoa.data.model.ProfileConceptDetail
+import com.composition.damoa.data.network.retrofit.callAdapter.ApiResponse
+import com.composition.damoa.data.network.service.ConceptService
 import com.composition.damoa.data.repository.interfaces.ConceptRepository
-import com.composition.damoa.data.service.ConceptService
 import kotlinx.collections.immutable.PersistentList
 
 class DefaultConceptRepository(

@@ -1,13 +1,13 @@
 package com.composition.damoa.data.repository.concretes
 
-import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
-import com.composition.damoa.data.common.retrofit.callAdapter.Success
-import com.composition.damoa.data.common.utils.TokenParser
 import com.composition.damoa.data.dataSource.local.interfaces.TokenDataSource
-import com.composition.damoa.data.dto.request.ReissueTokenRequest
 import com.composition.damoa.data.model.User
+import com.composition.damoa.data.network.dto.request.ReissueTokenRequest
+import com.composition.damoa.data.network.retrofit.callAdapter.ApiResponse
+import com.composition.damoa.data.network.retrofit.callAdapter.Success
+import com.composition.damoa.data.network.retrofit.utils.TokenParser
+import com.composition.damoa.data.network.service.TokenService
 import com.composition.damoa.data.repository.interfaces.TokenRepository
-import com.composition.damoa.data.service.TokenService
 
 class DefaultTokenRepository(
     private val service: TokenService,

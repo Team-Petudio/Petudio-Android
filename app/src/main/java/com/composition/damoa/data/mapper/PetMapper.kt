@@ -1,7 +1,7 @@
 package com.composition.damoa.data.mapper
 
-import com.composition.damoa.data.dto.response.PetsResponse
 import com.composition.damoa.data.model.Pet
+import com.composition.damoa.data.network.dto.response.PetsResponse
 
 fun PetsResponse.toDomain(): List<Pet> = pets
     .map { pets -> pets.toDomain() }

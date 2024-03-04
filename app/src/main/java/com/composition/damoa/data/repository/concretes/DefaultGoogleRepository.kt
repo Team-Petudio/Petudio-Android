@@ -1,9 +1,9 @@
 package com.composition.damoa.data.repository.concretes
 
-import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
-import com.composition.damoa.data.dto.request.GoogleLoginRequest
+import com.composition.damoa.data.network.dto.request.GoogleLoginRequest
+import com.composition.damoa.data.network.retrofit.callAdapter.ApiResponse
+import com.composition.damoa.data.network.service.GoogleService
 import com.composition.damoa.data.repository.interfaces.GoogleRepository
-import com.composition.damoa.data.service.GoogleService
 
 class DefaultGoogleRepository(
     private val service: GoogleService,

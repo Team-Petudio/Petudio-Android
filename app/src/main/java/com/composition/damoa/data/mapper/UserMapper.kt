@@ -1,7 +1,7 @@
 package com.composition.damoa.data.mapper
 
-import com.composition.damoa.data.dto.response.UserResponse
 import com.composition.damoa.data.model.User
+import com.composition.damoa.data.network.dto.response.UserResponse
 
 fun UserResponse.toDomain(token: User.Token): User = User(
     id = id,

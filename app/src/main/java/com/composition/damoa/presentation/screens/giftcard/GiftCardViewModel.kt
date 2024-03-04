@@ -2,12 +2,12 @@ package com.composition.damoa.presentation.screens.giftcard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.composition.damoa.data.common.retrofit.callAdapter.Failure
-import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
-import com.composition.damoa.data.common.retrofit.callAdapter.Success
-import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
-import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.model.GiftCard
+import com.composition.damoa.data.network.retrofit.callAdapter.Failure
+import com.composition.damoa.data.network.retrofit.callAdapter.NetworkError
+import com.composition.damoa.data.network.retrofit.callAdapter.Success
+import com.composition.damoa.data.network.retrofit.callAdapter.TokenExpired
+import com.composition.damoa.data.network.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.repository.interfaces.GiftCardRepository
 import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiEvent
 import com.composition.damoa.presentation.screens.giftcard.state.GiftCardUiState

@@ -1,12 +1,12 @@
 package com.composition.damoa.data.repository.concretes
 
-import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
-import com.composition.damoa.data.dto.request.PreSignedUrlsRequest
-import com.composition.damoa.data.dto.request.S3DirectoryDeleteRequest
 import com.composition.damoa.data.mapper.toDomain
 import com.composition.damoa.data.model.S3ImageUrls
+import com.composition.damoa.data.network.dto.request.PreSignedUrlsRequest
+import com.composition.damoa.data.network.dto.request.S3DirectoryDeleteRequest
+import com.composition.damoa.data.network.retrofit.callAdapter.ApiResponse
+import com.composition.damoa.data.network.service.S3ImageUrlService
 import com.composition.damoa.data.repository.interfaces.S3ImageUrlRepository
-import com.composition.damoa.data.service.S3ImageUrlService
 
 class DefaultS3ImageUrlRepository(
     private val service: S3ImageUrlService,

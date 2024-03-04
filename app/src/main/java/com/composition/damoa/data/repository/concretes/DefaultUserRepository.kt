@@ -1,18 +1,18 @@
 package com.composition.damoa.data.repository.concretes
 
-import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
-import com.composition.damoa.data.common.retrofit.callAdapter.Failure
-import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
-import com.composition.damoa.data.common.retrofit.callAdapter.Success
-import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
-import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
-import com.composition.damoa.data.common.utils.TokenParser
-import com.composition.damoa.data.dto.request.LoginRequest
 import com.composition.damoa.data.mapper.toDomain
 import com.composition.damoa.data.model.User
+import com.composition.damoa.data.network.dto.request.LoginRequest
+import com.composition.damoa.data.network.retrofit.callAdapter.ApiResponse
+import com.composition.damoa.data.network.retrofit.callAdapter.Failure
+import com.composition.damoa.data.network.retrofit.callAdapter.NetworkError
+import com.composition.damoa.data.network.retrofit.callAdapter.Success
+import com.composition.damoa.data.network.retrofit.callAdapter.TokenExpired
+import com.composition.damoa.data.network.retrofit.callAdapter.Unexpected
+import com.composition.damoa.data.network.retrofit.utils.TokenParser
+import com.composition.damoa.data.network.service.UserService
 import com.composition.damoa.data.repository.interfaces.TokenRepository
 import com.composition.damoa.data.repository.interfaces.UserRepository
-import com.composition.damoa.data.service.UserService
 
 
 class DefaultUserRepository(

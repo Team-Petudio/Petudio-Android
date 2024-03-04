@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import com.composition.damoa.R
-import com.composition.damoa.data.common.retrofit.callAdapter.Success
+import com.composition.damoa.data.network.retrofit.callAdapter.Success
 import com.composition.damoa.data.repository.interfaces.GoogleRepository
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount

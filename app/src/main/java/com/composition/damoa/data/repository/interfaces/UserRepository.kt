@@ -1,7 +1,7 @@
 package com.composition.damoa.data.repository.interfaces
 
-import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
 import com.composition.damoa.data.model.User
+import com.composition.damoa.data.network.retrofit.callAdapter.ApiResponse
 
 interface UserRepository {
     suspend fun login(

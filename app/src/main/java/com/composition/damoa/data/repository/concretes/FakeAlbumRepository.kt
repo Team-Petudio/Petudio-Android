@@ -1,8 +1,8 @@
 package com.composition.damoa.data.repository.concretes
 
-import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
-import com.composition.damoa.data.common.retrofit.callAdapter.Success
 import com.composition.damoa.data.model.Album
+import com.composition.damoa.data.network.retrofit.callAdapter.ApiResponse
+import com.composition.damoa.data.network.retrofit.callAdapter.Success
 import com.composition.damoa.data.repository.interfaces.AlbumRepository
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf

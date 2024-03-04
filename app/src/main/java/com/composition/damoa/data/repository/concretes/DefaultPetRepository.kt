@@ -1,13 +1,13 @@
 package com.composition.damoa.data.repository.concretes
 
-import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
-import com.composition.damoa.data.dto.request.PetRequest
 import com.composition.damoa.data.mapper.toData
 import com.composition.damoa.data.mapper.toDomain
 import com.composition.damoa.data.model.Pet
 import com.composition.damoa.data.model.PetColor
+import com.composition.damoa.data.network.dto.request.PetRequest
+import com.composition.damoa.data.network.retrofit.callAdapter.ApiResponse
+import com.composition.damoa.data.network.service.PetService
 import com.composition.damoa.data.repository.interfaces.PetRepository
-import com.composition.damoa.data.service.PetService
 
 class DefaultPetRepository(
     private val service: PetService,

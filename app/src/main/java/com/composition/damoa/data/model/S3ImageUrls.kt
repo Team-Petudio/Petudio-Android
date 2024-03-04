@@ -1,6 +1,6 @@
 package com.composition.damoa.data.model
 
-import com.composition.damoa.data.service.S3ImageService
+import com.composition.damoa.data.network.service.S3ImageService
 
 data class S3ImageUrls(
     val s3DirectoryPath: String,

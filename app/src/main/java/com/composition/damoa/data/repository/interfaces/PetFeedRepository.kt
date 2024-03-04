@@ -1,7 +1,7 @@
 package com.composition.damoa.data.repository.interfaces
 
-import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
 import com.composition.damoa.data.model.PetFeed
+import com.composition.damoa.data.network.retrofit.callAdapter.ApiResponse
 
 interface PetFeedRepository {
     suspend fun getPetFeeds(userId: Long): ApiResponse<List<PetFeed>>

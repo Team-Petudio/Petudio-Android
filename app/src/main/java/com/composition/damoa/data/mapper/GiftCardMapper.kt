@@ -1,8 +1,8 @@
 package com.composition.damoa.data.mapper
 
-import com.composition.damoa.data.dto.response.GiftCardResponse
-import com.composition.damoa.data.dto.response.GiftCardsResponse
 import com.composition.damoa.data.model.GiftCard
+import com.composition.damoa.data.network.dto.response.GiftCardResponse
+import com.composition.damoa.data.network.dto.response.GiftCardsResponse
 
 fun GiftCardsResponse.toDomain(): List<GiftCard> = giftCards.map(GiftCardResponse::toDomain)
 

@@ -1,16 +1,16 @@
 package com.composition.damoa.di.service
 
-import com.composition.damoa.data.common.retrofit.serviceFactory.ServiceFactory
-import com.composition.damoa.data.service.ConceptService
-import com.composition.damoa.data.service.GiftCardService
-import com.composition.damoa.data.service.GoogleService
-import com.composition.damoa.data.service.PetDetectService
-import com.composition.damoa.data.service.PetFeedService
-import com.composition.damoa.data.service.PetService
-import com.composition.damoa.data.service.S3ImageService
-import com.composition.damoa.data.service.S3ImageUrlService
-import com.composition.damoa.data.service.TokenService
-import com.composition.damoa.data.service.UserService
+import com.composition.damoa.data.network.retrofit.serviceFactory.ServiceFactory
+import com.composition.damoa.data.network.service.ConceptService
+import com.composition.damoa.data.network.service.GiftCardService
+import com.composition.damoa.data.network.service.GoogleService
+import com.composition.damoa.data.network.service.PetDetectService
+import com.composition.damoa.data.network.service.PetFeedService
+import com.composition.damoa.data.network.service.PetService
+import com.composition.damoa.data.network.service.S3ImageService
+import com.composition.damoa.data.network.service.S3ImageUrlService
+import com.composition.damoa.data.network.service.TokenService
+import com.composition.damoa.data.network.service.UserService
 import com.composition.damoa.di.other.ServiceFactoryWithAuthQualifier
 import com.composition.damoa.di.other.ServiceFactoryWithoutAuthQualifier
 import dagger.Module

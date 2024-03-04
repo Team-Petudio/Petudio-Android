@@ -1,9 +1,9 @@
 package com.composition.damoa.data.mapper
 
-import com.composition.damoa.data.dto.response.ConceptResponse
-import com.composition.damoa.data.dto.response.ConceptsResponse
 import com.composition.damoa.data.model.PetType
 import com.composition.damoa.data.model.ProfileConcept
+import com.composition.damoa.data.network.dto.response.ConceptResponse
+import com.composition.damoa.data.network.dto.response.ConceptsResponse
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 

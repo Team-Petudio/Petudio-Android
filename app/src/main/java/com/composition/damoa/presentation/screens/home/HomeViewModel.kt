@@ -2,13 +2,13 @@ package com.composition.damoa.presentation.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.composition.damoa.data.common.retrofit.callAdapter.Failure
-import com.composition.damoa.data.common.retrofit.callAdapter.NetworkError
-import com.composition.damoa.data.common.retrofit.callAdapter.Success
-import com.composition.damoa.data.common.retrofit.callAdapter.TokenExpired
-import com.composition.damoa.data.common.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.model.PetFeed
 import com.composition.damoa.data.model.User
+import com.composition.damoa.data.network.retrofit.callAdapter.Failure
+import com.composition.damoa.data.network.retrofit.callAdapter.NetworkError
+import com.composition.damoa.data.network.retrofit.callAdapter.Success
+import com.composition.damoa.data.network.retrofit.callAdapter.TokenExpired
+import com.composition.damoa.data.network.retrofit.callAdapter.Unexpected
 import com.composition.damoa.data.repository.interfaces.AlbumRepository
 import com.composition.damoa.data.repository.interfaces.ConceptRepository
 import com.composition.damoa.data.repository.interfaces.PetFeedRepository

@@ -1,8 +1,8 @@
 package com.composition.damoa.data.repository.interfaces
 
-import com.composition.damoa.data.common.retrofit.callAdapter.ApiResponse
 import com.composition.damoa.data.model.ProfileConcept
 import com.composition.damoa.data.model.ProfileConceptDetail
+import com.composition.damoa.data.network.retrofit.callAdapter.ApiResponse
 import kotlinx.collections.immutable.PersistentList
 
 interface ConceptRepository {
