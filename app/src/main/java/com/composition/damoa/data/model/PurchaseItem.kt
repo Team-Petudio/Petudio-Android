@@ -13,9 +13,9 @@ data class PurchaseItem(
         GIFT_CARD("giftcard");
 
         companion object {
-            fun from(itemId: String): Category = Category
-                .values()
-                .first { category -> itemId.contains(category.id) }
+            fun from(itemId: String): Category = entries.first { category ->
+                itemId.contains(category.id)
+            }
         }
     }
 }

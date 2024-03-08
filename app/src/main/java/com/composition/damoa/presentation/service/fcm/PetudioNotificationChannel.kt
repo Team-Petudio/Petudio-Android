@@ -33,9 +33,9 @@ enum class PetudioNotificationChannel(
         }
 
         fun createChannels(context: Context) {
-            val petudioNotificationChannels = PetudioNotificationChannel
-                .values()
-                .map { channel -> channel.createChannel(context) }
+            val petudioNotificationChannels = entries.map { channel ->
+                channel.createChannel(context)
+            }
 
             getNotificationManager(context).createNotificationChannels(petudioNotificationChannels)
         }
