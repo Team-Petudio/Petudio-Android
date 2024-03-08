@@ -206,10 +206,7 @@ class ProfileCreationViewModel @Inject constructor(
     private suspend fun uploadPetImageToS3(
         preSignedImageUrl: S3ImageUrls.PreSignedImageUrl,
         imageFile: File,
-    ): Boolean = when (s3ImageRepository.uploadImage(preSignedImageUrl.pathWithoutHost, imageFile)) {
-        is Success -> true
-        else -> false
-    }
+    ): Boolean = s3ImageRepository.uploadImage(preSignedImageUrl.pathWithoutHost, imageFile) is Success
 
     private suspend fun uploadPet(): ApiResponse<Unit> {
         val petInfoUiState = petInfoUiState.value
