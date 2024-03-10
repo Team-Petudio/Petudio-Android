@@ -30,12 +30,8 @@ fun MacrobenchmarkRule.startupAndMeasure(
 )
 
 fun MacrobenchmarkScope.navigateGalleryAndFindGalleryTabs() {
-//    device.wait(Until.hasObject(By.text("갤러리")), 5_000)
     val galleryTab = device.findObject(By.text("갤러리")) ?: error("갤러리 탭을 찾을 수 없습니다.")
     galleryTab.click()
-
-    // 화면이 전환될 때까지 대기
-//    device.waitForIdle()
 
     device.wait(Until.hasObject(By.text("앨범")), 5_000)
 }
