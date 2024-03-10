@@ -8,8 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.composition.damoa.R
 import com.composition.damoa.data.model.User.SocialType
-import com.composition.damoa.di.other.GoogleAuth
-import com.composition.damoa.di.other.KakaoAuth
+import com.composition.damoa.di.other.AuthCompatQualifier
 import com.composition.damoa.presentation.common.extensions.onUi
 import com.composition.damoa.presentation.common.extensions.showToast
 import com.composition.damoa.presentation.screens.home.HomeActivity
@@ -28,13 +27,9 @@ import javax.inject.Inject
 class LoginActivity : ComponentActivity() {
     private val viewModel: LoginViewModel by viewModels()
 
-    @GoogleAuth
     @Inject
-    lateinit var googleAuthManager: AuthManager
-
-    @KakaoAuth
-    @Inject
-    lateinit var kakaoAuthManager: AuthManager
+    @AuthCompatQualifier
+    lateinit var authCompat: AuthManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,31 +55,15 @@ class LoginActivity : ComponentActivity() {
     }
 
     private fun login(socialType: SocialType) {
-        viewModel.changeToLoading()
-
-        when (socialType) {
-            SocialType.GOOGLE -> googleAuthManager.login(
-                onSuccess = { accessToken, fcmToken -> viewModel.login(SocialType.GOOGLE, accessToken, fcmToken) },
-                onFailure = {
-                    onUi {
-                        showToast(R.string.login_failure_message)
-                        viewModel.changeToNone()
-                    }
-                }
-            )
-
-            SocialType.KAKAO -> kakaoAuthManager.login(
-                onSuccess = { accessToken, fcmToken -> viewModel.login(SocialType.KAKAO, accessToken, fcmToken) },
-                onFailure = {
-                    onUi {
-                        showToast(R.string.login_failure_message)
-                        viewModel.changeToNone()
-                    }
-                }
-            )
-
-            SocialType.APPLE -> onUi { showToast(R.string.login_failure_message) }
-        }
+        authCompat.login(
+            socialType = socialType,
+            onPreLogin = { viewModel.changeToLoading() },
+            onSuccess = { accessToken, fcmToken -> viewModel.login(socialType, accessToken, fcmToken) },
+            onFailure = {
+                showToast(R.string.login_failure_message)
+                viewModel.changeToNone()
+            },
+        )
     }
 
     companion object {

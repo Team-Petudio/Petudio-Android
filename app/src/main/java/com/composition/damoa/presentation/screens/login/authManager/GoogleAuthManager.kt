@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import com.composition.damoa.R
+import com.composition.damoa.data.model.User
 import com.composition.damoa.data.network.retrofit.callAdapter.Success
 import com.composition.damoa.data.repository.interfaces.GoogleRepository
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -22,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 class GoogleAuthManager @Inject constructor(
     private val context: Context,
     private val googleRepository: GoogleRepository,
@@ -36,10 +38,12 @@ class GoogleAuthManager @Inject constructor(
         }
 
     override fun login(
+        socialType: User.SocialType,
+        onPreLogin: () -> Unit,
         onSuccess: (accessToken: String, fcmToken: String) -> Unit,
         onFailure: (error: Throwable) -> Unit,
     ) {
-        super.login(onSuccess, onFailure)
+        super.login(socialType, onPreLogin, onSuccess, onFailure)
 
         with(getGoogleClient(context)) {
             signOut().addOnCompleteListener {
@@ -67,11 +71,11 @@ class GoogleAuthManager @Inject constructor(
                 handleAuthResult(task, authCode)
             }
         } catch (e: Exception) {
+            fail(e)
             when (e) {
                 is ApiException -> Log.d("buna", "[ERROR] 구글 로그인 실패 코드 : ${e.statusCode}")
                 is NullPointerException -> Log.d("buna", "[ERROR] 구글 로그인 토큰이 null 입니다.")
             }
-            failureCallback(e)
         }
     }
 
@@ -80,17 +84,17 @@ class GoogleAuthManager @Inject constructor(
         authCode: String,
     ) {
         if (!task.isSuccessful) {
-            failureCallback(task.exception ?: Exception("[ERROR] 구글 로그인 실패"))
+            fail(task.exception ?: Exception("[ERROR] 구글 로그인 실패"))
             return
         }
 
         CoroutineScope(Dispatchers.IO).launch {
             when (val token = googleRepository.getAccessToken(authCode, clientId, clientSecret)) {
                 is Success -> FirebaseMessaging.getInstance().token.addOnSuccessListener { fcmToken ->
-                    successCallback(token.data, fcmToken)
+                    success(token.data, fcmToken)
                 }
 
-                else -> failureCallback(Exception("[ERROR] AuthCode로 AccessToken을 받아오는데 실패했습니다."))
+                else -> fail(Exception("[ERROR] AuthCode로 AccessToken을 받아오는데 실패했습니다."))
             }
         }
     }
