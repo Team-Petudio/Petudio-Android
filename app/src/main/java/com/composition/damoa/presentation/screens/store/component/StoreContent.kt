@@ -38,7 +38,7 @@ fun StoreContent(
     ) {
         StoreTitle()
         UserOwnTicket(
-            modifier = modifier.padding(top = 20.dp),
+            modifier = Modifier.padding(top = 20.dp),
             ticketCount = ticketPurchaseUiState.ticketCount
         )
         DonationDescription(
