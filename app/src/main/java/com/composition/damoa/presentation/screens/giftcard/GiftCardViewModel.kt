@@ -44,7 +44,13 @@ class GiftCardViewModel @Inject constructor(
     private fun fetchGiftCards() {
         viewModelScope.launch {
             when (val result = giftCardRepository.getGiftCards()) {
-                is Success -> _giftCardUiState.update { it.copy(giftCards = result.data) }
+                is Success -> _giftCardUiState.update {
+                    it.copy(
+                        usableGiftCards = result.data.filter { giftCard -> !giftCard.isUsed and !giftCard.isExpired },
+                        unUsableGiftCards = result.data.filter { giftCard -> giftCard.isUsed or giftCard.isExpired },
+                    )
+                }
+
                 is Failure, is Unexpected -> _event.emit(GiftCardUiEvent.UNKNOWN_ERROR)
                 TokenExpired -> _event.emit(GiftCardUiEvent.TOKEN_EXPIRED)
                 NetworkError -> _event.emit(GiftCardUiEvent.NETWORK_ERROR)

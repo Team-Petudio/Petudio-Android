@@ -16,12 +16,10 @@ import com.composition.damoa.data.model.GiftCard
 @Composable
 fun GiftCardList(
     modifier: Modifier = Modifier,
-    giftCards: List<GiftCard>,
+    usableGiftCards: List<GiftCard>,
+    unUsableGiftCards: List<GiftCard>,
     onGiftCardDetailClick: (giftCard: GiftCard) -> Unit,
 ) {
-    val usableGiftCards = giftCards.filter { !it.isUsed and !it.isExpired }
-    val unUsableGiftCards = giftCards.filter { it.isUsed or it.isExpired }
-
     LazyColumn(
         modifier = modifier.heightIn(max = 10000.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),

@@ -29,7 +29,8 @@ fun GiftCardContent(
         item {
             GiftCardList(
                 modifier = Modifier.padding(top = 20.dp),
-                giftCards = giftCardUiState.giftCards,
+                usableGiftCards = giftCardUiState.usableGiftCards,
+                unUsableGiftCards = giftCardUiState.unUsableGiftCards,
                 onGiftCardDetailClick = onGiftCardDetailClick,
             )
         }
