@@ -7,10 +7,9 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import javax.inject.Inject
 
 
-class KakaoAuthManager @Inject constructor(
+class KakaoAuthManager(
     private val context: Context,
 ) : AuthManager() {
     private val loginCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->

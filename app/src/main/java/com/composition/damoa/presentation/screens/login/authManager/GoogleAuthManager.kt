@@ -21,10 +21,9 @@ import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
-class GoogleAuthManager @Inject constructor(
+class GoogleAuthManager(
     private val context: Context,
     private val googleRepository: GoogleRepository,
 ) : AuthManager() {

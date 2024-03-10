@@ -1,10 +1,9 @@
 package com.composition.damoa.presentation.screens.login.authManager
 
 import com.composition.damoa.data.model.User.SocialType
-import javax.inject.Inject
 
 
-class AuthCompat @Inject constructor(
+class AuthCompat(
     vararg authManagers: Pair<SocialType, AuthManager>,
 ) : AuthManager() {
     private val authManagers: Map<SocialType, AuthManager> = authManagers.toMap()
