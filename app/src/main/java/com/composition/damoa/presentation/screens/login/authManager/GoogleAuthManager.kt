@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -85,7 +86,10 @@ class GoogleAuthManager @Inject constructor(
 
         CoroutineScope(Dispatchers.IO).launch {
             when (val token = googleRepository.getAccessToken(authCode, clientId, clientSecret)) {
-                is Success -> successCallback(token.data, authCode)
+                is Success -> FirebaseMessaging.getInstance().token.addOnSuccessListener { fcmToken ->
+                    successCallback(token.data, fcmToken)
+                }
+
                 else -> failureCallback(Exception("[ERROR] AuthCode로 AccessToken을 받아오는데 실패했습니다."))
             }
         }
