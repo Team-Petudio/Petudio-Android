@@ -9,6 +9,7 @@ import com.composition.damoa.data.network.retrofit.utils.TokenParser
 import com.composition.damoa.data.network.service.TokenService
 import com.composition.damoa.data.repository.interfaces.TokenRepository
 
+
 class DefaultTokenRepository(
     private val service: TokenService,
     private val tokenDataSource: TokenDataSource,
@@ -29,7 +30,7 @@ class DefaultTokenRepository(
         tokenDataSource.saveToken(token)
     }
 
-    override fun getToken(): User.Token {
+    override suspend fun getToken(): User.Token {
         return tokenDataSource.getToken()
     }
 

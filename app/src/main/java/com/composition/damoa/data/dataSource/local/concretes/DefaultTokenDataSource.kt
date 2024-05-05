@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.composition.damoa.data.dataSource.local.interfaces.TokenDataSource
 import com.composition.damoa.data.model.User
 
+@Deprecated("Use DataStoreTokenDataSource instead")
 class DefaultTokenDataSource(
     private val preference: SharedPreferences,
 ) : TokenDataSource {
@@ -14,7 +15,7 @@ class DefaultTokenDataSource(
         preferenceEditor.putString(REFRESH_TOKEN_KEY, token.refreshToken).apply()
     }
 
-    override fun getToken(): User.Token {
+    override suspend fun getToken(): User.Token {
         val accessToken = preference.getString(ACCESS_TOKEN_KEY, DEFAULT_TOKEN_VALUE) ?: ""
         val refreshToken = preference.getString(REFRESH_TOKEN_KEY, DEFAULT_TOKEN_VALUE) ?: ""
 

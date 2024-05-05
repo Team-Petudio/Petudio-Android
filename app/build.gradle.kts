@@ -17,7 +17,7 @@ android {
         applicationId = "com.composition.damoa"
         minSdk = 26
         targetSdk = 33
-        versionCode = 10
+        versionCode = 12
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -188,6 +188,9 @@ dependencies {
 
     // Profile Installer
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 }
 
 kapt {

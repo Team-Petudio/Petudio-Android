@@ -4,7 +4,7 @@ import com.composition.damoa.data.model.User
 import com.composition.damoa.data.network.retrofit.callAdapter.ApiResponse
 
 interface TokenRepository {
-    fun getToken(): User.Token
+    suspend fun getToken(): User.Token
 
     fun saveToken(token: User.Token)
 

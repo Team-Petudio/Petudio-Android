@@ -11,7 +11,9 @@ class AuthInterceptor(
     private val tokenRepository: TokenRepository,
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val token = tokenRepository.getToken()
+        val token = runBlocking {
+            tokenRepository.getToken()
+        }
         val response = chain.proceedWithToken(TOKEN_FORMAT.format(token.accessToken))
 
         var newResponse = response

@@ -1,6 +1,7 @@
 package com.composition.damoa.data.model
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 data class User(
     val id: Long,
@@ -20,6 +21,7 @@ data class User(
         APPLE,
     }
 
+    @Serializable
     data class Token(
         val accessToken: String = "",
         val refreshToken: String = "",
