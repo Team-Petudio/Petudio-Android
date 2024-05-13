@@ -6,9 +6,9 @@ import com.composition.damoa.data.network.retrofit.callAdapter.ApiResponse
 interface TokenRepository {
     suspend fun getToken(): User.Token
 
-    fun saveToken(token: User.Token)
+    suspend fun saveToken(token: User.Token)
 
-    fun deleteToken()
+    suspend fun deleteToken()
 
     suspend fun reissueToken(): ApiResponse<Unit>
 }

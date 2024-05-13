@@ -26,7 +26,7 @@ class DefaultTokenRepository(
         }
     }
 
-    override fun saveToken(token: User.Token) {
+    override suspend fun saveToken(token: User.Token) {
         tokenDataSource.saveToken(token)
     }
 
@@ -34,7 +34,7 @@ class DefaultTokenRepository(
         return tokenDataSource.getToken()
     }
 
-    override fun deleteToken() {
+    override suspend fun deleteToken() {
         tokenDataSource.deleteToken()
     }
 }

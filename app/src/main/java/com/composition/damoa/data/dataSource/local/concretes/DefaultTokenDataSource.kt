@@ -10,7 +10,7 @@ class DefaultTokenDataSource(
 ) : TokenDataSource {
     private val preferenceEditor = preference.edit()
 
-    override fun saveToken(token: User.Token) {
+    override suspend fun saveToken(token: User.Token) {
         preferenceEditor.putString(ACCESS_TOKEN_KEY, token.accessToken).apply()
         preferenceEditor.putString(REFRESH_TOKEN_KEY, token.refreshToken).apply()
     }
@@ -25,7 +25,7 @@ class DefaultTokenDataSource(
         )
     }
 
-    override fun deleteToken() {
+    override suspend fun deleteToken() {
         preferenceEditor.remove(ACCESS_TOKEN_KEY).apply()
         preferenceEditor.remove(REFRESH_TOKEN_KEY).apply()
     }
